@@ -27,8 +27,8 @@ https://beondxin.blog.csdn.net/article/details/108678403
 
 ## 平台
 &emsp;&emsp;打包后全平台用没问题，开发我使用的：
-win：Qt5.12 vs2017 
-ubuntu16：Qt5.11 gcc7.5 
+win：Qt5.12 vs2017   
+ubuntu16：Qt5.11 gcc7.5   
 第三方库目前就用了DCMTK3.6.5，做体渲染功能时会增加vtk8.20
 
 win 下效果
