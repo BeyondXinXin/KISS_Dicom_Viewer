@@ -46,7 +46,7 @@ namespace Kiss {
 #endif
         FileUtil::DirMake("./ScpCache/");
         FileUtil::DirMake("./etc/");
-        FileUtil::FileCopy(":/etc/modalityprop.xml",
+        FileUtil::FileCopy(":/xml/modalityprop.xml",
                            "./etc/modalityprop.xml", false);
     }
 

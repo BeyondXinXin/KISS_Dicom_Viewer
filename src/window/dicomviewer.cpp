@@ -340,7 +340,7 @@ void DicomViewer::Slot_SplitView() {
     GridPopWidget *gpw = new GridPopWidget(ui->gridBtn);
     connect(gpw, &GridPopWidget::Signal_ViewLayout,
             ui->viewContainer, &ViewContainerWidget::Slot_SetViewLayout);
-    gpw->move(ui->gridBtn->geometry().bottomLeft() + QPoint(50, 100));
+    gpw->move(this->geometry().topLeft() + ui->gridBtn->geometry().bottomLeft() + QPoint(25, 25));
     gpw->show();
 }
 

@@ -4,13 +4,14 @@
 
 //----------------------------------------------------------------
 int main(int argc, char *argv[]) {
+    qDebug() << QImage(QString(":/png/contrast.png")).size();
     QApplication a(argc, argv);
     a.setOrganizationName(Project_OrganizationName);
     a.setOrganizationDomain(Project_OrganizationDomain);
     a.setApplicationName(Project_NAME);
     a.setQuitOnLastWindowClosed(true);
     using namespace Kiss;
-    QUIHelper::SetStyle();
+    QUIHelper::SetStyle(":/Style/style.qss");
     QUIHelper::SetCode();
     InitialDir();
     InitialDao();

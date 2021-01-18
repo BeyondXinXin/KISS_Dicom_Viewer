@@ -93,7 +93,7 @@ bool EchoSCU(const QString &peer_title,
         msg = QString::fromLatin1(temp_str.c_str());
         goto Cleanup;
     }
-    gethostname(local_host, sizeof(local_host) - 1);
+    // gethostname(local_host, sizeof(local_host) - 1);
     sprintf(peer_host, "%s:%d", hostname.toLocal8Bit().data(), port);
     ASC_setPresentationAddresses(params, local_host, peer_host);
     cond = ASC_addPresentationContext(

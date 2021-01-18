@@ -8,6 +8,7 @@ if(WIN32)
     set(ITK_DIR  "D:/lib/InsightToolkit-4.13.2/bulid")
     set(OpenCV_DIR  "D:/lib/opencv-3.4.9/bulid")
     set(CGAL_DIR  "D:/lib/CGAL/bulid")
+    set(DCMTK_DIR  "D:/lib/DCMTK3.6.5/bulid")
 endif()
 
 

@@ -13,34 +13,38 @@ file(GLOB_RECURSE HEADERS "*.h")
 file(GLOB_RECURSE FORMS *.ui)
 
 set(SRCS ${SOURCES} ${HEADERS} ${RESOURCES} ${FORMS})
-set(KissDicomViewer_Resource_DIR ${RESOURCES} CACHE PATH "mailiu Resource")
+set(KissDicomViewer_Resource_DIR ${RESOURCES} CACHE PATH "KissDicomViewer Resource")
 
-add_library(KissDicomViewer_sharde SHARED ${SRCS})
-target_link_libraries(
-    KissDicomViewer_sharde
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Widgets
-    Qt5::Sql
-    Qt5::Xml
-    Qt5::Network
-    Qt5::Concurrent
-    ${DCMTK_LIBRARIES}
-    )
 
-# 开静态的话 dcmtk 记得要设置生成静态编译库
-#add_library(KissDicomViewer_static STATIC ${SRCS})
-#target_link_libraries(
-#    KissDicomViewer_static
-#    Qt5::Core
-#    Qt5::Gui
-#    Qt5::Widgets
-#    Qt5::Sql
-#    Qt5::Xml
-#    Qt5::Network
-#    Qt5::Concurrent
-#    ${DCMTK_LIBRARIES}
-#    )
+if(WIN32)
+    add_library(KissDicomViewer_static STATIC ${SRCS})
+    target_link_libraries(
+        KissDicomViewer_static
+        Qt5::Core
+        Qt5::Gui
+        Qt5::Widgets
+        Qt5::Sql
+        Qt5::Xml
+        Qt5::Network
+        Qt5::Concurrent
+        ${DCMTK_LIBRARIES}
+        )
+elseif()
+    add_library(KissDicomViewer_sharde SHARED ${SRCS})
+    target_link_libraries(
+        KissDicomViewer_sharde
+        Qt5::Core
+        Qt5::Gui
+        Qt5::Widgets
+        Qt5::Sql
+        Qt5::Xml
+        Qt5::Network
+        Qt5::Concurrent
+        ${DCMTK_LIBRARIES}
+        )
+endif()
+
+
 
 
 

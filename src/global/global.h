@@ -45,7 +45,6 @@ namespace Kiss {
       public:
         // 设置全局样式
         static void SetStyle(const QString &qssFile = ":/Style/style.qss");
-
         // 设置编码
         static void SetCode();
     };
