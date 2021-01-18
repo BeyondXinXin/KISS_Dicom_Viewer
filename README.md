@@ -5,26 +5,26 @@
 
 ---
 
-https://beondxin.blog.csdn.net/article/details/108678403
-&emsp;&emsp;东拼西凑到处copy后kiss-dicom-viewer的Demo9月份做好了，勉强能用。
+https://beondxin.blog.csdn.net/article/details/108678403  
+&emsp;&emsp;东拼西凑到处copy后kiss-dicom-viewer的Demo9月份做好了，勉强能用。  
 
 
 ## 代码规范
-&emsp;&emsp;目前还在开发阶段，而且是空余时间，没做代码优化逻辑很乱也不是很规范，到处抄的代码，命名也一塌糊涂，等都开发稳定了再Review。
+&emsp;&emsp;目前还在开发阶段，而且是空余时间，没做代码优化逻辑很乱也不是很规范，到处抄的代码，命名也一塌糊涂，等都开发稳定了再Review。  
 > 如果需要借鉴的话请勿愤～～～
 
 ## 已知严重BUG
 &emsp;&emsp;公司PACS开发一直没招，让我临时顶替下。这几个月直接把完全没测试过的kiss-dicom-viewer中pacs功能投入到医院临床使用......
-&emsp;&emsp;强烈要求下，公司终于同意招人正经的做自己的PACS软件了。我可以回归本意，继续自己业余折腾kiss-dicom-viewer了。
+&emsp;&emsp;强烈要求下，公司终于同意招人正经的做自己的PACS软件了。我可以回归本意，继续自己业余折腾kiss-dicom-viewer了。  
 
-&emsp;&emsp;临床使用中遇到些尴尬的问题，统一改：
-* 内存泄露，反复打开同一文件夹，线程发送数据存在内存泄露。
-* 不完善标签的DICOM影像在显示时候会有些问题，尤其是SIMPITK自己生成DICOM。
+&emsp;&emsp;临床使用中遇到些尴尬的问题，统一改：  
+* 内存泄露，反复打开同一文件夹，线程发送数据存在内存泄露。  
+* 不完善标签的DICOM影像在显示时候会有些问题，尤其是SIMPITK自己生成DICOM。  
 
 ## 开发进度
-&emsp;&emsp;9月做好就没再改过了。代码整理和好多功能还没搞，一放就拖到了年底了。最近刚提出离职，没有什么进度需要赶了，再加上马上过年，由于疫情就留在杭州不回家了。计划最近这段时间和过年期间完善一下kiss-dicom-viewer。计划是这样，要是过年给自己找个别的事估计就继续搁浅了......
+&emsp;&emsp;9月做好就没再改过了。代码整理和好多功能还没搞，一放就拖到了年底了。最近刚提出离职，没有什么进度需要赶了，再加上马上过年，由于疫情就留在杭州不回家了。计划最近这段时间和过年期间完善一下kiss-dicom-viewer。计划是这样，要是过年给自己找个别的事估计就继续搁浅了......  
 
 ## 其他
-&emsp;&emsp;目前仅搞了linux版本，windos版的话直接用小蚂蚁吧（kiss-dicom-viewer就是完全仿照小蚂蚁做个阉割版）。
+&emsp;&emsp;目前仅搞了linux版本，windos版的话直接用小蚂蚁吧（kiss-dicom-viewer就是完全仿照小蚂蚁做个阉割版）。  
 
 
