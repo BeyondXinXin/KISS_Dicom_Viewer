@@ -1,0 +1,4 @@
+﻿#include "script/exportimagethread.h"
+#include "script/imageloadthread.h"
+#include "script/importdcmfilethread.h"
+#include "script/scandcmfilethread.h"

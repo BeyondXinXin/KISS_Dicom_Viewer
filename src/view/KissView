@@ -1,0 +1,8 @@
+﻿// dicom2d
+#include "view/dicom2d/ImageData/imageinstance.h"
+#include "view/dicom2d/ImageData/seriesinstance.h"
+#include "view/dicom2d/viewcontainerwidget.h"
+#include "view/dicom2d/thumbnailbarwidget.h"
+#include "view/dicom2d/dicomimagelabel.h"
+// currency
+#include "view/currency/gridpopwidget.h"

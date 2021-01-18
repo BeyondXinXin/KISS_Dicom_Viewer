@@ -1,0 +1,3 @@
+﻿#include "global/global.h"
+#include "global/studyrecord.h"
+#include "global/KissDicomViewConfig.h"

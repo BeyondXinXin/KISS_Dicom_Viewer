@@ -1,0 +1,12 @@
+
+CMakeLists.txt.user
+
+
+
+bin/Release/dicomviewer
+
+bin/Release/libKissDicomViewer_sharde.so
+
+bin/Release/logviewer
+
+bin/Release/studyexplorer

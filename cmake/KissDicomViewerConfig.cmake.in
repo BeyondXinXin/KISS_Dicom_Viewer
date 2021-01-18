@@ -1,0 +1,9 @@
+
+set(KissDicomViewer_INCLUDE_DIRS "@KissDicomViewer_INCLUDE_DIRS@")
+set(KissDicomViewer_LIB_DIR "@KissDicomViewer_LIB_DIR@")
+set(KissDicomViewer_Resource_DIR "@KissDicomViewer_Resource_DIR@")
+
+LINK_DIRECTORIES(${KissDicomViewer_LIB_DIR})
+
+set(KissDicomViewer_SHARDE_LIBRARIES KissDicomViewer_sharde)
+set(KissDicomViewer_STATIC_LIBRARIES KissDicomViewer_static)

@@ -1,0 +1,36 @@
+﻿#include "imageloadthread.h"
+
+#include <view/KissView>
+#include <QPointer>
+#include <engine/KissEngine>
+#include <global/KissGlobal>
+
+//----------------------------------------------------------------
+ImageLoadThread::ImageLoadThread(
+    const QStringList &paths, QObject *parent):
+    QThread(parent),
+    m_paths_(paths) {
+}
+
+//----------------------------------------------------------------
+void ImageLoadThread::SetImagePaths(
+    const QStringList &paths) {
+    m_paths_ = paths;
+}
+
+ImageLoadThread::~ImageLoadThread() {
+}
+
+//----------------------------------------------------------------
+void ImageLoadThread::run() {
+    QStringList paths = m_paths_;
+    foreach (const QString &p, paths) {
+        // emit SignalPathReady(p);
+        ImageInstance *image = new ImageInstance(p);
+        if (image->IsNormal()) {
+            emit SignalPathReady(p);
+        } else {
+        }
+        delete image;
+    }
+}

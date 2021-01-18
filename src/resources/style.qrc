@@ -1,0 +1,31 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Style/StyleResources/add_bottom.png</file>
+        <file>Style/StyleResources/add_left.png</file>
+        <file>Style/StyleResources/add_right.png</file>
+        <file>Style/StyleResources/add_top.png</file>
+        <file>Style/StyleResources/branch_close.png</file>
+        <file>Style/StyleResources/branch_open.png</file>
+        <file>Style/StyleResources/calendar_nextmonth.png</file>
+        <file>Style/StyleResources/calendar_prevmonth.png</file>
+        <file>Style/StyleResources/checkbox_checked.png</file>
+        <file>Style/StyleResources/checkbox_checked_disable.png</file>
+        <file>Style/StyleResources/checkbox_parcial.png</file>
+        <file>Style/StyleResources/checkbox_parcial_disable.png</file>
+        <file>Style/StyleResources/checkbox_unchecked.png</file>
+        <file>Style/StyleResources/checkbox_unchecked_disable.png</file>
+        <file>Style/StyleResources/radiobutton_checked.png</file>
+        <file>Style/StyleResources/radiobutton_checked_disable.png</file>
+        <file>Style/StyleResources/radiobutton_unchecked.png</file>
+        <file>Style/StyleResources/radiobutton_unchecked_disable.png</file>
+        <file>Style/style.qss</file>
+        <file>Style/StyleResources/scrollbardown01.png</file>
+        <file>Style/StyleResources/scrollbardown02.png</file>
+        <file>Style/StyleResources/scrollbarleft01.png</file>
+        <file>Style/StyleResources/scrollbarleft02.png</file>
+        <file>Style/StyleResources/scrollbarright01.png</file>
+        <file>Style/StyleResources/scrollbarright02.png</file>
+        <file>Style/StyleResources/scrollbarup01.png</file>
+        <file>Style/StyleResources/scrollbarup02.png</file>
+    </qresource>
+</RCC>

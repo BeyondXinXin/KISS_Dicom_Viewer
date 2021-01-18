@@ -1,0 +1,36 @@
+<RCC>
+    <qresource prefix="/">
+        <file>png/adjust.png</file>
+        <file>png/angle.png</file>
+        <file>png/anno.png</file>
+        <file>png/arrow_sync.png</file>
+        <file>png/contrast.png</file>
+        <file>png/download.png</file>
+        <file>png/ellipse.png</file>
+        <file>png/export.png</file>
+        <file>png/full_screen.png</file>
+        <file>png/full_screen_exit.png</file>
+        <file>png/grid.png</file>
+        <file>png/help.png</file>
+        <file>png/hflip.png</file>
+        <file>png/line.png</file>
+        <file>png/lrotate.png</file>
+        <file>png/magnifier.png</file>
+        <file>png/move.png</file>
+        <file>png/open.png</file>
+        <file>png/pencil.png</file>
+        <file>png/polygon.png</file>
+        <file>png/rect.png</file>
+        <file>png/recycle.png</file>
+        <file>png/reset.png</file>
+        <file>png/rrotate.png</file>
+        <file>png/series.png</file>
+        <file>png/settings.png</file>
+        <file>png/slicing.png</file>
+        <file>png/text.png</file>
+        <file>png/vflip.png</file>
+        <file>png/video.png</file>
+        <file>png/zoomin.png</file>
+        <file>xml/modalityprop.xml</file>
+    </qresource>
+</RCC>

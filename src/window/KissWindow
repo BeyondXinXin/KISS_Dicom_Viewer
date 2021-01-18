@@ -1,0 +1,6 @@
+﻿#include "window/dicomviewer.h"
+#include "window/logdbwidget.h"
+#include "window/studyexplorerwidget.h"
+
+
+
