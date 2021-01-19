@@ -9,6 +9,11 @@ https://beondxin.blog.csdn.net/article/details/108678403
 
 &emsp;&emsp;东拼西凑到处copy后kiss-dicom-viewer的Demo9月份做好了，勉强能用。  
 
+## 效果
+win  
+![](Doc/Images/001.png)
+linux  
+![](Doc/Images/002.png)
 
 ## 代码规范
 &emsp;&emsp;目前还在开发阶段，而且是空余时间，没做代码优化逻辑很乱也不是很规范，到处抄的代码，命名也一塌糊涂，等都开发稳定了再Review。  
@@ -31,7 +36,4 @@ win：Qt5.12 vs2017
 ubuntu16：Qt5.11 gcc7.5   
 第三方库目前就用了DCMTK3.6.5，做体渲染功能时会增加vtk8.20
 
-win 下效果
-
-![](Doc/Images/001.png)
 

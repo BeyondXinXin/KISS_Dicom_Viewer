@@ -29,7 +29,7 @@ if(WIN32)
         Qt5::Concurrent
         ${DCMTK_LIBRARIES}
         )
-elseif()
+else()
     add_library(KissDicomViewer_sharde SHARED ${SRCS})
     target_link_libraries(
         KissDicomViewer_sharde
