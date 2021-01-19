@@ -4,7 +4,6 @@
 
 //----------------------------------------------------------------
 int main(int argc, char *argv[]) {
-    qDebug() << QImage(QString(":/png/contrast.png")).size();
     QApplication a(argc, argv);
     a.setOrganizationName(Project_OrganizationName);
     a.setOrganizationDomain(Project_OrganizationDomain);

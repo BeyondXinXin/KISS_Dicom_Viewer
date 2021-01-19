@@ -672,6 +672,44 @@ QToolButton[CustomStyle="comb_dcmviewer"]{
     border:1px solid rgba(42, 46, 48, 1);
     border-left: 5px solid transparent;
 }
+
+QToolButton:hover[CustomStyle="comb_dcmviewer"]{
+    background:qlineargradient(
+    spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 #262829,stop:1 #262829);
+}
+
+QToolButton:pressed[CustomStyle="comb_dcmviewer"]{
+    background:qlineargradient(
+    spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 #404244,stop:1 #404244);
+}
+
+QToolButton::menu-indicator[CustomStyle="comb_dcmviewer_begin"]{
+     background:rgba(28,31,33,1);
+}
+
+QToolButton::menu-button[CustomStyle="comb_dcmviewer_begin"]{
+    width:13px;
+    background:rgba(28,31,33,1);
+    border:1px solid rgba(42, 46, 48, 1);
+/*    border-left: 0px solid transparent;*/
+}
+
+QToolButton[CustomStyle="comb_dcmviewer_begin"]{
+    background:rgba(28,31,33,1);
+    border:1px solid rgba(42, 46, 48, 1);
+/*    border-left: 5px solid transparent;*/
+}
+
+QToolButton:hover[CustomStyle="comb_dcmviewer_begin"]{
+    background:qlineargradient(
+    spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 #262829,stop:1 #262829);
+}
+
+QToolButton:pressed[CustomStyle="comb_dcmviewer_begin"]{
+    background:qlineargradient(
+    spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 #404244,stop:1 #404244);
+}
+
 /*---------------------------------------------------------------------------*/
 /*  QRadioButton  */
 
@@ -1199,8 +1237,8 @@ QStackedWidget{
 /*---------------------------------------------------------------------------*/
 /*  QGraphicsView  图形窗口  */
 QGraphicsView{
-background-color:rgb(90, 90, 90);
-border:0px
+/*background-color:rgb(90, 90, 90);*/
+/*border:0px*/
 }
 
 

@@ -32,5 +32,6 @@
         <file>png/video.png</file>
         <file>png/zoomin.png</file>
         <file>xml/modalityprop.xml</file>
+        <file>png/zoomout.png</file>
     </qresource>
 </RCC>
