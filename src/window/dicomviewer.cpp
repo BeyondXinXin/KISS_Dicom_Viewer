@@ -201,14 +201,12 @@ void DicomViewer::SetupConnection() {
     //
     connect(ui->thumbnailBar, &ThumbnailBarWidget::Signal_ImageLoadBegin,
     this, [&] {
-
         ui->widget->setVisible(0);
         imgloading_ = true;
         this->Signal_ImageLoadBegin();
     });
     connect(ui->thumbnailBar, &ThumbnailBarWidget::Signal_ImageLoadFinished,
     this, [&] {
-
         ui->widget->setVisible(1);
         imgloading_ = false;
         this->Signal_ImageLoadFinished();
@@ -276,29 +274,23 @@ bool DicomViewer::eventFilter(QObject *watched, QEvent *event) {
     if (event->type() == QEvent::KeyPress) {
         QKeyEvent *e = static_cast<QKeyEvent *>(event);
         switch (e->key()) {
-            case Qt::Key_Return:
-                ui->thumbnailBar->currSeries();
-                break;
             case Qt::Key_Home:
                 ui->thumbnailBar->firstSeries();
-                break;
-            case Qt::Key_Right:
-                ui->thumbnailBar->nextSeries();
                 break;
             case Qt::Key_End:
                 ui->thumbnailBar->lastSeries();
                 break;
+            case Qt::Key_Return:
+                ui->thumbnailBar->currSeries();
+                break;
+            case Qt::Key_Right:
+                ui->thumbnailBar->nextSeries();
+                break;
             case Qt::Key_Left:
                 ui->thumbnailBar->prevSeries();
                 break;
-            case Qt::Key_PageUp:
-                ui->viewContainer->prevView();
-                break;
             case Qt::Key_Up:
                 ui->viewContainer->prevFrame();
-                break;
-            case Qt::Key_PageDown:
-                ui->viewContainer->nextView();
                 break;
             case Qt::Key_Down:
                 ui->viewContainer->nextFrame();

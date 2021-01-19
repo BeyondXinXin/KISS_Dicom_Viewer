@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1059</width>
+    <width>855</width>
     <height>630</height>
    </rect>
   </property>
@@ -16,6 +16,18 @@
   <layout class="QHBoxLayout" name="horizontalLayout_2">
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
      <item>
       <widget class="QWidget" name="widget" native="true">
        <property name="sizePolicy">
@@ -76,7 +88,7 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../resources/dicomviewer.qrc">
             <normaloff>:/png/open.png</normaloff>:/png/open.png</iconset>
           </property>
           <property name="iconSize">
@@ -95,7 +107,7 @@
            <enum>Qt::ToolButtonTextBesideIcon</enum>
           </property>
           <property name="CustomStyle" stdset="0">
-           <string>comb_dcmviewer</string>
+           <string>comb_dcmviewer_begin</string>
           </property>
          </widget>
         </item>
@@ -120,7 +132,7 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../resources/dicomviewer.qrc">
             <normaloff>:/png/export.png</normaloff>:/png/export.png</iconset>
           </property>
           <property name="iconSize">
@@ -164,7 +176,7 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../resources/dicomviewer.qrc">
             <normaloff>:/png/grid.png</normaloff>:/png/grid.png</iconset>
           </property>
           <property name="iconSize">
@@ -208,7 +220,7 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../resources/dicomviewer.qrc">
             <normaloff>:/png/anno.png</normaloff>:/png/anno.png</iconset>
           </property>
           <property name="iconSize">
@@ -255,7 +267,7 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../resources/dicomviewer.qrc">
             <normaloff>:/png/adjust.png</normaloff>:/png/adjust.png</iconset>
           </property>
           <property name="iconSize">
@@ -302,7 +314,7 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../resources/dicomviewer.qrc">
             <normaloff>:/png/move.png</normaloff>:/png/move.png</iconset>
           </property>
           <property name="iconSize">
@@ -349,7 +361,7 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../resources/dicomviewer.qrc">
             <normaloff>:/png/zoomin.png</normaloff>:/png/zoomin.png</iconset>
           </property>
           <property name="iconSize">
@@ -393,7 +405,7 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../resources/dicomviewer.qrc">
             <normaloff>:/png/slicing.png</normaloff>:/png/slicing.png</iconset>
           </property>
           <property name="iconSize">
@@ -437,7 +449,7 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../resources/dicomviewer.qrc">
             <normaloff>:/png/line.png</normaloff>:/png/line.png</iconset>
           </property>
           <property name="iconSize">
@@ -481,7 +493,7 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../resources/dicomviewer.qrc">
             <normaloff>:/png/hflip.png</normaloff>:/png/hflip.png</iconset>
           </property>
           <property name="iconSize">
@@ -538,7 +550,7 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../resources/dicomviewer.qrc">
             <normaloff>:/png/full_screen.png</normaloff>:/png/full_screen.png</iconset>
           </property>
           <property name="iconSize">
@@ -601,7 +613,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>475</width>
+        <width>271</width>
         <height>612</height>
        </rect>
       </property>
@@ -624,6 +636,11 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../resources/dicomviewer.qrc"/>
+  <include location="../resources/dicomviewer.qrc"/>
+  <include location="../resources/dicomviewer.qrc"/>
+  <include location="../resources/dicomviewer.qrc"/>
+ </resources>
  <connections/>
 </ui>

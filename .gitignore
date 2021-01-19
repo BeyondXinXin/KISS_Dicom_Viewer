@@ -55,3 +55,5 @@ bin/Release/studyexplorer
 /bin/Release/ScpCache
 /bin/Release/dicomviewer.exe.manifest
 /bin/Release/KissDicomViewer_sharde.dll.manifest
+
+bin/

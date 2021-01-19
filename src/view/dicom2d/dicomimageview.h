@@ -1,4 +1,4 @@
-#ifndef DICOMIMAGEVIEW_H
+﻿#ifndef DICOMIMAGEVIEW_H
 #define DICOMIMAGEVIEW_H
 
 #include <QGraphicsView>
@@ -135,13 +135,11 @@ class DicomImageView : public QGraphicsView {
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
     void resizeEvent(QResizeEvent *event);
-
+    //
     void dragEnterEvent(QDragEnterEvent *e);
     void dragMoveEvent(QDragMoveEvent *e);
     void dropEvent(QDropEvent *e);
     void dragLeaveEvent(QDragLeaveEvent *e);
-
-
   private:
     void RemoveCurrentDrawingItem();
     void SetMagnifierPixmap(const QPointF &itemPos);

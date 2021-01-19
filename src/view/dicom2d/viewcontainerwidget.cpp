@@ -135,12 +135,8 @@ void ViewContainerWidget::Slot_SeriesRemoveAll() {
 
 //-------------------------------------------------------
 void ViewContainerWidget::Slot_ImageDClicked(SeriesInstance *series) {
-    if (series && series->GetTagKeyValue(DCM_Modality) == "MG") {
-        SLot_SeriesInserted(series);
-    } else {
-        if (current_view_) {
-            current_view_->SetSeriesInstance(series);
-        }
+    if (current_view_) {
+        current_view_->SetSeriesInstance(series);
     }
 }
 

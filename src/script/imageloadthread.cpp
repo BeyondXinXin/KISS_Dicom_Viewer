@@ -25,7 +25,6 @@ ImageLoadThread::~ImageLoadThread() {
 void ImageLoadThread::run() {
     QStringList paths = m_paths_;
     foreach (const QString &p, paths) {
-        // emit SignalPathReady(p);
         ImageInstance *image = new ImageInstance(p);
         if (image->IsNormal()) {
             emit SignalPathReady(p);

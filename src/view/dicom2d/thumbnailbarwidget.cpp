@@ -176,28 +176,14 @@ void ThumbnailBarWidget::appendImagePaths(const QStringList &paths, bool clear_o
         this->Signal_ImageLoadFilesSize(unloaded_files.size());
         return;
     }
-    this->Signal_ImageLoadBegin();
+    emit Signal_ImageLoadBegin();
+    OFLog::configure(OFLogger::WARN_LOG_LEVEL);
     foreach (const QString &p, unloaded_files) {
         QApplication::processEvents();
         Slot_ImagePathReady(p);
     }
-//    this->firstSeries();
-    this->Signal_ImageLoadFinished();
-    //
-//    this->Signal_ImageLoadBegin();
-//    ImageLoadThread *t;
-//    t = new ImageLoadThread(unloaded_files);
-//    connect(t, &ImageLoadThread::ResultReady,
-//            this, &ThumbnailBarWidget::Slot_ImageReady);
-//    connect(t, &ImageLoadThread::SignalPathReady,
-//            this, &ThumbnailBarWidget::Slot_ImagePathReady);
-//    connect(t, &ImageLoadThread::finished,
-//            this, &ThumbnailBarWidget::Signal_ImageLoadFinished);
-//    //
-//    connect(t, &ImageLoadThread::finished,
-//            t, &ImageLoadThread::deleteLater);
-//    t->run();
-//    Signal_ImageLoadFinished();
+    OFLog::configure(OFLogger::INFO_LOG_LEVEL);
+    emit Signal_ImageLoadFinished();
 }
 
 //-------------------------------------------------------
@@ -254,11 +240,9 @@ void ThumbnailBarWidget::Slot_ImagePathReady(const QString path) {
                 currentImageLabel = imageLabel;
             }
             emit Signal_SeriesInserted(imageLabel->getSeriesInstance());
-            // emit Signal_ImageLoadStageFinished();
         } else {
             delete imageLabel;
         }
-        // emit Signal_SeriesInserted(imageLabel->getSeriesInstance());
     }
     QApplication::processEvents();
 }
@@ -288,22 +272,17 @@ void ThumbnailBarWidget::Slot_FilesChanged(const QStringList &removed,
 
 //-------------------------------------------------------
 void ThumbnailBarWidget::SLot_ImageClicked(DicomImageLabel *imageLabel) {
-    this->Slot_ImageDoubleClicked(imageLabel);
-//    if (currentImageLabel != imageLabel) {
-//        if (currentImageLabel) {
-//            currentImageLabel->select_ = false;
-//            currentImageLabel->setHighlight(false);
-//        }
-//        currentImageLabel = imageLabel;
-//        if (currentImageLabel) {
-//            currentImageLabel->select_ = true;
-//            currentImageLabel->setHighlight(true);
-//            emit Signal_ImageDoubleClicked(
-//                currentImageLabel->getSeriesInstance());
-//            //            emit Signal_CurrentChanged(
-//            //                currentImageLabel->getSeriesInstance());
-//        }
-//    }
+    if (currentImageLabel != imageLabel) {
+        if (currentImageLabel) {
+            currentImageLabel->select_ = false;
+            currentImageLabel->setHighlight(false);
+        }
+        currentImageLabel = imageLabel;
+        if (currentImageLabel) {
+            currentImageLabel->select_ = true;
+            currentImageLabel->setHighlight(true);
+        }
+    }
 }
 
 //-------------------------------------------------------

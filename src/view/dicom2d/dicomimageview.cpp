@@ -43,19 +43,25 @@ DicomImageView::DicomImageView(
     vflip_(0),
     rotate_angle_(0),
     m_vtype(type) {
-    setFocusPolicy(Qt::StrongFocus);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setContextMenuPolicy(Qt::DefaultContextMenu);
-    setBackgroundBrush(QBrush(Qt::black));
-    setAcceptDrops(true);
-    setFrameShape(QFrame::Box);
-    setFrameShadow(QFrame::Plain);
-    setAlignment(Qt::AlignCenter);
-    setResizeAnchor(QGraphicsView::AnchorViewCenter);
+    // QWidget
+    QWidget::setFocusPolicy(Qt::StrongFocus);
+    QWidget::setAcceptDrops(true);
+    QWidget::setContextMenuPolicy(Qt::DefaultContextMenu);
+    // QFrame
+    QFrame::setFrameShape(QFrame::Box);
+    QFrame::setFrameShadow(QFrame::Plain);
+    QFrame::setLineWidth(1);
+    // QAbstractScrollArea
+    QAbstractScrollArea::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    QAbstractScrollArea::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    // QGraphicsView
+    QGraphicsView::setResizeAnchor(QGraphicsView::AnchorViewCenter);
+    QGraphicsView::setBackgroundBrush(QBrush(Qt::black));
+    QGraphicsView::setAlignment(Qt::AlignCenter);
+    QGraphicsView::setScene(m_scene_);
+    // Self
     SetBorderHighlight(false);
     m_scene_->setSceneRect(-5000, -5000, 10000, 10000);
-    setScene(m_scene_);
     sub_pixmapItem_ = new QGraphicsPixmapItem(pixmap_item_);
     sub_pixmapItem_->setTransformationMode(Qt::SmoothTransformation);
     sub_pixmapItem_->setVisible(false);
@@ -76,7 +82,6 @@ DicomImageView::DicomImageView(
     m_scene_->addItem(x_scalor_item_);
     m_scene_->addItem(y_scalor_item_);
     SetSeriesInstance(series);
-    //
     mouse_left_state_.state = ROIWindow;
     mouse_mid_state_.state = ROIWindow;
     mouse_right_state_.state = Zoom;
@@ -113,13 +118,13 @@ void DicomImageView::SetSeriesInstance(SeriesInstance *series) {
         disconnect(this->m_series_, &SeriesInstance::Signal_AboutToDelete,
                    this, &DicomImageView::Slot_SeriesDelate);
         this->m_series_->DelVolBuffer();
-        FreeAnnoGroups();
         qDeleteAll(item_list_);
         item_list_.clear();
     }
+    FreeAnnoGroups();
     if (series) {
         connect(series, &SeriesInstance::Signal_AboutToDelete,
-                this, &DicomImageView::Slot_SeriesDelate);
+                this, &DicomImageView::Slot_SeriesDelate, Qt::UniqueConnection);
     }
     this->m_series_ = series;
     AllocAnnoGroups();
@@ -241,9 +246,9 @@ qint32 DicomImageView::GetImageNum() {
 void DicomImageView::SetBorderHighlight(bool yes) {
     QPalette p = palette();
     if (yes) {
-        p.setColor(QPalette::Text, Qt::magenta);
+        p.setColor(QPalette::Text, Qt::lightGray);
     } else {
-        p.setColor(QPalette::Text, QColor(184, 200, 212));
+        p.setColor(QPalette::Text, Qt::transparent);
     }
     setPalette(p);
 }
@@ -978,20 +983,29 @@ void DicomImageView::leaveEvent(QEvent *event) {
  * 键盘事件
  * @param event
  */
-void DicomImageView::keyPressEvent(QKeyEvent *event) {
-    if (event->key() == Qt::Key_Delete) {
-        RemoveCurrentDrawingItem();
-    } else if (event->key() == Qt::Key_Up) {
-        PrevFrame();
-    } else if (event->key() == Qt::Key_Down) {
-        NextFrame();
-    }  else if (event->key() == Qt::Key_Escape) {
-        SetOperation(None);
-    } else if (event->key() == Qt::Key_Control) {
-        if (mouse_left_state_.state == None) {
-        }
-    } else {
-        QGraphicsView::keyPressEvent(event);
+void DicomImageView::keyPressEvent(QKeyEvent *e) {
+    switch (e->key()) {
+        case Qt::Key_Delete:
+            RemoveCurrentDrawingItem();
+            break;
+        case Qt::Key_Up:
+            PrevFrame();
+            break;
+        case Qt::Key_Down:
+            NextFrame();
+            break;
+        case Qt::Key_Escape:
+            SetOperation(None);
+            break;
+        case Qt::Key_Control:
+            if (mouse_left_state_.state == None) {
+            }
+            break;
+        case Qt::Key_Right:
+        case Qt::Key_Left:
+            break;
+        default:
+            QGraphicsView::keyPressEvent(e);
     }
 }
 
@@ -1001,11 +1015,11 @@ void DicomImageView::keyPressEvent(QKeyEvent *event) {
  * 键盘松开
  * @param event
  */
-void DicomImageView::keyReleaseEvent(QKeyEvent *event) {
-    if (event->key() == Qt::Key_Control &&
+void DicomImageView::keyReleaseEvent(QKeyEvent *e) {
+    if (e->key() == Qt::Key_Control &&
             mouse_left_state_.state == None) {
     } else {
-        QGraphicsView::keyReleaseEvent(event);
+        QGraphicsView::keyReleaseEvent(e);
     }
 }
 

@@ -42,8 +42,9 @@ bool DicomImageLabel::insertImage(ImageInstance *image) {
         if (m_series_->GetFrameCount(VT_XYPlane) > 0) {
             QPixmap pixmap;
             if (m_series_->GetPixmap(pixmap, VT_XYPlane)) {
-                setPixmap(pixmap.scaled(image_label_size_ - 2, image_label_size_ - 2,
-                                        Qt::KeepAspectRatio, Qt::SmoothTransformation));
+                setPixmap(pixmap.scaled(
+                              image_label_size_ - 2, image_label_size_ - 2,
+                              Qt::KeepAspectRatio, Qt::SmoothTransformation));
             }
             name_label_->setText(m_series_->GetTagKeyValue(DCM_PatientName));
 #if HideNmae==1
