@@ -1,40 +1,197 @@
-﻿# kiss-dicom-viewer
 
-&emsp;&emsp;开源代码托管还有这么多平台，github、gitee、coding.net、codechina，大家不应该是一家嘛。打算试一下CodeChina，接下来1个月用CodeChina作为个人代码管理体验下，好用了接着用。CodeChina界面看了下比较喜欢，而且目前没有一点广告。
+&emsp;&emsp;开发中......  
+&emsp;&emsp;9月做好就没再改过了。代码整理和好多功能还没搞，一放就拖到了年底了。最近刚提出离职，没有什么进度需要赶了，再加上马上过年，由于疫情就留在杭州不回家了。计划最近这段时间和过年期间完善一下kiss-dicom-viewer。计划是这样，要是过年给自己找个别的事估计就继续搁浅了......  
 
+项目地址：
+[CodeChina kissDicomViewer](https://codechina.csdn.net/a15005784320/kiss-dicom-viewer)  
+详细介绍：
+[CSDN 一个简单的 DICOM 浏览器](https://editor.csdn.net/md/?articleId=108678403)  
 
 ---
 
-https://beondxin.blog.csdn.net/article/details/108678403  
 
-&emsp;&emsp;东拼西凑到处copy后kiss-dicom-viewer的Demo9月份做好了，勉强能用。  
+@[TOC](kissDicomViewer)
+# kissDicomViewer
+## 1 Demo展示
+![\[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-Jl8q5tlv-1611061342596)(Doc/Images/001.png)\]](https://img-blog.csdnimg.cn/20210119210751389.PNG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70#pic_center)
+   ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210119210838657.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
 
-## 效果
-win  
-![](Doc/Images/001.png)
-linux  
-![](Doc/Images/002.png)
 
-## 代码规范
-&emsp;&emsp;目前还在开发阶段，而且是空余时间，没做代码优化逻辑很乱也不是很规范，到处抄的代码，命名也一塌糊涂，等都开发稳定了再Review。  
-> 如果需要借鉴的话请勿愤～～～
 
-## 已知严重BUG
-&emsp;&emsp;公司PACS开发一直没招，让我临时顶替下。这几个月直接把完全没测试过的kiss-dicom-viewer中pacs功能投入到医院临床使用......
-&emsp;&emsp;强烈要求下，公司终于同意招人正经的做自己的PACS软件了。我可以回归本意，继续自己业余折腾kiss-dicom-viewer了。  
+---
+## 2 前言
+&emsp;&emsp;一直没有找到一个合适的`Dicom`浏览器。`Windos`下的小蚂蚁(`RadiAnt Dicom Viewer`)很好用但可惜不是跨平台的，只有`Windos`版本。平时工作系统是`Ubuntu/Deepin`，虽然用`deepin-wine5`也可以安装`RadiAnt Dicom Viewer`但是跟`Windos`下比起来很多功能不能用，比如`pacs scu`，数据库（`rdvdb`）用`deepin-wine5`装的也有`bug`，小蚂蚁中文版还有很多乱码。  
+&emsp;&emsp;全平台都支持并且跟小蚂蚁一样又小又快的我找到两个`Papaya`和`DWV`，该有的功能很齐全，虽然开源但是一个是`JavaScript`一个是`lua`，如果想大改自己改也无从下手。  
+&emsp;&emsp;`ItkSnap`和`3DSlicer`也都是全平台的，都很强大而且都是开源的。架构都很好，可以自己任意开发插件添加进去。如果把这两个只当成`DICOM`浏览器实在有点大材小用。    
 
-&emsp;&emsp;临床使用中遇到些尴尬的问题，统一改：  
+&emsp;&emsp;现成软件下载：  
+[RadiAnt Dicom Viewer](https://www.radiantviewer.com/)  
+[Papaya](https://github.com/rii-mango/Papaya)  
+[DWV](https://github.com/ivmartel/dwv)  
+[ItkSnap](https://github.com/pyushkevich/itksnap)   
+[3DSlicer](https://www.slicer.org/slicer3-downloads/)   
+
+
+> `DICOM`浏览器就是一个图片浏览器，只需要把`DICOM`文件解析成图片然后显示就可以了，成熟的有一大把。工作需要的话直接
+
+
+
+---
+## 3 软件介绍
+### 3.1 软件命名
+&emsp;&emsp;**KISS Dicom Viewer**   
+&emsp;&emsp;
+&emsp;&emsp;&emsp;&emsp;**KISS**指：**Keep it Simple and Stupid**。
+### 3.2 第三方库
+- 界面 [Qt](https://www.qt.io/)  
+- DICOM协议相关用&emsp;[DCMTK](https://github.com/DCMTK/dcmtk)  
+- 数据库用&emsp;[Sqlite3](https://www.sqlite.org/index.html)  
+- 数据库浏览打算改一下&emsp;[sqlitebrowser](https://github.com/sqlitebrowser/sqlitebrowser)  
+- PACS用&emsp;[DICOM storage (C-STORE) SCU](https://support.dcmtk.org/docs/storescu.html)  
+- 2D图片浏览用 &emsp;[QGraphicsView](https://doc.qt.io/qt-5/qgraphicsview.html)  
+- 多平面重建-MPR用 &emsp;  [QVTKOpenGLNativeWidget](https://vtk.org/doc/nightly/html/classQVTKOpenGLNativeWidget.html)  
+- 三维重建-体渲染用&emsp;   [QVTKOpenGLNativeWidget](https://vtk.org/doc/nightly/html/classQVTKOpenGLNativeWidget.html) + [ITK]()  
+- 图像融合和图像处理用&emsp; [Opencv](https://github.com/opencv/opencv)  
+
+### 3.3 程序架构
+&emsp;&emsp;想了下好像也没啥功能，只是个图片浏览器。简单的事件驱动就够了。
+
+### 3.4 代码规范
+&emsp;&emsp;目前还在开发阶段，而且是空余时间，没做代码优化逻辑很乱也不是很规范，到处抄的代码，命名也一塌糊涂，等想做的功能都实现了在`Reviewer`。
+### 3.5 Modality支持
+&emsp;&emsp;目前适配的**Modality**包括**CT、XA、IVUS、OCT、US**，其余的可以浏览影像，但是注释等设置和交互参数只能为默认值。这个已经封装成`XML`配置，后续慢慢加。
+
+
+---
+## 4 已知严重BUG
+&emsp;&emsp;公司`PACS`开发一直没招，让我临时顶替下。这几个月直接把完全没测试过的*kiss-dicom-viewer*中`pacs`功能投入到医院临床使用......强烈要求下，公司终于同意招人正经的做自己的`PACS`软件了。我可以回归本意，继续自己业余折腾*kiss-dicom-viewer*了。    
+&emsp;&emsp;已经实现了的功能在使用中遇到些尴尬的问题，统一改：
 * 内存泄露，反复打开同一文件夹，线程发送数据存在内存泄露。  
-* 不完善标签的DICOM影像在显示时候会有些问题，尤其是SIMPITK自己生成DICOM。 
-* `windos`下`studyexplorer`和`logviewer`显示有问题，目前先只做`linux`版的
+* 不完善标签的`DICOM`影像在显示时候会有些问题，尤其是`SIMPITK`自己生成`DICOM`。  
+* `windos`下`studyexplorer`和`logviewer`显示有问题，目前先只做`linux`版的。
 
-## 开发进度
-&emsp;&emsp;9月做好就没再改过了。代码整理和好多功能还没搞，一放就拖到了年底了。最近刚提出离职，没有什么进度需要赶了，再加上马上过年，由于疫情就留在杭州不回家了。计划最近这段时间和过年期间完善一下kiss-dicom-viewer。计划是这样，要是过年给自己找个别的事估计就继续搁浅了......  
 
-## 平台
-&emsp;&emsp;打包后全平台用没问题，开发我使用的：  
-win：Qt5.12 vs2017   
-ubuntu16：Qt5.11 gcc7.5   
-第三方库目前就用了DCMTK3.6.5，做体渲染功能时会增加vtk8.20
+---
+## 5 开发计划
 
+### 5.1. 打开数据  
+* 打开 dcm 文件  
+* 打开 dcm 文件夹  
+* 打开 dcmzip 文件（未做）  
+---
+### 5.2. 导出数据  
+* 导出当前图像 jpeg bmp ...
+* 导出图片到剪贴板
+* 导出当前序列 pngs（未做）  
+* 导出当前序列 mp4（未做）  
+---
+### 5.3. 显示ui
+* 屏幕分割显示布局
+* 序列预览条
+* 全屏
+* 显示注释
+* 显示鼠标位置和灰度
+* 显示窗位窗宽
+* 显示比例尺
+* 设置显示字体
+* 显示所有dicom标签（未做）   
+---
+### 5.4. 图片浏览器交互
+* 浏览序列
+* 调整窗位窗宽
+* 移动图像
+* 缩放图像
+* 放大图像
+* 局部放大图像
+* 框选ROI 自适应窗位窗宽
+* 自适应放大图像
+* 100/200/400放大图像
+* 测量长度/角度/矩形面积/椭圆面积/添加描述文字
+
+* 差值测量 （未做）  
+* 脊柱侧弯测量（未做）  
+* 播放模式（未做）  
+---
+### 5.5. 图像处理
+* 旋转
+* 翻转
+* 锐化（未做）  
+* 平滑（未做）  
+* 提取边缘（未做）  
+* emboss滤波（未做）  
+---
+### 5.6. 插件 
+* 多平面重建(MPR)（未做）  
+* 三维重建(体渲染)（未做）  
+* 图像融合（未做）  
+* 减值操作（未做）  
+---
+### 5.7. 数据库
+* 一个小型单机本地数据库（使用不舒服，后续重做）
+* 数据库浏览器（使用不舒服，后续重做）
+---
+### 5.8. PACS 
+* 提供一个小型的pacs scp
+* 提供一个小型的pacs scu（未做）
+
+
+
+
+
+## 6 实现方法
+### 6.1 显示ui --- 屏幕分割显示布局
+&emsp;&emsp;[Qt 实现 屏幕分割显示布局，可以任意拖拽显示](https://beondxin.blog.csdn.net/article/details/108679798)
+
+### 6.2 Dicom数据结构 ---- DicomImage --> QSharedData
+&emsp;&emsp;[把DicomImage封装成 QSharedData 使用 （显式共享）](https://beondxin.blog.csdn.net/article/details/108680479)
+
+&emsp;&emsp; 把**DicomImage**封装成 **QSharedData** ，让后利用**Qt**实现可视化。   
+&emsp;&emsp; &emsp;&emsp; ├── PATIENT （病人）    
+&emsp;&emsp; &emsp;&emsp; │ │ └── STUDY （检查）    
+&emsp;&emsp; &emsp;&emsp; │ │ │ │ └── SERIES （序列）  
+&emsp;&emsp; &emsp;&emsp; │ │ │ │ │ │ └── IMAGE （影像 高度为未知）    
+&emsp;&emsp; &emsp;&emsp; │ │ │ │ └── SERIES （序列）    
+&emsp;&emsp; &emsp;&emsp; │ │ │ │ │ │ └── IMAGE （影像 高度为1）  
+&emsp;&emsp; &emsp;&emsp; │ │ │ │ │ │ └── IMAGE （影像 高度为1）  
+&emsp;&emsp; &emsp;&emsp; │ │ └── STUDY （检查）  
+&emsp;&emsp; &emsp;&emsp; │ │ │ │ └── SERIES （序列）  
+&emsp;&emsp; &emsp;&emsp; │ │ │ │ │ │ └── IMAGE （影像）  
+
+### 6.3 Dicom数据结构 ---- DicomImage --> Series
+&emsp;&emsp;[Dicom数据结构 ---- DicomImage --＞ SeriesInstance](https://beondxin.blog.csdn.net/article/details/108681041)
+
+&emsp;&emsp; 根据协议可以知道每个**Series**中可以有单帧或多帧。  
+&emsp;&emsp; 多帧时 每帧影像尺寸高度是1  
+&emsp;&emsp; 单帧时 每帧影像尺寸高度未知   
+- 单帧模式高度代表当前时间 !
+- 多帧模式高度代表空间位置 !
+
+```cpp
+    enum  SeriesPattern {
+        Empty_Frame,  //
+        Single_Frame, // 单帧
+        Multi_Frame,  // 多帧
+    };
+```
+&emsp;&emsp; 涉及到Series，2D可视化肯定会有方向
+&emsp;&emsp;（多帧模式下）区分平面
+&emsp;&emsp;（单帧模式下）只有XY平面显示模式，另外两个平面表示**时间密度曲线**，与其相关打算作为插件用**opencv**做，所以这里封装的**Series**其余两个平面均指多帧模式。
+### 6.4 打开数据 ---- 打开 dcm 文件、打开 dcm 文件夹
+&emsp;&emsp;[Qt 实现 打开 文件/文件夹 同一个接口](https://beondxin.blog.csdn.net/article/details/108681757)  
+&emsp;&emsp;[Qt 实现一个批量加载线程（单线程）](https://beondxin.blog.csdn.net/article/details/108681908)  
+&emsp;&emsp;[Qt 实现一个 文件监听线程](https://beondxin.blog.csdn.net/article/details/108682045)  
+如何打开一个**dcm影像**：  
+&emsp;&emsp;[把DicomImage封装成 QSharedData 使用 （显式共享）](https://beondxin.blog.csdn.net/article/details/108680479) **2.4 DcmFileFormat 获取 常用标签/图片**  
+### 6.5 图片浏览器交互 ---- 框选ROI 自适应窗位窗宽  
+&emsp;&emsp;[Qt 实现 RubberBandDrag 框选](https://beondxin.blog.csdn.net/article/details/108682306)  
+### 6.6 图片浏览器交互 ---- 浏览序列
+&emsp;&emsp;[QGraphicsView 按住鼠标实现帧数切换](https://beondxin.blog.csdn.net/article/details/108682720)  
+### 6.7 Dcmtk Pacs 开发：小型dicom数据库（sqlite）
+&emsp;&emsp;[Dcmtk Pacs 开发：小型dicom数据库（sqlite）](https://blog.csdn.net/a15005784320/article/details/109058579)  
+### 6.8 Dcmtk Pacs 开发：StoreScp 实现
+&emsp;&emsp; [Dcmtk Pacs 开发：StoreScp 实现](https://blog.csdn.net/a15005784320/article/details/109058249)  
+### 6.9 Dcmtk Pacs 开发：Echo 实现
+&emsp;&emsp; [Dcmtk Pacs 开发：Echo 实现](https://blog.csdn.net/a15005784320/article/details/109057800)  
+
+### 6.x慢慢完善 ......
 
