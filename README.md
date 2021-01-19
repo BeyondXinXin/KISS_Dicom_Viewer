@@ -1,11 +1,10 @@
-
 &emsp;&emsp;开发中......  
 &emsp;&emsp;9月做好就没再改过了。代码整理和好多功能还没搞，一放就拖到了年底了。最近刚提出离职，没有什么进度需要赶了，再加上马上过年，由于疫情就留在杭州不回家了。计划最近这段时间和过年期间完善一下kiss-dicom-viewer。计划是这样，要是过年给自己找个别的事估计就继续搁浅了......  
 
 项目地址：
 [CodeChina kissDicomViewer](https://codechina.csdn.net/a15005784320/kiss-dicom-viewer)  
 详细介绍：
-[CSDN 一个简单的 DICOM 浏览器](https://editor.csdn.net/md/?articleId=108678403)  
+[CSDN 一个简单的 DICOM 浏览器](https://beondxin.blog.csdn.net/article/details/108678403)  
 
 ---
 
