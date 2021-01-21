@@ -43,6 +43,8 @@ class ImageInstanceData: public QSharedData {
                                    bool hflip = false, bool vflip = false,
                                    bool inverted = false);
     QString GetTagKeyValue(const DcmTagKey &key) const;
+    QStringList GetTagsKeyValue()const;
+
     double GetPixelValue(long x, long y) const;
     bool GetPixSpacing(double &spacingX, double &spacingY) const;
     bool GetImageSize(ulong &width, ulong &height) const;

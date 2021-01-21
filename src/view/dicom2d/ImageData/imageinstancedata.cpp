@@ -274,6 +274,11 @@ QString ImageInstanceData::GetTagKeyValue(const DcmTagKey &key) const {
     return QString::fromLocal8Bit(val.c_str());
 }
 
+//----------------------------------------------------------
+QStringList ImageInstanceData::GetTagsKeyValue() const {
+    return QStringList();
+}
+
 //---------------------------------------------------------------
 double ImageInstanceData::GetPixelValue(long x, long y) const {
     DicomImage *image = dcm_image_;
