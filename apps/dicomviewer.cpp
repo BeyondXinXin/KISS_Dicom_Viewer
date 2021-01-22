@@ -19,44 +19,65 @@
 //    return a.exec();
 //}
 
-#include "dcmtk/config/osconfig.h"
+
 #include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/cmdlnarg.h"
-#include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/ofstd/ofstream.h"
-#include "dcmtk/ofstd/ofconapp.h"
 
+#define Print std::cout<<
+#define Printend <<std::endl;
+#define PrintemspValue(emsp,value1,value2,value3,value4,value5,value6) \
+    for(int i = 0; i < emsp; i++) {Print "\40\40";}\
+    Print value1 <<" "  <<value2<<" ["<< value3 <<"] "\
+                 << value4 <<" " <<value5 <<" (" <<value6<<")" Printend
 
-class myDcmItem: public DcmItem {
+template<typename T>
+class NewDcmItem: public T {
   public:
-    myDcmItem(const DcmItem &old): DcmItem(old) {
+    NewDcmItem(const T &old): T(old) {
     }
-    virtual ~myDcmItem() {}
     DcmList *GetDcmList()const {
         return this->elementList;
     }
+  protected:
+    virtual ~NewDcmItem() {}
 };
+using MyDcmDataset = NewDcmItem<DcmDataset>;
+using MyDcmMetaInfo = NewDcmItem<DcmMetaInfo>;
+using MywDcmItem = NewDcmItem<DcmItem>;
 
-// qDebug() /*&lt;&lt; "item->getTag : "*/ &lt;< item>getTag().toString().data();
-// qDebug() &lt;&lt; " i = " &lt;< i xss=removed>nextInContainer(NULL);
-// qDebug() /*&lt;&lt;"item->getTag : "*/&lt;< item>getTag().toString().data();
-int main() {
-    DcmFileFormat dfile;
-    dfile.loadFile("C:/Users/77935/Pictures/dcm/source.dcm");
-    myDcmItem *meta_info = new myDcmItem(*dfile.getDataset());
-    DcmList *elementList = meta_info->GetDcmList();
+template<typename T>
+void PaintTags(T &t, const int &emsp = 0) {
+    DcmList *elementList = t.GetDcmList();
     if (!elementList->empty()) {
         DcmObject *dO;
+        DcmTag tag;
+        OFString value;
         elementList->seek(ELP_first);
         do {
             dO = elementList->get();
-//            std::cout << dO->getTag() << " "
-//                      << dO->getTag().getVRName() << " "
-////                      << dO->getVRName() << " "
-//                      << std::endl;
-            dO->print(std::cout, 0, 0, NULL, NULL);
+            tag = dO->getTag();
+            DcmElement *elem;
+            t.findAndGetElement(tag, elem);
+            elem->getOFString(value, 0);
+            PrintemspValue(emsp, tag, tag.getVRName(),
+                           value, dO->getLength(), dO->getVM(), tag.getTagName())
+            if(EVR_SQ == dO->getVR()) {
+                DcmItem *sq;
+                t.findAndGetSequenceItem(dO->getTag(), sq);
+                MywDcmItem *dcmitem_info = new MywDcmItem(*sq);
+                PaintTags(*dcmitem_info, emsp + 1);
+            }
         } while (elementList->seek(ELP_next));
+        delete dO;
     }
-//    std::cout << OFendl;
-//    std::cout << "# Dicom-File-Format";
+}
+
+int main() {
+    DcmFileFormat dfile;
+    dfile.loadFile("/home/arteryflow/图片/DicomData/DSA/Liyunlong/IMG-0002-00001.dcm");
+    Print "DcmMetaInfo------" Printend
+    MyDcmMetaInfo *meta_info = new MyDcmMetaInfo(*dfile.getMetaInfo());
+    PaintTags(*meta_info);
+    Print "DcmDataset------" Printend
+    MyDcmDataset *dataset_info = new MyDcmDataset(*dfile.getDataset());
+    PaintTags(*dataset_info);
 }
