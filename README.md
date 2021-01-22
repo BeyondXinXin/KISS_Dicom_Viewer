@@ -1,4 +1,3 @@
-
 &emsp;&emsp;开发中......  
 &emsp;&emsp;9月做好就没再改过了。代码整理和好多功能还没搞，一放就拖到了年底了。最近刚提出离职，没有什么进度需要赶了，再加上马上过年，由于疫情就留在杭州不回家了。计划最近这段时间和过年期间完善一下kiss-dicom-viewer。计划是这样，要是过年给自己找个别的事估计就继续搁浅了......  
 
@@ -192,6 +191,8 @@
 &emsp;&emsp; [Dcmtk Pacs 开发：StoreScp 实现](https://blog.csdn.net/a15005784320/article/details/109058249)  
 ### 6.9 Dcmtk Pacs 开发：Echo 实现
 &emsp;&emsp; [Dcmtk Pacs 开发：Echo 实现](https://blog.csdn.net/a15005784320/article/details/109057800)  
+### 6.10 DCMTK 遍历 DICOM 标签/Tags 并 可视化
+&emsp;&emsp; [DCMTK 遍历 DICOM 标签/Tags 并 可视化](https://beondxin.blog.csdn.net/article/details/113005123)
 
-### 6.x慢慢完善 ......
+### 6.11 慢慢完善...
 
