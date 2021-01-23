@@ -193,6 +193,8 @@
 &emsp;&emsp; [Dcmtk Pacs 开发：Echo 实现](https://blog.csdn.net/a15005784320/article/details/109057800)  
 ### 6.10 DCMTK 遍历 DICOM 标签/Tags 并 可视化
 &emsp;&emsp; [DCMTK 遍历 DICOM 标签/Tags 并 可视化](https://beondxin.blog.csdn.net/article/details/113005123)
+### 6.11 利用QTimer实现 Dicom 播放功能
+&emsp;&emsp; [利用QTimer实现 Dicom 播放功能](https://beondxin.blog.csdn.net/article/details/113063185)
 
-### 6.11 慢慢完善...
+### 6.12 慢慢完善...
 
