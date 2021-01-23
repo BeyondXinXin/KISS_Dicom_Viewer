@@ -1,4 +1,4 @@
-#ifndef VIEWCONTAINERWIDGET_H
+﻿#ifndef VIEWCONTAINERWIDGET_H
 #define VIEWCONTAINERWIDGET_H
 
 #include <QWidget>
@@ -26,6 +26,7 @@ class ViewContainerWidget : public QWidget {
     void incAnnoFont();
     void decAnnoFont();
     void setAnnoFont();
+    void ImageLoadFinished();
   signals:
     void Signal_CurViewChanged(SeriesInstance *image);
 
@@ -37,12 +38,10 @@ class ViewContainerWidget : public QWidget {
     void Slot_ImageDClicked(SeriesInstance *series);
     void Slot_ImageChanged(SeriesInstance *series);
     void Slot_ViewImageChanged();
-
     void SLot_ViewClicked(DicomImageView *view);
     void Slot_ViewDoubleClicked(DicomImageView *view);
     void Slot_SetViewLayout(int col, int row);
     void clear();
-
     // VIEW SLOTS
     void exportImages();
     void copyToClipboard();

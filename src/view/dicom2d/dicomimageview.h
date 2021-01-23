@@ -5,6 +5,7 @@
 #include <QGraphicsSimpleTextItem>
 #include "modalityproperty.h"
 #include "ImageData/seriesinstance.h"
+#include "view/currency/videocontrolview.h"
 
 class ModalityProperty;
 class AbstractPathItem;
@@ -91,35 +92,36 @@ class DicomImageView : public QGraphicsView {
                             SeriesInstance *m_series_ = nullptr,
                             QWidget *parent = nullptr);
     ~DicomImageView();
-
+    // 输入影像
     void SetSeriesInstance(SeriesInstance *m_series_);
+    void UpdataSeriesInstance(const bool end = true);
     SeriesInstance *GetSeriesInstance() const;
-  public:
+    // 获取信息
     DicomImage *getHardCopyGrayScaledImage();
     QImage getTextLayerImage(const QSize &size);
     QPixmap getHardCopyPixmap();
     QImage getRenderedImage();
     QString GetImageFile();
     qint32 GetImageNum();
-  public:
+    bool HasSeries();
+    // 设置交互
     void SetOperation(const ZoomOperation &operation);// 缩放操作
     void SetOperation(const RoateFlipOperation &operation);// 翻转操作
     void SetOperation(const DrawingType &operation);// 标注操作
     void SetOperation(const CurrentState &operation);// 鼠标状态操作
     void SetOperation(const WindowWLWHOperation &operation);// WL 操作
-  public:
+    // 设置参数
     void SetBorderHighlight(bool yes);
     void SetShowAnnotations(bool yes);
     void SetShowMeasurements(bool yes);
-    bool HasSeries();
     void SetAnnoTextFont(const QFont &font);
-    void SeriesInstanceAppend();
+    //
     void Reset();
-    void NextFrame();
-    void PrevFrame();
+    void GotoFrame(const qint32 &i);// 任意张
+    void NextFrame();// 上一张
+    void PrevFrame();// 下一张
   public Q_SLOTS:
     void Slot_SeriesDelate();
-
   Q_SIGNALS:
     void Signal_StatusChanged(bool hasImage);
     void Signal_ViewClicked(DicomImageView *view);
@@ -156,11 +158,13 @@ class DicomImageView : public QGraphicsView {
                           const CurrentState &state, const DrawingType &type);
     void MouseMoveHandle(QMouseEvent *event, const CurrentState &state);
     void MouseReleaseHandle(QMouseEvent *, const CurrentState &state);
-
+    void UpdataShowAnnotations();
+    void UpdataShowMeasurements();
   private:
     QGraphicsScene *m_scene_;
     SeriesInstance *m_series_;
     QList<AbstractPathItem *> item_list_;
+
     QGraphicsPixmapItem *pixmap_item_;// 中央显示图片 item
     QGraphicsPixmapItem *sub_pixmapItem_;// 局部放大 显示图片 item
     QGraphicsPathItem *x_scalor_item_;// x轴比例尺 item
@@ -171,6 +175,8 @@ class DicomImageView : public QGraphicsView {
     QGraphicsSimpleTextItem *window_item_; // 窗位窗宽 数值描述
     QGraphicsSimpleTextItem *zoom_item_;// 缩放倍数 数值描述
     QGraphicsSimpleTextItem *mag_factor_item_;// 局部放大 倍数描述
+
+    VideoControlView *video_controlview_;// 播放支持
 
     QString window_text_pattern_;
     QString pos_text_pattern_;
@@ -188,6 +194,8 @@ class DicomImageView : public QGraphicsView {
     ModalityPref m_pref_;
     QFont anno_font_;
 
+    bool show_measurements_;// 记录批注显示状态
+    bool show_annotations_;// 记录描述显示状态
     bool manual_zoom_;// 手动缩放开启
     bool manual_pan_;
     bool hflip_;// 水平翻转

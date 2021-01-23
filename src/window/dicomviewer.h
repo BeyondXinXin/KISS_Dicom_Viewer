@@ -27,8 +27,6 @@ class DicomViewer : public QWidget {
     ~DicomViewer();
     void OpenDicomFolder();
   Q_SIGNALS:
-    void Signal_ImageLoadFinished();
-    void Signal_ImageLoadBegin();
     void Signal_ImageLoadFilesSize(const qint32 &num);
     void Signal_ImageLoadStageFinished();
   private slots:
@@ -52,7 +50,7 @@ class DicomViewer : public QWidget {
     qint32 GetCurrentImageNum();
     void SetDicomFile(const QString &path);
     void SetDicomFile(const QStringList &path);
-    bool imgloading_ = false;
+
 };
 
 #endif // DICOMVIEWER_H

@@ -33,5 +33,16 @@
         <file>png/zoomin.png</file>
         <file>xml/modalityprop.xml</file>
         <file>png/zoomout.png</file>
+        <file>png/video/backforward01.png</file>
+        <file>png/video/backforward02.png</file>
+        <file>png/video/fastforward01.png</file>
+        <file>png/video/fastforward02.png</file>
+        <file>png/video/nextframe01.png</file>
+        <file>png/video/nextframe02.png</file>
+        <file>png/video/pause01.png</file>
+        <file>png/video/play01.png</file>
+        <file>png/video/play02.png</file>
+        <file>png/video/prevframe01.png</file>
+        <file>png/video/prevframe02.png</file>
     </qresource>
 </RCC>

@@ -93,7 +93,7 @@ void ViewContainerWidget::SetOperation(
 void ViewContainerWidget::SLot_SeriesAppend() {
     foreach (DicomImageView *v, view_list_) {
         if (v->HasSeries()) {
-            v->SeriesInstanceAppend();
+            v->UpdataSeriesInstance(false);
             break;
         }
     }
@@ -137,6 +137,7 @@ void ViewContainerWidget::Slot_SeriesRemoveAll() {
 void ViewContainerWidget::Slot_ImageDClicked(SeriesInstance *series) {
     if (current_view_) {
         current_view_->SetSeriesInstance(series);
+        current_view_->UpdataSeriesInstance();
     }
 }
 
@@ -336,6 +337,12 @@ void ViewContainerWidget::setAnnoFont() {
     anno_font_ = QFontDialog::getFont(nullptr, anno_font_, this);
     foreach (DicomImageView *v, view_list_) {
         v->SetAnnoTextFont(anno_font_);
+    }
+}
+
+void ViewContainerWidget::ImageLoadFinished() {
+    foreach (auto var, view_list_) {
+        var->UpdataSeriesInstance();
     }
 }
 

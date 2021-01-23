@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>VideoControlView</class>
+ <widget class="QWidget" name="VideoControlView">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>500</width>
+    <height>35</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>500</width>
+    <height>35</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>500</width>
+    <height>35</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QWidget" name="wid" native="true">
+     <property name="CustomStyle" stdset="0">
+      <string>video_bg</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,100,1">
+      <property name="leftMargin">
+       <number>5</number>
+      </property>
+      <property name="topMargin">
+       <number>2</number>
+      </property>
+      <property name="rightMargin">
+       <number>5</number>
+      </property>
+      <property name="bottomMargin">
+       <number>2</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="prev_button">
+          <property name="minimumSize">
+           <size>
+            <width>18</width>
+            <height>16</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>18</width>
+            <height>16</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="CustomStyle" stdset="0">
+           <string>prev_button</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="prev_fast_button">
+          <property name="minimumSize">
+           <size>
+            <width>18</width>
+            <height>16</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>18</width>
+            <height>16</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="CustomStyle" stdset="0">
+           <string>prev_fast_button</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="play_button">
+          <property name="minimumSize">
+           <size>
+            <width>30</width>
+            <height>30</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>30</width>
+            <height>30</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton[pause=&quot;true&quot;]{
+    border:none;
+    background-image:url(:/vtkview/play01.png);
+}
+QPushButton::hover[pause=&quot;true&quot;]{
+    background-image:url(:/vtkview/play02.png);
+}
+QPushButton[pause=&quot;false&quot;]{
+    border:none;
+    background-image:url(:/vtkview/pause01.png);
+}
+QPushButton::hover[pause=&quot;false&quot;]{
+    background-image:url(:/vtkview/pause01.png);
+}</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="CustomStyle" stdset="0">
+           <string>play_button</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="next_fast_button">
+          <property name="minimumSize">
+           <size>
+            <width>18</width>
+            <height>16</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>18</width>
+            <height>16</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="CustomStyle" stdset="0">
+           <string>next_fast_button</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="next_button">
+          <property name="minimumSize">
+           <size>
+            <width>18</width>
+            <height>16</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>18</width>
+            <height>16</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="CustomStyle" stdset="0">
+           <string>next_button</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QSlider" name="progress_slider">
+        <property name="styleSheet">
+         <string notr="true">QSlider::groove:horizontal {
+	height: 5px;
+	background: transparent;
+}
+QSlider::handle:horizontal {
+    background: image(:/login/username.png);
+}
+QSlider::handle:horizontal 
+{
+	background: rgb(186, 186, 189);
+	width: 12px;
+	height: 12px;
+	margin: -4px 0px;
+	border-radius:6px; 
+}
+QSlider::add-page:horizontal {
+    background: rgb(51, 51, 55);
+}
+QSlider::sub-page:horizontal {
+    background:rgb(186, 186, 189);
+}
+
+
+</string>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>1</number>
+        </property>
+        <property name="pageStep">
+         <number>1</number>
+        </property>
+        <property name="value">
+         <number>1</number>
+        </property>
+        <property name="sliderPosition">
+         <number>1</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="invertedAppearance">
+         <bool>false</bool>
+        </property>
+        <property name="invertedControls">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0,1">
+        <item>
+         <widget class="QPushButton" name="minus_button">
+          <property name="minimumSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>-</string>
+          </property>
+          <property name="CustomStyle" stdset="0">
+           <string>hide</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="frame_box">
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>50</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="suffix">
+           <string> fps</string>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>10</number>
+          </property>
+          <property name="CustomStyle" stdset="0">
+           <string>hide</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="plus_button">
+          <property name="minimumSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>+</string>
+          </property>
+          <property name="CustomStyle" stdset="0">
+           <string>hide</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

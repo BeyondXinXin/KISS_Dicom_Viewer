@@ -24,6 +24,13 @@
 #include "dcmtk/dcmdata/dcmetinf.h"
 #include "dcmtk/dcmimgle/dcmimage.h"
 
+
+const static qint32 wid_minx_show_measurements_ = 400;
+const static qint32 wid_miny_show_measurements_ = 150;
+
+const static qint32 wid_minx_show_annotations_ = 400;
+const static qint32 wid_miny_show_annotations_ = 150;
+
 //-------------------------------------------------------
 DicomImageView::DicomImageView(
     ViewType type, SeriesInstance *series, QWidget *parent) :
@@ -33,15 +40,18 @@ DicomImageView::DicomImageView(
     pixmap_item_(new QGraphicsPixmapItem),
     x_scalor_item_(new QGraphicsPathItem),
     y_scalor_item_(new QGraphicsPathItem),
+    video_controlview_(new VideoControlView(this)),
     current_path_item_(nullptr),
     factor_(1.0),
     fix_factor_(1.0),
     mag_factor_(2),
+    show_measurements_(true),
+    show_annotations_(true),
     manual_zoom_(false),
     manual_pan_(false),
-    hflip_(0),
-    vflip_(0),
-    rotate_angle_(0),
+    hflip_(false),
+    vflip_(false),
+    rotate_angle_(false),
     m_vtype(type) {
     // QWidget
     QWidget::setFocusPolicy(Qt::StrongFocus);
@@ -85,10 +95,16 @@ DicomImageView::DicomImageView(
     mouse_left_state_.state = ROIWindow;
     mouse_mid_state_.state = ROIWindow;
     mouse_right_state_.state = Zoom;
+    // 播放
+    connect(this->video_controlview_, &VideoControlView::SignalValueChangeOut,
+    this, [&](const int &i) {
+        this->GotoFrame(i);
+    });
 }
 
 //-------------------------------------------------------
 DicomImageView::~DicomImageView() {
+    // 停止视频播放
     QSettings().setValue(MAGNIFIER_FACTOR, mag_factor_);
     Slot_SeriesDelate();
 }
@@ -108,12 +124,8 @@ void DicomImageView::SetAnnoTextFont(const QFont &font) {
 }
 
 //-------------------------------------------------------
-void DicomImageView::SeriesInstanceAppend() {
-    this->UpdateAnnotations();
-}
-
-//-------------------------------------------------------
 void DicomImageView::SetSeriesInstance(SeriesInstance *series) {
+    this->video_controlview_->SlotTimeChangeIn(0, 0);
     if (this->m_series_ && this->m_series_ != series) {
         disconnect(this->m_series_, &SeriesInstance::Signal_AboutToDelete,
                    this, &DicomImageView::Slot_SeriesDelate);
@@ -133,6 +145,15 @@ void DicomImageView::SetSeriesInstance(SeriesInstance *series) {
     UpdateAnnotations();
     Reset();
     m_scene_->update(m_scene_->sceneRect());
+}
+
+void DicomImageView::UpdataSeriesInstance(const bool end) {
+    // 多序列dcm 更新文字描述
+    this->UpdateAnnotations();
+    if(end) {
+        // 多序列dcm 主线程读取玩重新加载 影像数量
+        video_controlview_->SlotTimeChangeIn(0, this->GetImageNum());
+    }
 }
 
 //-------------------------------------------------------
@@ -688,6 +709,50 @@ void DicomImageView::MouseReleaseHandle(QMouseEvent *, const CurrentState &state
 
 //-------------------------------------------------------
 /**
+ * @brief DicomImageView::UpdataShowAnnotations
+ * @param yes
+ */
+void DicomImageView::UpdataShowAnnotations() {
+    bool show = this->width() < wid_minx_show_annotations_ ||
+                this->height() < wid_miny_show_annotations_;
+    foreach (GraphicsAnnoGroup *g, anno_grps_) {
+        foreach (QGraphicsSimpleTextItem *t, g->items) {
+            t->setVisible(this->show_annotations_ || show);
+        }
+    }
+    x_scalor_item_->setVisible(this->show_annotations_ || show);
+    y_scalor_item_->setVisible(this->show_annotations_ || show);
+    if(this->width() < wid_minx_show_annotations_ ||
+            this->height() < wid_miny_show_annotations_) {
+        foreach (GraphicsAnnoGroup *g, anno_grps_) {
+            foreach (QGraphicsSimpleTextItem *t, g->items) {
+                t->setVisible(false);
+            }
+        }
+        x_scalor_item_->setVisible(false);
+        y_scalor_item_->setVisible(false);
+    }
+}
+
+//-------------------------------------------------------
+/**
+ * @brief DicomImageView::UpdataShowMeasurements
+ * @param yes
+ */
+void DicomImageView::UpdataShowMeasurements() {
+    foreach (AbstractPathItem *i, item_list_) {
+        i->setVisible(this->show_measurements_);
+    }
+    if(this->width() < wid_minx_show_measurements_ ||
+            this->height() < wid_miny_show_measurements_) {
+        foreach (AbstractPathItem *i, item_list_) {
+            i->setVisible(false);
+        }
+    }
+}
+
+//-------------------------------------------------------
+/**
  * @brief DicomImageView::PosValueShow
  * 鼠标位置显示
  * @param event
@@ -943,14 +1008,29 @@ void DicomImageView::wheelEvent(QWheelEvent *e) {
         RepositionAuxItems();
     } else {
         if (delta.y() > 0) {
-            PrevFrame();
-        } else if (delta.y() < 0) {
             NextFrame();
+        } else if (delta.y() < 0) {
+            PrevFrame();
         }
     }
 }
 
+
 //-------------------------------------------------------
+/**
+ * @brief DicomImageView::ChangeFrame
+ * @param i
+ */
+void DicomImageView::GotoFrame(const qint32 &i) {
+    m_series_->GotoFrame(i, m_vtype);
+    RefreshPixmap();
+    UpdateAnnotations();
+}
+
+//-------------------------------------------------------
+/**
+ * @brief DicomImageView::NextFrame
+ */
 void DicomImageView::NextFrame() {
     m_series_->NextFrame(m_vtype);
     RefreshPixmap();
@@ -958,6 +1038,9 @@ void DicomImageView::NextFrame() {
 }
 
 //-------------------------------------------------------
+/**
+ * @brief DicomImageView::PrevFrame
+ */
 void DicomImageView::PrevFrame() {
     m_series_->PrevFrame(m_vtype);
     RefreshPixmap();
@@ -1036,6 +1119,17 @@ void DicomImageView::resizeEvent(QResizeEvent *event) {
     }
     ResizePixmapItem();
     RepositionAuxItems();
+    UpdataShowAnnotations(); // 注释
+    UpdataShowMeasurements(); // 标注
+    // 视频播放
+    QSize size = this->size();
+    if(video_controlview_->width() < size.width()) {
+        video_controlview_->move(size.width() / 2 - video_controlview_->width() / 2,
+                                 size.height() - video_controlview_->height() - 5);
+    } else {
+        video_controlview_->move(0, size.height() + 20);
+        video_controlview_->StopMovie();
+    }
 }
 
 //-------------------------------------------------------
@@ -1075,6 +1169,7 @@ void DicomImageView::dropEvent(QDropEvent *e) {
                                 (QObject *)(e->mimeData()->text().toULongLong()));
         if (s) {
             SetSeriesInstance(s);
+            this->UpdataSeriesInstance();
             emit Signal_ViewClicked(this);
         }
         QGraphicsView::dropEvent(e);
@@ -1109,6 +1204,7 @@ void DicomImageView::RefreshPixmap() {
                                   .arg(static_cast<qint32>(center))
                                   .arg(static_cast<qint32>(width)));
         }
+        video_controlview_->SetCurrentTimeIn(m_series_->GetCurIndex(m_vtype));
     } else {
         pixmap_item_->setPixmap(pixmap);
         if (window_item_) {
@@ -1117,6 +1213,7 @@ void DicomImageView::RefreshPixmap() {
         if (pos_value_item_) {
             pos_value_item_->setText("");
         }
+        video_controlview_->SlotTimeChangeIn(0, 0);
     }
 }
 
@@ -1375,13 +1472,8 @@ void DicomImageView::RemoveCurrentDrawingItem() {
  * @param yes
  */
 void DicomImageView::SetShowAnnotations(bool yes) {
-    foreach (GraphicsAnnoGroup *g, anno_grps_) {
-        foreach (QGraphicsSimpleTextItem *t, g->items) {
-            t->setVisible(yes);
-        }
-    }
-    x_scalor_item_->setVisible(yes);
-    y_scalor_item_->setVisible(yes);
+    this->show_annotations_ = yes;
+    this->UpdataShowAnnotations();
 }
 
 //-------------------------------------------------------
@@ -1390,9 +1482,8 @@ void DicomImageView::SetShowAnnotations(bool yes) {
  * @param yes
  */
 void DicomImageView::SetShowMeasurements(bool yes) {
-    foreach (AbstractPathItem *i, item_list_) {
-        i->setVisible(yes);
-    }
+    this->show_measurements_ = yes;
+    this->UpdataShowMeasurements();
 }
 
 //-------------------------------------------------------
@@ -1400,22 +1491,22 @@ void DicomImageView::SetShowMeasurements(bool yes) {
  * @brief DicomImageView::Reset
  */
 void DicomImageView::Reset() {
-    pixmap_item_->setPos(0, 0);
-    pixmap_item_->setRotation(0);
-    rotate_angle_ = 0;
-    pixmap_item_->resetTransform();
-    hflip_ = false;
-    vflip_ = false;
-    manual_zoom_ = false;
-    manual_pan_ = false;
-    mouse_left_state_.state = None;
+    this->pixmap_item_->setPos(0, 0);
+    this->pixmap_item_->setRotation(0);
+    this->rotate_angle_ = 0;
+    this->pixmap_item_->resetTransform();
+    this->hflip_ = false;
+    this->vflip_ = false;
+    this->manual_zoom_ = false;
+    this->manual_pan_ = false;
+    this->mouse_left_state_.state = None;
     if (m_series_) {
         if (m_series_->GetPolarity() != EPP_Normal) {
-            m_series_->SetPolarity(EPP_Normal);
+            this->m_series_->SetPolarity(EPP_Normal);
         }
-        m_series_->SetDefaultWindow();
+        this->m_series_->SetDefaultWindow();
     }
-    RefreshPixmap();
+    this->RefreshPixmap();
     this->SetOperation(FillViewport);
 }
 

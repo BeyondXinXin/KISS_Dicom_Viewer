@@ -26,6 +26,10 @@ QWidget[CustomStyle="popup_bg"]{
 background-color:rgba(53, 58, 61, 1);
 }
 
+QWidget[CustomStyle="video_bg"]{
+background-color:rgba(110, 110, 116, 1);
+}
+
 QTableWidget{
 background-color:rgb(53, 58, 61);
 }
@@ -161,39 +165,49 @@ border:1px solid #67696B;
 /*  QSpinBox  */
 
 QSpinBox{
-background:#2E2F30;
-border:1px solid #67696B;
-border-radius:3px;
-padding:2px;
-selection-background-color:#00BB9E;
-selection-color:#FFFFFF;
+    color: rgb(192, 192, 192);
+    border:1px solid #67696B;
+    background-color: rgb(65, 65, 69);
+    border-color: rgb(110, 110, 110);
 }
 
 QSpinBox:focus,
 QSpinBox:hover{
-border:1px solid #67696B;
+    border:1px solid #67696B;
 }
 
 QSpinBox::up-button{
 image:url(:/Style/StyleResources/add_top.png);
-width:10px;
-height:10px;
-padding:2px 5px 0px 0px;
+    width:10px;
+    height:10px;
+    padding:2px 5px 0px 0px;
 }
 
 QSpinBox::down-button{
 image:url(:/Style/StyleResources/add_bottom.png);
-width:10px;
-height:10px;
-padding:0px 5px 2px 0px;
+    width:10px;
+    height:10px;
+    padding:0px 5px 2px 0px;
 }
 
 QSpinBox::up-button:pressed{
-top:-2px;
+    top:-2px;
 }
 
 QSpinBox::down-button:pressed{
-bottom:-2px;
+    bottom:-2px;
+}
+
+QSpinBox[CustomStyle="hide"]{
+    color: rgb(192, 192, 192);
+    border:0px solid #67696B;
+    background-color: rgb(65, 65, 69);
+    border-color: rgb(110, 110, 110);
+}
+
+QSpinBox::up-button[CustomStyle="hide"],
+QSpinBox::down-button[CustomStyle="hide"]{
+        width:0px;
 }
 
 /*---------------------------------------------------------------------------*/
@@ -633,6 +647,56 @@ QPushButton[CustomStyle="transparent"]{
     background:transparent;
     font-size:14px;
     color:rgba(160,174,184,1);
+}
+
+QPushButton[CustomStyle="next_button"]{
+    background:transparent;
+    border:none;
+    border-image:url(:/png/video/nextframe01.png);
+}
+QPushButton::hover[CustomStyle="next_button"]{
+    border-image:url(:/png/video/nextframe02.png);
+}
+QPushButton[CustomStyle="next_fast_button"]{
+    background:transparent;
+    border:none;
+    border-image:url(:/png/video/fastforward01.png);
+}
+QPushButton::hover[CustomStyle="next_fast_button"]{
+    border-image:url(:/png/video/fastforward02.png);
+}
+QPushButton[CustomStyle="prev_button"]{
+    background:transparent;
+    border:none;
+    border-image:url(:/png/video/prevframe01.png);
+}
+QPushButton::hover[CustomStyle="prev_button"]{
+    border-image:url(:/png/video/prevframe02.png);
+}
+QPushButton[CustomStyle="prev_fast_button"]{
+    background:transparent;
+    border:none;
+    border-image:url(:/png/video/backforward01.png);
+}
+QPushButton::hover[CustomStyle="prev_fast_button"]{
+    border-image:url(:/png/video/backforward02.png);
+}
+
+QPushButton[pause='true']{
+    background:transparent;
+    border:none;
+    border-image:url(:/png/video/play01.png);
+}
+QPushButton::hover[pause='true']{
+    border-image:url(:/png/video/play02.png);
+}
+QPushButton[pause='false']{
+    background:transparent;
+    border:none;
+    border-image:url(:/png/video/pause01.png);
+}
+QPushButton::hover[pause='false']{
+    border-image:url(:/png/video/pause01.png);
 }
 
 /*---------------------------------------------------------------------------*/

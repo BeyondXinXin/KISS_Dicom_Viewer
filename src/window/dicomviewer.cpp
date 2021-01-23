@@ -201,17 +201,12 @@ void DicomViewer::SetupConnection() {
     //
     connect(ui->thumbnailBar, &ThumbnailBarWidget::Signal_ImageLoadBegin,
     this, [&] {
-        ui->widget->setVisible(0);
-        imgloading_ = true;
-        this->Signal_ImageLoadBegin();
+        ui->tool_widget->setVisible(0);
     });
     connect(ui->thumbnailBar, &ThumbnailBarWidget::Signal_ImageLoadFinished,
     this, [&] {
-        ui->widget->setVisible(1);
-        imgloading_ = false;
-        this->Signal_ImageLoadFinished();
-        ui->thumbnailBar->firstSeries();
-
+        ui->tool_widget->setVisible(1);
+        ui->viewContainer->ImageLoadFinished();
     });
     connect(ui->thumbnailBar, &ThumbnailBarWidget::Signal_ImageLoadFilesSize,
             this, &DicomViewer::Signal_ImageLoadFilesSize);
