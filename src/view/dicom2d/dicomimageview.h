@@ -201,7 +201,7 @@ class DicomImageView : public QGraphicsView {
     bool hflip_;// 水平翻转
     bool vflip_;// 垂直翻转
     qint32 rotate_angle_;// 旋转角度
-    ViewType m_vtype;
+    ViewType m_vtype_;
 };
 
 #endif // DICOMIMAGEVIEW_H

@@ -199,7 +199,7 @@ qint32 SeriesInstance::GetFrameCount(ViewType type) const {
 
 //----------------------------------------------------------------
 const short **SeriesInstance::GetSeriesVolume(
-    const short** &volume, ulong &width, ulong &height, ulong &slice) {
+    const short ** &volume, ulong &width, ulong &height, ulong &slice) {
     volume = nullptr;
     if (image_map_.isEmpty()) {
         return volume;
@@ -223,7 +223,7 @@ const short **SeriesInstance::GetSeriesVolume(
 
 //----------------------------------------------------------------
 const ushort **SeriesInstance::GetRawVolume(
-    const ushort** &volume, ulong &width, ulong &height, ulong &slice) {
+    const ushort ** &volume, ulong &width, ulong &height, ulong &slice) {
     volume = nullptr;
     if (image_map_.isEmpty()) {
         return volume;
@@ -559,7 +559,8 @@ EP_Polarity SeriesInstance::GetPolarity() const {
 }
 
 //----------------------------------------------------------------
-bool SeriesInstance::GetPixSpacing(double &spacingX, double &spacingY, ViewType type) const {
+bool SeriesInstance::GetPixSpacing(
+    double &spacingX, double &spacingY, ViewType type) const {
     double sx, sy, sz;
     if (image_map_.isEmpty()) {
         return false;
