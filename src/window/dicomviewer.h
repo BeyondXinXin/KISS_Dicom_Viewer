@@ -23,7 +23,8 @@ class DicomViewer : public QWidget {
         Embed,// 嵌入其他软件
     };
   public:
-    explicit DicomViewer(ViewerType type = SingleInstance, QWidget *parent = nullptr);
+    explicit DicomViewer(
+        ViewerType type = SingleInstance, QWidget *parent = nullptr);
     ~DicomViewer();
     void OpenDicomFolder();
   Q_SIGNALS:

@@ -368,7 +368,7 @@ void ImageInstanceData::InitImage() {
         result = dset->findAndGetFloat64(DCM_PixelSpacing, pixel_x_, 0);
         result = dset->findAndGetFloat64(DCM_PixelSpacing, pixel_y_, 1);
         if(pixel_x_ < 0.0001 && pixel_y_ < 0.0001) {
-            // PixelSpacing 不存在则使用ImagerPixelSpacing
+            // PixelSpacing 不存在则使用 ImagerPixelSpacing
             result = dset->findAndGetFloat64(DCM_ImagerPixelSpacing, pixel_x_, 0);
             result = dset->findAndGetFloat64(DCM_ImagerPixelSpacing, pixel_y_, 1);
         }

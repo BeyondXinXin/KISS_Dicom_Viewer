@@ -4,7 +4,8 @@
 #include <global/KissGlobal>
 
 //----------------------------------------------------------------
-KissTabView::KissTabView(QAbstractTableModel *model, QWidget *parent):
+KissTabView::KissTabView(QAbstractTableModel *model,
+                         QWidget *parent):
     QTableView(parent)  {
     this->setModel(model);
     this->Initial();
