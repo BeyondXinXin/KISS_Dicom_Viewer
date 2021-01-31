@@ -63,11 +63,7 @@
 
 ---
 ## 4 已知严重BUG
-&emsp;&emsp;公司`PACS`开发一直没招，让我临时顶替下。这几个月直接把完全没测试过的*kiss-dicom-viewer*中`pacs`功能投入到医院临床使用......强烈要求下，公司终于同意招人正经的做自己的`PACS`软件了。我可以回归本意，继续自己业余折腾*kiss-dicom-viewer*了。    
-&emsp;&emsp;已经实现了的功能在使用中遇到些尴尬的问题，统一改：
-* 内存泄露，反复打开同一文件夹，线程发送数据存在内存泄露。  
-* 不完善标签的`DICOM`影像在显示时候会有些问题，尤其是`SIMPITK`自己生成`DICOM`。  
-* `windos`下`studyexplorer`和`logviewer`显示有问题，目前先只做`linux`版的。
+&emsp;&emsp;
 
 
 ---
