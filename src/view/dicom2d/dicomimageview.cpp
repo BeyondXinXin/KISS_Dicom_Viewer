@@ -52,8 +52,10 @@ DicomImageView::DicomImageView(
     hflip_(false),
     vflip_(false),
     rotate_angle_(false),
-    m_vtype_(type),
-    fillter_(FillterNone) {
+    m_vtype_(type) {
+    m_fun_ = [&](const QPixmap & pix, QWidget *) {
+        return pix;
+    };
     // QWidget
     QWidget::setFocusPolicy(Qt::StrongFocus);
     QWidget::setAcceptDrops(true);
@@ -1202,6 +1204,7 @@ void DicomImageView::RefreshPixmap() {
     QPixmap pixmap;
     if (m_series_) {
         m_series_->GetPixmap(pixmap, m_vtype_);
+        pixmap = m_fun_(pixmap, this);
         pixmap_item_->setPixmap(pixmap);
         pixmap_item_->setTransformOriginPoint(
             pixmap_item_->boundingRect().center());
@@ -1449,14 +1452,8 @@ void DicomImageView::SetOperation(
     RefreshPixmap();
 }
 
-//-------------------------------------------------------
-/**
- * @brief DicomImageView::SetOperation
- * @param operation
- */
-void DicomImageView::SetOperation(
-    const DicomImageView::FillterOperation &operation) {
-    this->fillter_ = operation;
+void DicomImageView::SetPretreatmen(Pretreatmen fun) {
+    this->m_fun_ = fun;
     RefreshPixmap();
     UpdateAnnotations();
 }

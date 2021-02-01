@@ -6,6 +6,7 @@
 #include "modalityproperty.h"
 #include "ImageData/seriesinstance.h"
 #include "view/currency/videocontrolview.h"
+#include "engine/PluganInterface.h"
 
 class ModalityProperty;
 class AbstractPathItem;
@@ -70,23 +71,6 @@ class DicomImageView : public QGraphicsView {
         InverseWl,
     };
 
-    enum FillterOperation {
-        FillterNone,
-        FillterSharpen1,
-        FillterSharpen2,
-        FillterSharpen3,
-        FillterSmooth1,
-        FillterSmooth2,
-        FillterSmooth3,
-        FillterEdge1,
-        FillterEdge2,
-        FillterEdge3,
-        FillterEmboss1,
-        FillterEmboss2,
-        FillterEmboss3,
-    };
-
-
     typedef struct GraphicsAnnoGroup {
         QString pos;
         QList<QGraphicsSimpleTextItem *> items;
@@ -127,7 +111,7 @@ class DicomImageView : public QGraphicsView {
     void SetOperation(const DrawingType &operation);// 标注操作
     void SetOperation(const CurrentState &operation);// 鼠标状态操作
     void SetOperation(const WindowWLWHOperation &operation);// WL 操作
-    void SetOperation(const FillterOperation &operation);// Fillter 操作
+    void SetPretreatmen(Pretreatmen fun);
     // 设置参数
     void SetBorderHighlight(bool yes);
     void SetShowAnnotations(bool yes);
@@ -221,7 +205,7 @@ class DicomImageView : public QGraphicsView {
     qint32 rotate_angle_;// 旋转角度
     ViewType m_vtype_;
 
-    FillterOperation fillter_;// fillter 状态
+    Pretreatmen m_fun_;
 };
 
 #endif // DICOMIMAGEVIEW_H

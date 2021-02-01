@@ -10,6 +10,8 @@
 
 #include <view/KissView>
 
+#include "engine/PluganInterface.h"
+
 
 
 //-----------------------------------------------
@@ -189,67 +191,35 @@ void DicomViewer::SetupToolBar() {
     m->addAction(QIcon(":/png/reset.png"), tr("Flip Reset"),  this, [&] {
         ui->viewContainer->SetOperation(DicomImageView::ClearFlip);
     });
-    // filter
-    QActionGroup *filter_group = new QActionGroup(this);
-    QMenu *filter = new QMenu("filter", this);
-    a = filter->addAction(tr("None"), this, [&] {
-    });
-    a->setCheckable(true);
-    a->setChecked(true);
-    filter_group->addAction(a);
-    filter->addSeparator();
-    a = filter->addAction(tr("Sharpen1"), this, [&] {
-    });
-    a->setCheckable(true);
-    filter_group->addAction(a);
-    a = filter->addAction(tr("Sharpen2"), this, [&] {
-    });
-    a->setCheckable(true);
-    filter_group->addAction(a);
-    a = filter->addAction(tr("Sharpen3"), this, [&] {
-    });
-    a->setCheckable(true);
-    filter_group->addAction(a);
-    filter->addSeparator();
-    a = filter->addAction(tr("Smooth1"), this, [&] {
-    });
-    a->setCheckable(true);
-    filter_group->addAction(a);
-    a = filter->addAction(tr("Smooth2"), this, [&] {
-    });
-    a->setCheckable(true);
-    filter_group->addAction(a);
-    a = filter->addAction(tr("Smooth3"), this, [&] {
-    });
-    a->setCheckable(true);
-    filter_group->addAction(a);
-    filter->addSeparator();
-    a = filter->addAction(tr("Edge1"), this, [&] {
-    });
-    a->setCheckable(true);
-    filter_group->addAction(a);
-    a = filter->addAction(tr("Edge2"), this, [&] {
-    });
-    a->setCheckable(true);
-    filter_group->addAction(a);
-    filter->addAction(tr("Edge3"), this, [&] {
-    });
-    a->setCheckable(true);
-    filter_group->addAction(a);
-    filter->addSeparator();
-    a = filter->addAction(tr("Emboss1"), this, [&] {
-    });
-    a->setCheckable(true);
-    filter_group->addAction(a);
-    a = filter->addAction(tr("Emboss2"), this, [&] {
-    });
-    a->setCheckable(true);
-    filter_group->addAction(a);
-    a = filter->addAction(tr("Emboss3"), this, [&] {
-    });
-    a->setCheckable(true);
-    filter_group->addAction(a);
-    m->addMenu(filter);
+    // filter loadPlugins
+    QPluginLoader loader("./plugins/KissPluganPretreatment.dll");
+    QObject *plugin = loader.instance();
+    if (plugin) {
+        QActionGroup *filter_group = new QActionGroup(this);
+        QMenu *filter = new QMenu("filter", this);
+        a = filter->addAction(tr("None"), this, [&] {
+        });
+        a->setCheckable(true);
+        a->setChecked(true);
+        filter_group->addAction(a);
+        filter->addSeparator();
+        auto i_pretreatment = qobject_cast<PretreatmentInterface *>(plugin);
+        QStringList texts = i_pretreatment->GetPretreatments();
+        foreach (auto var, texts) {
+            if(var.isEmpty()) {
+                filter->addSeparator();
+            } else {
+                a = filter->addAction(var);
+                Pretreatmen fun = i_pretreatment->PretreatmentFun(var);
+                connect(a, &QAction::triggered, this, [ = ] {
+                    ui->viewContainer->SetPretreatmen(fun);
+                });
+                a->setCheckable(true);
+                filter_group->addAction(a);
+            }
+        }
+        m->addMenu(filter);
+    }
     ui->flipBtn->setMenu(m);
 }
 

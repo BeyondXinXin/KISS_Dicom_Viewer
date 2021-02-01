@@ -36,6 +36,15 @@ namespace Kiss {
     }
 
     void InitialDir() {
+#ifdef Q_OS_WIN
+        QString home_path = QStandardPaths::writableLocation(
+                                QStandardPaths::HomeLocation);
+        if (!FileUtil::DirMake(QString("%1/.KissDicomViewer").arg(home_path))) {
+            qCritical() << "目录初始化错误";
+        } else {
+            QDir::setCurrent(QString("%1/.KissDicomViewer").arg(home_path));
+        }
+#endif
 #ifdef Q_OS_LINUX
         QString home_path = QStandardPaths::writableLocation(
                                 QStandardPaths::HomeLocation);
