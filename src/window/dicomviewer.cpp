@@ -3,6 +3,7 @@
 
 
 #include "logdbwidget.h"
+#include "widget/dicomtagswidget.h"
 #include <dao/KissDb>
 #include <global/KissGlobal>
 #include <engine/KissEngine>
@@ -89,6 +90,9 @@ void DicomViewer::SetupToolBar() {
     });
     m->addSeparator();
     m->addAction(tr("DICOM tags"), this, [&] {
+        DicomTagsWidget *wid =
+        new DicomTagsWidget{this->GetCurrentImageFile()};
+        wid->show();
     });
     ui->annoBtn->setMenu(m);
     //------------ adjust Btn

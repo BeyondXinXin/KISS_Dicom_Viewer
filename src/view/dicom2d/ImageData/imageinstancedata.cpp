@@ -365,8 +365,13 @@ void ImageInstanceData::InitImage() {
         image_uid_ = QString::fromLocal8Bit(val);
         result = dset->findAndGetString(DCM_SOPClassUID, val);
         class_uid_ = QString::fromLocal8Bit(val);
-        result = dset->findAndGetFloat64(DCM_PixelSpacing, pixel_y_, 0);
-        result = dset->findAndGetFloat64(DCM_PixelSpacing, pixel_x_, 1);
+        result = dset->findAndGetFloat64(DCM_PixelSpacing, pixel_x_, 0);
+        result = dset->findAndGetFloat64(DCM_PixelSpacing, pixel_y_, 1);
+        if(pixel_x_ < 0.0001 && pixel_y_ < 0.0001) {
+            // PixelSpacing 不存在则使用 ImagerPixelSpacing
+            result = dset->findAndGetFloat64(DCM_ImagerPixelSpacing, pixel_x_, 0);
+            result = dset->findAndGetFloat64(DCM_ImagerPixelSpacing, pixel_y_, 1);
+        }
         result = dset->findAndGetFloat64(DCM_WindowWidth, win_width_);
         result = dset->findAndGetFloat64(DCM_WindowCenter, win_center_);
         def_center_ = win_center_;

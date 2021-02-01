@@ -164,7 +164,28 @@ QString SeriesInstance::GetTagKeyValue(
 
 //----------------------------------------------------------------
 QString SeriesInstance::GetImageFile() const {
-    return this->image_map_[this->image_map_.firstKey()]->GetImageFile();
+    QString str = "";
+    switch (m_pattern_) {
+        case Single_Frame: {
+                str =
+                    image_map_.values().at(0)->GetImageFile();
+                break;
+            }
+        case Multi_Frame: {
+                if(cur_xy_frame_ < image_map_.values().size()) {
+                    str =
+                        image_map_.values().at(cur_xy_frame_)->GetImageFile();
+                } else {
+                    str =
+                        image_map_.values().at(0)->GetImageFile();
+                }
+                break;
+            }
+        default: {
+                break;
+            }
+    }
+    return str;
 }
 
 //----------------------------------------------------------------
@@ -559,7 +580,8 @@ EP_Polarity SeriesInstance::GetPolarity() const {
 }
 
 //----------------------------------------------------------------
-bool SeriesInstance::GetPixSpacing(double &spacingX, double &spacingY, ViewType type) const {
+bool SeriesInstance::GetPixSpacing(
+    double &spacingX, double &spacingY, ViewType type) const {
     double sx, sy, sz;
     if (image_map_.isEmpty()) {
         return false;

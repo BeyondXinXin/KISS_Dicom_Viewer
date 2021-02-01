@@ -52,7 +52,7 @@ DicomImageView::DicomImageView(
     hflip_(false),
     vflip_(false),
     rotate_angle_(false),
-    m_vtype(type) {
+    m_vtype_(type) {
     // QWidget
     QWidget::setFocusPolicy(Qt::StrongFocus);
     QWidget::setAcceptDrops(true);
@@ -163,8 +163,8 @@ SeriesInstance *DicomImageView::GetSeriesInstance() const {
 
 //-------------------------------------------------------
 DicomImage *DicomImageView::getHardCopyGrayScaledImage() {
-    if (m_series_ && m_series_->GetCurrImageInstance(m_vtype)) {
-        ImageInstance *image = m_series_->GetCurrImageInstance(m_vtype);
+    if (m_series_ && m_series_->GetCurrImageInstance(m_vtype_)) {
+        ImageInstance *image = m_series_->GetCurrImageInstance(m_vtype_);
         QPointF tl = pixmap_item_->mapFromScene(mapToScene(this->rect().topLeft()));
         QPointF br = pixmap_item_->mapFromScene(mapToScene(this->rect().bottomRight()));
         if (tl.x() > br.x()) {
@@ -187,7 +187,7 @@ DicomImage *DicomImageView::getHardCopyGrayScaledImage() {
 //-------------------------------------------------------
 QImage DicomImageView::getTextLayerImage(const QSize &size) {
     QImage textlayer(size, QImage::Format_RGB32);
-    if (m_series_ && m_series_->GetCurrImageInstance(m_vtype) && (!textlayer.isNull())) {
+    if (m_series_ && m_series_->GetCurrImageInstance(m_vtype_) && (!textlayer.isNull())) {
         textlayer.fill(Qt::black);
         QPainter painter(&textlayer);
         pixmap_item_->setOpacity(0);
@@ -316,13 +316,17 @@ void DicomImageView::SetMagnifierPixmap(const QPointF &itemPos) {
 }
 
 //-------------------------------------------------------
+/**
+ * @brief DicomImageView::UpdateScalors
+ * 更新比例尺
+ */
 void DicomImageView::UpdateScalors() {
-    double xSpacing, ySpacing;
+    double x_xpacing, y_spacing;
     QPainterPath scalorX, scalorY;
-    if (m_series_ && m_series_->GetPixSpacing(xSpacing, ySpacing, m_vtype)) {
-        if (xSpacing > 0.000001 && ySpacing > 0.000001) {
-            double psX = xSpacing;
-            double psY = ySpacing;
+    if (m_series_ && m_series_->GetPixSpacing(x_xpacing, y_spacing, m_vtype_)) {
+        if (x_xpacing > 0.000001 && y_spacing > 0.000001) {
+            double psX = x_xpacing;
+            double psY = y_spacing;
             /*
             if (rotateAngle % 180) {
                 psX = ySpacing;
@@ -417,7 +421,7 @@ void DicomImageView::UpdateAnnotations() {
                                 t = t.arg(m_series_->GetTagKeyValue(k, m_vtype));
                             }
 #else
-                            t = t.arg(m_series_->GetTagKeyValue(k, m_vtype));
+                            t = t.arg(m_series_->GetTagKeyValue(k, m_vtype_));
 #endif
                         } else if (k == DCM_AF_CursorX ||
                                    k == DCM_AF_CursorY ||
@@ -447,6 +451,8 @@ void DicomImageView::UpdateAnnotations() {
             }
         }
     }
+    this->UpdataShowAnnotations();
+    this->UpdataShowMeasurements();
 }
 
 //-------------------------------------------------------
@@ -515,7 +521,7 @@ void DicomImageView::MousePressHandle(
                     current_path_item_->setFont(anno_font_);
                     current_path_item_->grabMouse();
                     double xSpacing, ySpacing;
-                    m_series_->GetPixSpacing(xSpacing, ySpacing, m_vtype);
+                    m_series_->GetPixSpacing(xSpacing, ySpacing, m_vtype_);
                     current_path_item_->setPixelSpacing(xSpacing, ySpacing);
                     current_path_item_->setFlag(QGraphicsItem::ItemIgnoresParentOpacity);
                 }
@@ -603,9 +609,9 @@ void DicomImageView::MouseMoveHandle(
                 setDragMode(QGraphicsView::NoDrag);
                 int frames = event->pos().y() - prev_mouse_pos_.y();
                 if (frames > 0) {
-                    m_series_->NextFrame(m_vtype);
+                    m_series_->NextFrame(m_vtype_);
                 } else {
-                    m_series_->PrevFrame(m_vtype);
+                    m_series_->PrevFrame(m_vtype_);
                 }
                 RefreshPixmap();
                 UpdateAnnotations();
@@ -675,7 +681,7 @@ void DicomImageView::MouseReleaseHandle(QMouseEvent *, const CurrentState &state
                     foreach (AbstractPathItem *it, item_list_) {
                         if (!it->pixInfoUpdated()) {
                             it->recalPixInfo(
-                                m_series_->GetCurrImageInstance(m_vtype)->GetDcmImage());
+                                m_series_->GetCurrImageInstance(m_vtype_)->GetDcmImage());
                             m_scene_->update();
                         }
                     }
@@ -697,7 +703,7 @@ void DicomImageView::MouseReleaseHandle(QMouseEvent *, const CurrentState &state
                             current_path_item_->ungrabMouse();
                             item_list_.append(current_path_item_);
                             current_path_item_->recalPixInfo(
-                                m_series_->GetCurrImageInstance(m_vtype)->GetDcmImage());
+                                m_series_->GetCurrImageInstance(m_vtype_)->GetDcmImage());
                             current_path_item_ = nullptr;
                         }
                     }
@@ -762,7 +768,7 @@ void DicomImageView::PosValueShow(QMouseEvent *event) {
     QPointF ip = pixmap_item_->mapFromScene(sp);// 图片坐标
     if (pixmap_item_->contains(ip)) {
         QPoint pos = ip.toPoint();
-        double v = m_series_->GetPixelValue(pos.x(), pos.y(), m_vtype);
+        double v = m_series_->GetPixelValue(pos.x(), pos.y(), m_vtype_);
         if(v < 10000.0 && v > -3000.0) {
             pos_value_item_->setText(pos_text_pattern_
                                      .arg(pos.x())
@@ -1022,7 +1028,7 @@ void DicomImageView::wheelEvent(QWheelEvent *e) {
  * @param i
  */
 void DicomImageView::GotoFrame(const qint32 &i) {
-    m_series_->GotoFrame(i, m_vtype);
+    m_series_->GotoFrame(i, m_vtype_);
     RefreshPixmap();
     UpdateAnnotations();
 }
@@ -1032,7 +1038,7 @@ void DicomImageView::GotoFrame(const qint32 &i) {
  * @brief DicomImageView::NextFrame
  */
 void DicomImageView::NextFrame() {
-    m_series_->NextFrame(m_vtype);
+    m_series_->NextFrame(m_vtype_);
     RefreshPixmap();
     UpdateAnnotations();
 }
@@ -1042,7 +1048,7 @@ void DicomImageView::NextFrame() {
  * @brief DicomImageView::PrevFrame
  */
 void DicomImageView::PrevFrame() {
-    m_series_->PrevFrame(m_vtype);
+    m_series_->PrevFrame(m_vtype_);
     RefreshPixmap();
     UpdateAnnotations();
 }
@@ -1194,7 +1200,7 @@ void DicomImageView::dragLeaveEvent(QDragLeaveEvent *) {
 void DicomImageView::RefreshPixmap() {
     QPixmap pixmap;
     if (m_series_) {
-        m_series_->GetPixmap(pixmap, m_vtype);
+        m_series_->GetPixmap(pixmap, m_vtype_);
         pixmap_item_->setPixmap(pixmap);
         pixmap_item_->setTransformOriginPoint(pixmap_item_->boundingRect().center());
         double center, width;
@@ -1204,7 +1210,7 @@ void DicomImageView::RefreshPixmap() {
                                   .arg(static_cast<qint32>(center))
                                   .arg(static_cast<qint32>(width)));
         }
-        video_controlview_->SetCurrentTimeIn(m_series_->GetCurIndex(m_vtype));
+        video_controlview_->SetCurrentTimeIn(m_series_->GetCurIndex(m_vtype_));
     } else {
         pixmap_item_->setPixmap(pixmap);
         if (window_item_) {
