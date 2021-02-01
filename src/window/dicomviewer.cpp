@@ -176,7 +176,6 @@ void DicomViewer::SetupToolBar() {
     m->addAction(QIcon(":/png/lrotate.png"), tr("Rotate CCW"), this, [&] {
         ui->viewContainer->SetOperation(DicomImageView::RoateCCW);
     });
-    m->addSeparator();
     m->addAction(QIcon(":/png/reset.png"), tr("Rotate Reset"), this, [&] {
         ui->viewContainer->SetOperation(DicomImageView::ClearRoate);
     });
@@ -187,10 +186,70 @@ void DicomViewer::SetupToolBar() {
     m->addAction(QIcon(":/png/vflip.png"), tr("Flip vertical"), this, [&] {
         ui->viewContainer->SetOperation(DicomImageView::VFlip);
     });
-    m->addSeparator();
     m->addAction(QIcon(":/png/reset.png"), tr("Flip Reset"),  this, [&] {
         ui->viewContainer->SetOperation(DicomImageView::ClearFlip);
     });
+    // filter
+    QActionGroup *filter_group = new QActionGroup(this);
+    QMenu *filter = new QMenu("filter", this);
+    a = filter->addAction(tr("None"), this, [&] {
+    });
+    a->setCheckable(true);
+    a->setChecked(true);
+    filter_group->addAction(a);
+    filter->addSeparator();
+    a = filter->addAction(tr("Sharpen1"), this, [&] {
+    });
+    a->setCheckable(true);
+    filter_group->addAction(a);
+    a = filter->addAction(tr("Sharpen2"), this, [&] {
+    });
+    a->setCheckable(true);
+    filter_group->addAction(a);
+    a = filter->addAction(tr("Sharpen3"), this, [&] {
+    });
+    a->setCheckable(true);
+    filter_group->addAction(a);
+    filter->addSeparator();
+    a = filter->addAction(tr("Smooth1"), this, [&] {
+    });
+    a->setCheckable(true);
+    filter_group->addAction(a);
+    a = filter->addAction(tr("Smooth2"), this, [&] {
+    });
+    a->setCheckable(true);
+    filter_group->addAction(a);
+    a = filter->addAction(tr("Smooth3"), this, [&] {
+    });
+    a->setCheckable(true);
+    filter_group->addAction(a);
+    filter->addSeparator();
+    a = filter->addAction(tr("Edge1"), this, [&] {
+    });
+    a->setCheckable(true);
+    filter_group->addAction(a);
+    a = filter->addAction(tr("Edge2"), this, [&] {
+    });
+    a->setCheckable(true);
+    filter_group->addAction(a);
+    filter->addAction(tr("Edge3"), this, [&] {
+    });
+    a->setCheckable(true);
+    filter_group->addAction(a);
+    filter->addSeparator();
+    a = filter->addAction(tr("Emboss1"), this, [&] {
+    });
+    a->setCheckable(true);
+    filter_group->addAction(a);
+    a = filter->addAction(tr("Emboss2"), this, [&] {
+    });
+    a->setCheckable(true);
+    filter_group->addAction(a);
+    a = filter->addAction(tr("Emboss3"), this, [&] {
+    });
+    a->setCheckable(true);
+    filter_group->addAction(a);
+    m->addMenu(filter);
     ui->flipBtn->setMenu(m);
 }
 

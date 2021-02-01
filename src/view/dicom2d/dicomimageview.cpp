@@ -52,7 +52,8 @@ DicomImageView::DicomImageView(
     hflip_(false),
     vflip_(false),
     rotate_angle_(false),
-    m_vtype_(type) {
+    m_vtype_(type),
+    fillter_(FillterNone) {
     // QWidget
     QWidget::setFocusPolicy(Qt::StrongFocus);
     QWidget::setAcceptDrops(true);
@@ -1202,7 +1203,8 @@ void DicomImageView::RefreshPixmap() {
     if (m_series_) {
         m_series_->GetPixmap(pixmap, m_vtype_);
         pixmap_item_->setPixmap(pixmap);
-        pixmap_item_->setTransformOriginPoint(pixmap_item_->boundingRect().center());
+        pixmap_item_->setTransformOriginPoint(
+            pixmap_item_->boundingRect().center());
         double center, width;
         m_series_->GetWindow(center, width);
         if (window_item_) {
@@ -1431,21 +1433,32 @@ void DicomImageView::SetOperation(
     switch (operation) {
         case DefaultWL: {
                 m_series_->SetDefaultWindow();
-                RefreshPixmap();
                 break;
             }
         case FullDynamic: {
                 m_series_->SetFullDynamic();
-                RefreshPixmap();
                 break;
             }
         case InverseWl: {
-                m_series_->SetPolarity(m_series_->GetPolarity()
-                                       == EPP_Normal ? EPP_Reverse : EPP_Normal);
-                RefreshPixmap();
+                m_series_->SetPolarity(
+                    m_series_->GetPolarity()
+                    == EPP_Normal ? EPP_Reverse : EPP_Normal);
                 break;
             }
     }
+    RefreshPixmap();
+}
+
+//-------------------------------------------------------
+/**
+ * @brief DicomImageView::SetOperation
+ * @param operation
+ */
+void DicomImageView::SetOperation(
+    const DicomImageView::FillterOperation &operation) {
+    this->fillter_ = operation;
+    RefreshPixmap();
+    UpdateAnnotations();
 }
 
 //-------------------------------------------------------
