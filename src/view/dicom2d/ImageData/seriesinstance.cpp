@@ -164,7 +164,28 @@ QString SeriesInstance::GetTagKeyValue(
 
 //----------------------------------------------------------------
 QString SeriesInstance::GetImageFile() const {
-    return this->image_map_[this->image_map_.firstKey()]->GetImageFile();
+    QString str = "";
+    switch (m_pattern_) {
+        case Single_Frame: {
+                str =
+                    image_map_.values().at(0)->GetImageFile();
+                break;
+            }
+        case Multi_Frame: {
+                if(cur_xy_frame_ < image_map_.values().size()) {
+                    str =
+                        image_map_.values().at(cur_xy_frame_)->GetImageFile();
+                } else {
+                    str =
+                        image_map_.values().at(0)->GetImageFile();
+                }
+                break;
+            }
+        default: {
+                break;
+            }
+    }
+    return str;
 }
 
 //----------------------------------------------------------------
@@ -199,7 +220,7 @@ qint32 SeriesInstance::GetFrameCount(ViewType type) const {
 
 //----------------------------------------------------------------
 const short **SeriesInstance::GetSeriesVolume(
-    const short ** &volume, ulong &width, ulong &height, ulong &slice) {
+    const short** &volume, ulong &width, ulong &height, ulong &slice) {
     volume = nullptr;
     if (image_map_.isEmpty()) {
         return volume;
@@ -223,7 +244,7 @@ const short **SeriesInstance::GetSeriesVolume(
 
 //----------------------------------------------------------------
 const ushort **SeriesInstance::GetRawVolume(
-    const ushort ** &volume, ulong &width, ulong &height, ulong &slice) {
+    const ushort** &volume, ulong &width, ulong &height, ulong &slice) {
     volume = nullptr;
     if (image_map_.isEmpty()) {
         return volume;

@@ -1,9 +1,10 @@
-#ifndef DICOMTAGSWIDGET_H
+﻿#ifndef DICOMTAGSWIDGET_H
 #define DICOMTAGSWIDGET_H
 
 #include "ui_dicomtagswidget.h"
 #include <QTreeWidget>
 #include "dcmtk/dcmdata/dctk.h"
+#include <engine/KissEngine>
 
 template<typename T>
 class NewDcmItem: public T {
@@ -55,17 +56,15 @@ void GenerateItems(QList<QTreeWidgetItem *> &items, T &t) {
     }
 }
 
-
 class KissQTreeWidget : public QTreeWidget {
     Q_OBJECT
   public:
     explicit KissQTreeWidget(QWidget *parent = nullptr);
     virtual ~KissQTreeWidget();
-  public Q_SLOTS:
-    QModelIndexList getSelectedIndexes() const;
+  Q_SIGNALS:
+    void Signal_OpenFolder();
   protected:
     void Initial();
-  protected:
     virtual void contextMenuEvent(QContextMenuEvent *e);
     QMenu *context_menu_;
     QItemSelection selection_;
@@ -81,6 +80,9 @@ class DicomTagsWidget : public QWidget {
     explicit DicomTagsWidget(const QString &str, QWidget *parent = nullptr);
   protected:
     void changeEvent(QEvent *e);
+  private:
+    void SlotFilterChanged();
+    void SLot_OpenFolder();
   private:
     Ui::DicomTagsWidget ui;
     KissQTreeWidget *tree_wid_;
