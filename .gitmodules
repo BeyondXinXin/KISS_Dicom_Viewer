@@ -1,6 +1,3 @@
-[submodule "plugans/Quick-Event"]
-	path = plugans/Quick-Event
-	url = git@codechina.csdn.net:a15005784320/Quick-Event.git
 [submodule "plugans/pretreatment"]
 	path = plugans/pretreatment
 	url = git@codechina.csdn.net:a15005784320/kiss-diocm-pretreatment.git

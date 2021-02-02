@@ -173,7 +173,8 @@ void ThumbnailBarWidget::appendImagePaths(const QStringList &paths, bool clear_o
         }
     }
     if(unloaded_files.size() > 3000) {
-        this->Signal_ImageLoadFilesSize(unloaded_files.size());
+        qDebug() << unloaded_files.size()
+                 << "files. That's too much";
         return;
     }
     emit Signal_ImageLoadBegin();
