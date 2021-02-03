@@ -21,7 +21,6 @@ using Pretreatmen = std::function <QPixmap(const QPixmap &, QWidget *) >;
 class PretreatmentInterface {
   public:
     virtual ~PretreatmentInterface() {}
-
     virtual QStringList GetPretreatments() const = 0;
     virtual Pretreatmen PretreatmentFun(const QString &str) = 0;
 };
