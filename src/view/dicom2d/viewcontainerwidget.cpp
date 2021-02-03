@@ -90,6 +90,13 @@ void ViewContainerWidget::SetOperation(
 }
 
 //-------------------------------------------------------
+void ViewContainerWidget::SetPretreatmen(Pretreatmen fun) {
+    if (current_view_) {
+        current_view_->SetPretreatmen(fun);
+    }
+}
+
+//-------------------------------------------------------
 void ViewContainerWidget::SLot_SeriesAppend() {
     foreach (DicomImageView *v, view_list_) {
         if (v->HasSeries()) {

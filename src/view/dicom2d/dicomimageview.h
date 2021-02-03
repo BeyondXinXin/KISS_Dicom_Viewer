@@ -6,6 +6,7 @@
 #include "modalityproperty.h"
 #include "ImageData/seriesinstance.h"
 #include "view/currency/videocontrolview.h"
+#include "engine/PluganInterface.h"
 
 class ModalityProperty;
 class AbstractPathItem;
@@ -110,6 +111,7 @@ class DicomImageView : public QGraphicsView {
     void SetOperation(const DrawingType &operation);// 标注操作
     void SetOperation(const CurrentState &operation);// 鼠标状态操作
     void SetOperation(const WindowWLWHOperation &operation);// WL 操作
+    void SetPretreatmen(Pretreatmen fun);
     // 设置参数
     void SetBorderHighlight(bool yes);
     void SetShowAnnotations(bool yes);
@@ -202,6 +204,8 @@ class DicomImageView : public QGraphicsView {
     bool vflip_;// 垂直翻转
     qint32 rotate_angle_;// 旋转角度
     ViewType m_vtype_;
+
+    Pretreatmen m_fun_;
 };
 
 #endif // DICOMIMAGEVIEW_H

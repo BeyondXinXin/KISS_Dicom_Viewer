@@ -23,6 +23,8 @@ class ViewContainerWidget : public QWidget {
     void SetOperation(const DicomImageView::DrawingType &operation);// 标注操作
     void SetOperation(const DicomImageView::CurrentState &operation);// 鼠标状态操作
     void SetOperation(const DicomImageView::WindowWLWHOperation &operation);// WL 操作
+    void SetPretreatmen(Pretreatmen fun);
+
     void incAnnoFont();
     void decAnnoFont();
     void setAnnoFont();

@@ -36,8 +36,8 @@ bool ImageInstanceData::Dcm2BmpHelper(
         size = static_cast<qint32>(dcmImage.createWindowsDIB(pDIB, 0, 0, 32, 0, 1));
     }
     if (size == w * h * 4) {
-        QImage image( static_cast<uchar *>(pDIB), w, h,
-                      QImage::Format_RGB32, FreeBuffer, pDIB);
+        QImage image(static_cast<uchar *>(pDIB), w, h,
+                     QImage::Format_RGB32, FreeBuffer, pDIB);
         pixmap = QPixmap::fromImage(image);
         return !pixmap.isNull();
     }

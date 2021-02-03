@@ -26,31 +26,33 @@ class DicomViewer : public QWidget {
     explicit DicomViewer(
         ViewerType type = SingleInstance, QWidget *parent = nullptr);
     ~DicomViewer();
-    void OpenDicomFolder();
-  Q_SIGNALS:
-    void Signal_ImageLoadFilesSize(const qint32 &num);
-    void Signal_ImageLoadStageFinished();
-  private slots:
-    void SLot_OpenDicomFolder();
-    void Slot_OpenDicomFile();
-    void Slot_SplitView();
-    void Slot_FullScreen(bool checked);
+    void SetDicomFile(const QString &path);
+    void SetDicomFile(const QStringList &path);
   protected:
     bool eventFilter(QObject *watched, QEvent *event);
   private:
+    void Initial();
     void SetupToolBar();
+    void SetupFileTool();
+    void SetupExportTool();
+    void SetupGridTool();
+    void SetupAnnoTool();
+    void SetupAdjustTool();
+    void SetupPanTool();
+    void SetupSlicingTool();
+    void SetupMarksTool();
+    void SetupZoomTool();
+    void SetupFlipTool();
+    void SetupFullTool();
     void SetupConnection();
-    void UpViewType();
+    void SetupPlugin();
+    void InitViewType();
+    void SetWidgetDirection(const QBoxLayout::Direction &lay);
+
   private:
     Ui::DicomViewer *ui;
     ViewerType m_type_;
-  public:
-    void RestWidget();
-    void SetWidgetDirection(const QBoxLayout::Direction &lay);
-    QString GetCurrentImageFile();
-    qint32 GetCurrentImageNum();
-    void SetDicomFile(const QString &path);
-    void SetDicomFile(const QStringList &path);
+
 
 };
 

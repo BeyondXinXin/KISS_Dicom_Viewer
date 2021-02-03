@@ -38,9 +38,7 @@ class ThumbnailBarWidget : public QWidget {
     void Signal_SeriesInserted(SeriesInstance *series);
     void Signal_SeriesAppend();
     void Signal_QuitFileWatcher();
-    void Signal_ImageLoadFilesSize(const qint32 &num);
     void Signal_ImageLoadFinished();
-    void Signal_ImageLoadStageFinished();
     void Signal_ImageLoadBegin();
 
   public Q_SLOTS:
