@@ -1,5 +1,5 @@
+
 &emsp;&emsp;开发中......  
-&emsp;&emsp;9月做好就没再改过了。代码整理和好多功能还没搞，一放就拖到了年底了。最近刚提出离职，没有什么进度需要赶了，再加上马上过年，由于疫情就留在杭州不回家了。计划最近这段时间和过年期间完善一下kiss-dicom-viewer。计划是这样，要是过年给自己找个别的事估计就继续搁浅了......  
 
 项目地址：
 [CodeChina kissDicomViewer](https://codechina.csdn.net/a15005784320/kiss-dicom-viewer)  
@@ -12,8 +12,16 @@
 @[TOC](kissDicomViewer)
 # kissDicomViewer
 ## 1 Demo展示
-![\[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-Jl8q5tlv-1611061342596)(Doc/Images/001.png)\]](https://img-blog.csdnimg.cn/20210119210751389.PNG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70#pic_center)
-   ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210119210838657.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
+
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210203225619771.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2021020322562412.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210203225631300.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/202102032256353.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
+
 
 
 
@@ -62,25 +70,18 @@
 
 
 ---
-## 4 已知严重BUG
-&emsp;&emsp;
+## 4 开发计划
 
-
----
-## 5 开发计划
-
-### 5.1. 打开数据  
+* **打开数据**  
 * [x] 打开 dcm 文件  
 * [x] 打开 dcm 文件夹  
-* [ ] 打开 dcmzip 文件（未做）  
----
-### 5.2. 导出数据  
+* [ ] 打开 dcmzip 文件  
+* **导出数据**  
 * [x] 导出当前图像 jpeg bmp ...
 * [x] 导出图片到剪贴板
 * [ ] 导出当前序列 pngs
 * [ ] 导出当前序列 mp4
----
-### 5.3. 显示ui
+* **显示ui**
 * [x] 屏幕分割显示布局
 * [x] 序列预览条
 * [x] 全屏
@@ -90,8 +91,7 @@
 * [x] 显示比例尺
 * [x] 设置显示字体
 * [x] 显示所有dicom标签
----
-### 5.4. 图片浏览器交互
+* **图片浏览器交互**
 * [x] 浏览序列
 * [x] 调整窗位窗宽
 * [x] 移动图像
@@ -102,39 +102,28 @@
 * [x] 自适应放大图像
 * [x] 100/200/400放大图像
 * [x] 测量长度/角度/矩形面积/椭圆面积/添加描述文字
-
-* [ ] 差值测量 
-* [ ] 脊柱侧弯测量
 * [x] 播放模式
----
-### 5.5. 图像处理
 * [x] 旋转
 * [x] 翻转
----
-### 5.6. 插件 
+* [ ] 差值测量 
+* [ ] 脊柱侧弯测量
+* **插件** 
 * [ ] 多平面重建(MPR)
-* [ ] 三维重建(体渲染)
+* [ ] 三维重建(VR 体渲染)
+* [x] 图像前处理（锐化、平滑、提取边缘、emboss滤波）
 * [ ] 图像融合
-* [ ] 减值操作
-* [ ] 图像前处理（锐化、平滑、提取边缘、emboss滤波）
----
-### 5.7. 数据库
-* [ ] 一个小型单机本地数据库（使用不舒服，后续重做）
-* [ ] 数据库浏览器（使用不舒服，后续重做）
----
-### 5.8. PACS 
+* **数据库**
+* [x] 一个小型单机本地数据库（使用不舒服，后续重做）
+* [x] 数据库浏览器（使用不舒服，后续重做）
+* **PACS** 
 * [x] 提供一个小型的pacs scp
 * [ ] 提供一个小型的pacs scu（未做）
 
-
-
-
-
-## 6 实现方法
-### 6.1 显示ui --- 屏幕分割显示布局
+## 4 实现方法
+### 4.1 显示ui --- 屏幕分割显示布局
 &emsp;&emsp;[Qt 实现 屏幕分割显示布局，可以任意拖拽显示](https://beondxin.blog.csdn.net/article/details/108679798)
 
-### 6.2 Dicom数据结构 ---- DicomImage --> QSharedData
+### 4.2 Dicom数据结构 ---- DicomImage --> QSharedData
 &emsp;&emsp;[把DicomImage封装成 QSharedData 使用 （显式共享）](https://beondxin.blog.csdn.net/article/details/108680479)
 
 &emsp;&emsp; 把**DicomImage**封装成 **QSharedData** ，让后利用**Qt**实现可视化。   
@@ -149,7 +138,7 @@
 &emsp;&emsp; &emsp;&emsp; │ │ │ │ └── SERIES （序列）  
 &emsp;&emsp; &emsp;&emsp; │ │ │ │ │ │ └── IMAGE （影像）  
 
-### 6.3 Dicom数据结构 ---- DicomImage --> Series
+### 4.3 Dicom数据结构 ---- DicomImage --> Series
 &emsp;&emsp;[Dicom数据结构 ---- DicomImage --＞ SeriesInstance](https://beondxin.blog.csdn.net/article/details/108681041)
 
 &emsp;&emsp; 根据协议可以知道每个**Series**中可以有单帧或多帧。  
@@ -168,26 +157,31 @@
 &emsp;&emsp; 涉及到Series，2D可视化肯定会有方向
 &emsp;&emsp;（多帧模式下）区分平面
 &emsp;&emsp;（单帧模式下）只有XY平面显示模式，另外两个平面表示**时间密度曲线**，与其相关打算作为插件用**opencv**做，所以这里封装的**Series**其余两个平面均指多帧模式。
-### 6.4 打开数据 ---- 打开 dcm 文件、打开 dcm 文件夹
+### 4.4 打开数据 ---- 打开 dcm 文件、打开 dcm 文件夹
 &emsp;&emsp;[Qt 实现 打开 文件/文件夹 同一个接口](https://beondxin.blog.csdn.net/article/details/108681757)  
 &emsp;&emsp;[Qt 实现一个批量加载线程（单线程）](https://beondxin.blog.csdn.net/article/details/108681908)  
 &emsp;&emsp;[Qt 实现一个 文件监听线程](https://beondxin.blog.csdn.net/article/details/108682045)  
 如何打开一个**dcm影像**：  
 &emsp;&emsp;[把DicomImage封装成 QSharedData 使用 （显式共享）](https://beondxin.blog.csdn.net/article/details/108680479) **2.4 DcmFileFormat 获取 常用标签/图片**  
-### 6.5 图片浏览器交互 ---- 框选ROI 自适应窗位窗宽  
+### 4.5 图片浏览器交互 ---- 框选ROI 自适应窗位窗宽  
 &emsp;&emsp;[Qt 实现 RubberBandDrag 框选](https://beondxin.blog.csdn.net/article/details/108682306)  
-### 6.6 图片浏览器交互 ---- 浏览序列
+### 4.6 图片浏览器交互 ---- 浏览序列
 &emsp;&emsp;[QGraphicsView 按住鼠标实现帧数切换](https://beondxin.blog.csdn.net/article/details/108682720)  
-### 6.7 Dcmtk Pacs 开发：小型dicom数据库（sqlite）
+### 4.7 Dcmtk Pacs 开发：小型dicom数据库（sqlite）
 &emsp;&emsp;[Dcmtk Pacs 开发：小型dicom数据库（sqlite）](https://blog.csdn.net/a15005784320/article/details/109058579)  
-### 6.8 Dcmtk Pacs 开发：StoreScp 实现
+### 4.8 Dcmtk Pacs 开发：StoreScp 实现
 &emsp;&emsp; [Dcmtk Pacs 开发：StoreScp 实现](https://blog.csdn.net/a15005784320/article/details/109058249)  
-### 6.9 Dcmtk Pacs 开发：Echo 实现
+### 4.9 Dcmtk Pacs 开发：Echo 实现
 &emsp;&emsp; [Dcmtk Pacs 开发：Echo 实现](https://blog.csdn.net/a15005784320/article/details/109057800)  
-### 6.10 DCMTK 遍历 DICOM 标签/Tags 并 可视化
+### 4.10 DCMTK 遍历 DICOM 标签/Tags 并 可视化
 &emsp;&emsp; [DCMTK 遍历 DICOM 标签/Tags 并 可视化](https://beondxin.blog.csdn.net/article/details/113005123)
-### 6.11 利用QTimer实现 Dicom 播放功能
+### 4.11 利用QTimer实现 Dicom 播放功能
 &emsp;&emsp; [利用QTimer实现 Dicom 播放功能](https://beondxin.blog.csdn.net/article/details/113063185)
+### 4.12 KISS Dicom Viewer：插件实现方法
+&emsp;&emsp; [KISS Dicom Viewer：插件实现方法](https://beondxin.blog.csdn.net/article/details/113620696)
+### 4.13 仿照小蚂蚁实现 sharpen smooth Edge Emboss
+&emsp;&emsp; [仿照小蚂蚁实现 sharpen smooth Edge Emboss](https://beondxin.blog.csdn.net/article/details/113620255)
 
-### 6.12 慢慢完善...
+### 4.x 慢慢完善...
 
+1. 优化前处理方法
