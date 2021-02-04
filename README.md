@@ -180,7 +180,14 @@
 &emsp;&emsp; [KISS Dicom Viewer：插件实现方法](https://beondxin.blog.csdn.net/article/details/113620696)
 ### 4.13 仿照小蚂蚁实现 sharpen smooth Edge Emboss
 &emsp;&emsp; [仿照小蚂蚁实现 sharpen smooth Edge Emboss](https://beondxin.blog.csdn.net/article/details/113620255)
+### 4.14 利用DCMTK实现dcm文件转图片 jpeg bmp dicom tiff pnm png
+&emsp;&emsp; [利用DCMTK实现dcm文件转图片 jpeg bmp dicom tiff pnm pngs](https://beondxin.blog.csdn.net/article/details/113663564)
+### 4.15 打开 DICOM zip文件
+&emsp;&emsp; [打开 DICOM zip文件](https://beondxin.blog.csdn.net/article/details/113663599)
+
+
+
+
 
 ### 4.x 慢慢完善...
 
-1. 优化前处理方法

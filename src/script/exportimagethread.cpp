@@ -113,20 +113,22 @@ void ExportImageThread::run() {
                     case EFT_32bitBMP:
                         result = di->writeBMP(ofile, 32, static_cast<quint32>(generate));
                         break;
-                    case EFT_JPEG: {/* 初始化JPEG插件 */
+                    case EFT_JPEG: { /* 初始化JPEG插件 */
                             DiJPEGPlugin plugin;
                             plugin.setQuality(static_cast<quint32>(jpeg_quality_));
                             plugin.setSampling(ESS_422);
                             result = di->writePluginFormat(&plugin, ofile, static_cast<quint32>(generate));
                         }
                         break;
-                    case EFT_PNG: {/* 初始化PNG插件 */
+#ifdef WITH_LIBPNG
+                    case EFT_PNG: { /* 初始化PNG插件 */
                             DiPNGPlugin pngPlugin;
                             pngPlugin.setInterlaceType(E_pngInterlaceAdam7);
                             pngPlugin.setMetainfoType(E_pngFileMetainfo);
                             result = di->writePluginFormat(&pngPlugin, ofile, static_cast<quint32>(generate));
                         }
                         break;
+#endif
                     case EFT_PastelPNM:
                         result = di->writePPM(ofile, MI_PastelColor, static_cast<quint32>(generate));
                         break;
