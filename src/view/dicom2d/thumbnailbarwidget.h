@@ -12,6 +12,18 @@ class DicomImageLabel;
 class ImageLoadThread;
 class DcmFileFormat;
 
+class UnzipDicomFile : public QThread {
+    Q_OBJECT
+  public:
+    explicit UnzipDicomFile() {}
+    virtual ~UnzipDicomFile() override {}
+    virtual void run() override;
+    void SetPath(const QString &path);
+  private:
+    QString path_;
+};
+
+
 class ThumbnailBarWidget : public QWidget {
     Q_OBJECT
 
@@ -66,7 +78,6 @@ class ThumbnailBarWidget : public QWidget {
     QList<DicomImageLabel *> imageLabelList;
     DicomImageLabel *currentImageLabel;
     QThread workerThread;
-
 };
 
 #endif // THUMBNAILBARWIDGET_H

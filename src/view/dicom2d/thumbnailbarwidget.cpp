@@ -10,6 +10,7 @@
 #include "filewatcherthread.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include <QTimer>
+#include "JlCompress.h"
 
 //-------------------------------------------------------
 ThumbnailBarWidget::ThumbnailBarWidget(QWidget *parent) :
@@ -135,7 +136,22 @@ void ThumbnailBarWidget::setImagePaths(const QStringList &paths) {
 }
 
 //-------------------------------------------------------
-void ThumbnailBarWidget::appendImagePaths(const QStringList &paths, bool clear_old) {
+void ThumbnailBarWidget::appendImagePaths(
+    const QStringList &paths, bool clear_old) {
+    emit Signal_ImageLoadBegin();
+    if(1 == paths.size() && paths.first().right(4) == ".zip") {
+        QPointer<UnzipDicomFile> script_recoery_;
+        script_recoery_ = new UnzipDicomFile();
+        connect(script_recoery_, &UnzipDicomFile::finished,
+        this, [&] {
+            appendImagePaths(QStringList() << "./ZipCache", true);
+        });
+        connect(script_recoery_, &UnzipDicomFile::finished,
+                script_recoery_, &UnzipDicomFile::deleteLater);
+        script_recoery_->SetPath(paths.first());
+        script_recoery_->start();
+        return;
+    }
     QStringList path_list = paths;
     QStringList files;
     QStringList unloaded_files;
@@ -177,13 +193,13 @@ void ThumbnailBarWidget::appendImagePaths(const QStringList &paths, bool clear_o
                  << "files. That's too much";
         return;
     }
-    emit Signal_ImageLoadBegin();
     OFLog::configure(OFLogger::WARN_LOG_LEVEL);
     foreach (const QString &p, unloaded_files) {
         QApplication::processEvents();
         Slot_ImagePathReady(p);
     }
     OFLog::configure(OFLogger::INFO_LOG_LEVEL);
+    Kiss::FileUtil::DirRemove("./ZipCache");
     emit Signal_ImageLoadFinished();
 }
 
@@ -229,7 +245,8 @@ void ThumbnailBarWidget::Slot_ImagePathReady(const QString path) {
     }
     if ((!inserted) && image) {
         DicomImageLabel *imageLabel =
-            new DicomImageLabel(new SeriesInstance(image->GetSeriesUid()));
+            new DicomImageLabel(
+            new SeriesInstance(image->GetSeriesUid()));
         if(imageLabel->insertImage(image)) {
             connect(imageLabel, &DicomImageLabel::Signal_ImageClicked,
                     this, &ThumbnailBarWidget::SLot_ImageClicked);
@@ -250,11 +267,13 @@ void ThumbnailBarWidget::Slot_ImagePathReady(const QString path) {
 
 
 //-------------------------------------------------------
-void ThumbnailBarWidget::Slot_FilesChanged(const QStringList &removed,
-        const QStringList &added) {
+void ThumbnailBarWidget::Slot_FilesChanged(
+    const QStringList &removed,
+    const QStringList &added) {
     foreach (const QString &f, removed) {
         foreach (DicomImageLabel *l, imageLabelList) {
-            if (l->removeImage(f) && l->getSeriesInstance()->IsEmpty()) {
+            if (l->removeImage(f) &&
+                    l->getSeriesInstance()->IsEmpty()) {
                 layout->removeWidget(l);
                 imageLabelList.removeOne(l);
                 if (currentImageLabel == l) {
@@ -272,7 +291,8 @@ void ThumbnailBarWidget::Slot_FilesChanged(const QStringList &removed,
 }
 
 //-------------------------------------------------------
-void ThumbnailBarWidget::SLot_ImageClicked(DicomImageLabel *imageLabel) {
+void ThumbnailBarWidget::SLot_ImageClicked(
+    DicomImageLabel *imageLabel) {
     if (currentImageLabel != imageLabel) {
         if (currentImageLabel) {
             currentImageLabel->select_ = false;
@@ -287,7 +307,8 @@ void ThumbnailBarWidget::SLot_ImageClicked(DicomImageLabel *imageLabel) {
 }
 
 //-------------------------------------------------------
-void ThumbnailBarWidget::Slot_ImageDoubleClicked(DicomImageLabel *imageLabel) {
+void ThumbnailBarWidget::Slot_ImageDoubleClicked(
+    DicomImageLabel *imageLabel) {
     if (currentImageLabel) {
         currentImageLabel->select_ = false;
         currentImageLabel->setHighlight(false);
@@ -337,4 +358,17 @@ void ThumbnailBarWidget::clear() {
     qDeleteAll(imageLabelList);
     imageLabelList.clear();
     currentImageLabel = nullptr;
+}
+
+//-------------------------------------------------------
+void UnzipDicomFile::run() {
+    Kiss::FileUtil::DirRemove("./ZipCache");
+    Kiss::FileUtil::DirMake("./ZipCache/");
+    JlCompress::extractDir(this->path_, "./ZipCache/");
+}
+
+//-------------------------------------------------------
+void UnzipDicomFile::SetPath(
+    const QString &path) {
+    this->path_ = path;
 }

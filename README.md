@@ -1,4 +1,4 @@
-
+﻿
 &emsp;&emsp;开发中......  
 
 项目地址：
@@ -75,7 +75,7 @@
 * **打开数据**  
 * [x] 打开 dcm 文件  
 * [x] 打开 dcm 文件夹  
-* [ ] 打开 dcmzip 文件  
+* [x] 打开 dcmzip 文件
 * **导出数据**  
 * [x] 导出当前显示图像 jpeg bmp dicom tiff pnm png   
 * [x] 导出图片到剪贴板  

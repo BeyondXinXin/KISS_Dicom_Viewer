@@ -7,6 +7,8 @@ configure_file(
     "${PROJECT_SOURCE_DIR}/global/KissDicomViewConfig.h"
     )
 
+include_directories(${3rdparty_Path})
+
 file(GLOB_RECURSE SOURCES "*.cpp" "*.cxx" "*.cc")
 file(GLOB_RECURSE RESOURCES "*.qrc")
 file(GLOB_RECURSE HEADERS "*.h")
@@ -28,6 +30,8 @@ if(WIN32)
         Qt5::Network
         Qt5::Concurrent
         ${DCMTK_LIBRARIES}
+        quazip5
+        ${QUAZIP_LIBRARIES}
         )
 else()
     add_library(KissDicomViewer_sharde SHARED ${SRCS})
@@ -41,6 +45,8 @@ else()
         Qt5::Network
         Qt5::Concurrent
         ${DCMTK_LIBRARIES}
+        quazip5
+        ${QUAZIP_LIBRARIES}
         )
 endif()
 

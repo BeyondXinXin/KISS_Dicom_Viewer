@@ -310,7 +310,6 @@ void DicomViewer::SetupZoomTool() {
 void DicomViewer::SetupFlipTool() {
     // Menu
     QMenu *m;
-    QAction *a;
     m = new QMenu(this);
     m->addAction(QIcon(":/png/rrotate.png"), tr("Rotate CW"), this, [&] {
         ui->viewContainer->SetOperation(DicomImageView::RoateCW);
@@ -368,11 +367,15 @@ void DicomViewer::SetupConnection() {
             ui->viewContainer, SLOT(SLot_SeriesAppend()));
     // thumbnailBar <==> DicomViewer
     connect(ui->thumbnailBar, &ThumbnailBarWidget::Signal_ImageLoadBegin,
-            this, [&] {ui->tool_widget->setVisible(0);});
+    this, [&] {
+        ui->tool_widget->setVisible(0);
+        this->update();
+    });
     connect(ui->thumbnailBar, &ThumbnailBarWidget::Signal_ImageLoadFinished,
-            this, [&] {ui->tool_widget->setVisible(1);
-                       ui->viewContainer->ImageLoadFinished();
-                      });
+    this, [&] {
+        ui->tool_widget->setVisible(1);
+        ui->viewContainer->ImageLoadFinished();
+    });
 }
 
 //-----------------------------------------------

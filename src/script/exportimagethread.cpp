@@ -186,7 +186,7 @@ void ExportImageThread::SetLeafletPng(
     image_files_ << image;
 }
 
-
+//----------------------------------------------------------------
 void ExportImageThread::SetDestDir(const QString &dir) {
     dest_dir_ = dir;
 }
@@ -220,3 +220,4 @@ QString ExportImageThread::GetSuffix(const DicomImage *di) {
     }
     return ext;
 }
+

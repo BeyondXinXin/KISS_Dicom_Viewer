@@ -4,6 +4,9 @@
 #include <QThread>
 #include <QStringList>
 
+
+
+
 class DicomImage;
 class ExportImageThread : public QThread {
     Q_OBJECT

@@ -55,6 +55,7 @@ configure_file(${PROJECT_SOURCE_DIR}/cmake/KissDicomViewerConfig.cmake.in
   "${PROJECT_BINARY_DIR}/KissDicomViewerConfig.cmake" @ONLY)
 
 # Set up the compiled project
+add_subdirectory(3rdparty)
 add_subdirectory(src)
 add_subdirectory(apps)
 
