@@ -1,4 +1,4 @@
-#ifndef EXPORTIMAGEDIALOG_H
+﻿#ifndef EXPORTIMAGEDIALOG_H
 #define EXPORTIMAGEDIALOG_H
 
 #include <QDialog>
@@ -14,9 +14,10 @@ class ExportImageDialog : public QDialog {
   public:
     explicit ExportImageDialog(QWidget *parent = nullptr);
     ~ExportImageDialog();
-
-    void SetImageFiles(const QStringList &images);
-
+    void SetMultiplePng(const QStringList &images);
+    void SetLeafletPng(const bool &leaflet,
+                       const int &frame,
+                       const QString &image);
   protected:
     void closeEvent(QCloseEvent *e);
 
@@ -25,7 +26,6 @@ class ExportImageDialog : public QDialog {
     void Slot_SelectFolder();
     void Slot_ExportFinished();
     void Slot_ResultReady(const QString &msg);
-
   private:
     void Initialization();
   private:

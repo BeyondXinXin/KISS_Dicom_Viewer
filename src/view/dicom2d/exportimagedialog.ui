@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>623</width>
-    <height>548</height>
+    <height>619</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -288,6 +288,18 @@
       </item>
       <item>
        <widget class="QPushButton" name="selectFolderButton">
+        <property name="minimumSize">
+         <size>
+          <width>107</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>107</width>
+          <height>32</height>
+         </size>
+        </property>
         <property name="text">
          <string>Select Folder</string>
         </property>
@@ -329,6 +341,18 @@
      </item>
      <item>
       <widget class="QPushButton" name="startBtn">
+       <property name="minimumSize">
+        <size>
+         <width>80</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>32</height>
+        </size>
+       </property>
        <property name="text">
         <string>Start</string>
        </property>
@@ -339,6 +363,18 @@
      </item>
      <item>
       <widget class="QPushButton" name="closeBtn">
+       <property name="minimumSize">
+        <size>
+         <width>80</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>32</height>
+        </size>
+       </property>
        <property name="text">
         <string>Close</string>
        </property>

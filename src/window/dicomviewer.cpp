@@ -110,8 +110,11 @@ void DicomViewer::SetupExportTool() {
     // Menu
     QMenu *m;
     m = new QMenu(this);
+    m->addAction(tr("Export image"), this, [&] {
+        ui->viewContainer->ExportImage();
+    });
     m->addAction(tr("Export images"), this, [&] {
-        ui->viewContainer->exportImages();
+        ui->viewContainer->ExportImages();
     });
     m->addAction(tr("Copy to clipboard"), this, [&] {
         ui->viewContainer->copyToClipboard();
@@ -119,7 +122,7 @@ void DicomViewer::SetupExportTool() {
     ui->exportBtn->setMenu(m);
     // connect
     connect(ui->exportBtn, &QToolButton::clicked, this, [&] {
-        ui->viewContainer->exportImages();
+        ui->viewContainer->ExportImages();
     });
 }
 

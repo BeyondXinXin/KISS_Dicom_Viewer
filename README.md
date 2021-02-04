@@ -77,13 +77,12 @@
 * [x] 打开 dcm 文件夹  
 * [ ] 打开 dcmzip 文件  
 * **导出数据**  
-* [x] 导出当前图像 jpeg bmp ...
-* [x] 导出图片到剪贴板
-* [ ] 导出当前序列 pngs
-* [ ] 导出当前序列 mp4
+* [x] 导出当前显示图像 jpeg bmp dicom tiff pnm png   
+* [x] 导出图片到剪贴板  
+* [x] 导出当前序列 jpegs bmps dicoms tiffs pnms pngs   
 * **显示ui**
-* [x] 屏幕分割显示布局
-* [x] 序列预览条
+* [x] 屏幕分割显示布局  
+* [x] 序列预览条  
 * [x] 全屏
 * [x] 显示注释
 * [x] 显示鼠标位置和灰度

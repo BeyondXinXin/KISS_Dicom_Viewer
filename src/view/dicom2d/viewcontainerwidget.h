@@ -45,7 +45,8 @@ class ViewContainerWidget : public QWidget {
     void Slot_SetViewLayout(int col, int row);
     void clear();
     // VIEW SLOTS
-    void exportImages();
+    void ExportImages();
+    void ExportImage();
     void copyToClipboard();
     void showAnnotations(bool yes);
     void showMeasurements(bool yes);

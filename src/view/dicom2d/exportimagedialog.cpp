@@ -50,35 +50,33 @@ void ExportImageDialog::Slot_Start(bool checked) {
         }
         if (ui->bmpRadio->isChecked()) {
             if (ui->bmp8BitRadio->isChecked()) {
-                export_thread_->setFileType(ExportImageThread::EFT_8bitBMP);
+                export_thread_->SetFileType(ExportImageThread::EFT_8bitBMP);
             } else if (ui->bmp24BitRadio->isChecked()) {
-                export_thread_->setFileType(ExportImageThread::EFT_24bitBMP);
+                export_thread_->SetFileType(ExportImageThread::EFT_24bitBMP);
             } else if (ui->bmp32BitRadio->isChecked()) {
-                export_thread_->setFileType(ExportImageThread::EFT_32bitBMP);
+                export_thread_->SetFileType(ExportImageThread::EFT_32bitBMP);
             } else {
-                export_thread_->setFileType(ExportImageThread::EFT_BMP);
+                export_thread_->SetFileType(ExportImageThread::EFT_BMP);
             }
         } else if (ui->dicomRadio->isChecked()) {
-            export_thread_->setFileType(ExportImageThread::EFT_Dicom);
+            export_thread_->SetFileType(ExportImageThread::EFT_Dicom);
         } else if (ui->jpegRadio->isChecked()) {
-            export_thread_->setFileType(ExportImageThread::EFT_JPEG);
-            export_thread_->setJpegQuality(
-                static_cast<quint32>(ui->jpegQualitySlider->value())
-            );
+            export_thread_->SetFileType(ExportImageThread::EFT_JPEG);
+            export_thread_->SetJpegQuality(ui->jpegQualitySlider->value());
         } else if (ui->tiffRadio->isChecked()) {
-            export_thread_->setFileType(ExportImageThread::EFT_TIFF);
+            export_thread_->SetFileType(ExportImageThread::EFT_TIFF);
         } else if (ui->pnmRadio->isChecked()) {
             if (ui->pnm8BitRadio->isChecked()) {
-                export_thread_->setFileType(ExportImageThread::EFT_8bitPNM);
+                export_thread_->SetFileType(ExportImageThread::EFT_8bitPNM);
             } else if (ui->pnm16BitRadio->isChecked()) {
-                export_thread_->setFileType(ExportImageThread::EFT_16bitPNM);
+                export_thread_->SetFileType(ExportImageThread::EFT_16bitPNM);
             } else if (ui->pnmPastelRadio->isChecked()) {
-                export_thread_->setFileType(ExportImageThread::EFT_PastelPNM);
+                export_thread_->SetFileType(ExportImageThread::EFT_PastelPNM);
             } else {
-                export_thread_->setFileType(ExportImageThread::EFT_RawPNM);
+                export_thread_->SetFileType(ExportImageThread::EFT_RawPNM);
             }
         } else if (ui->pngRadio->isChecked()) {
-            export_thread_->setFileType(ExportImageThread::EFT_PNG);
+            export_thread_->SetFileType(ExportImageThread::EFT_PNG);
         } else {
             return;
         }
@@ -88,11 +86,11 @@ void ExportImageDialog::Slot_Start(bool checked) {
         ui->progressBar->setMaximum(image_count_);
         ui->progressBar->setValue(0);
         ui->textBrowser->append(tr("Start exporting..."));
-        export_thread_->setAbort(false);
-        export_thread_->setDestDir(ui->exportDestEdit->text());
+        export_thread_->SetAbort(false);
+        export_thread_->SetDestDir(ui->exportDestEdit->text());
         export_thread_->start();
     } else {
-        export_thread_->setAbort(true);
+        export_thread_->SetAbort(true);
     }
 }
 
@@ -111,16 +109,23 @@ void ExportImageDialog::Slot_ResultReady(const QString &msg) {
 }
 
 //-------------------------------------------------------
-void ExportImageDialog::SetImageFiles(const QStringList &images) {
-    export_thread_->setImageFiles(images);
+void ExportImageDialog::SetMultiplePng(const QStringList &images) {
+    export_thread_->SetMultiplePng(images);
     image_count_ = images.size();
+    ui->textBrowser->append(tr("%1 images to export.").arg(image_count_));
+}
+
+//-------------------------------------------------------
+void ExportImageDialog::SetLeafletPng(const bool &leaflet,
+                                      const int &frame, const QString &image) {
+    export_thread_->SetLeafletPng(leaflet, frame, image);
+    image_count_ = 1;
     ui->textBrowser->append(tr("%1 images to export.").arg(image_count_));
 }
 
 //-------------------------------------------------------
 void ExportImageDialog::Initialization() {
     ui->bmpGroup->setVisible(false);
-    //ui->jpegGroup->setVisible(false);
     ui->pnmGroup->setVisible(false);
     //
     connect(ui->bmpRadio, SIGNAL(toggled(bool)),

@@ -290,13 +290,32 @@ void ViewContainerWidget::clear() {
 }
 
 //-------------------------------------------------------
-void ViewContainerWidget::exportImages() {
+void ViewContainerWidget::ExportImages() {
+    if (current_view_ && current_view_->GetSeriesInstance()) {
+        QMap<int, ImageInstance *> insts =
+            current_view_->GetSeriesInstance()->GetImageInstanceMap();
+        QStringList paths;
+        foreach (auto var, insts.values()) {
+            paths << var->GetImageFile();
+        }
+        if(!paths.isEmpty()) {
+            ExportImageDialog d;
+            d.SetMultiplePng(paths);
+            d.exec();
+        }
+    }
+}
+
+//-------------------------------------------------------
+void ViewContainerWidget::ExportImage() {
     if (current_view_ && current_view_->GetSeriesInstance()) {
         ImageInstance *inst =
             current_view_->GetSeriesInstance()->GetCurrImageInstance(VT_XYPlane);
+        qint32 cur_index =
+            current_view_->GetSeriesInstance()->GetCurIndex(VT_XYPlane);
         if (inst) {
             ExportImageDialog d;
-            d.SetImageFiles(QStringList() << inst->GetImageFile());
+            d.SetLeafletPng(true, cur_index, inst->GetImageFile());
             d.exec();
         }
     }
