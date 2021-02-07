@@ -13,19 +13,24 @@
 # kissDicomViewer
 ## 1 Demo展示
 
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-7SB2tvaK-1612704912401)(vx_images/2297952220244.png)]
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215738975.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
 
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-TT6BBWj5-1612704912403)(vx_images/5211054238670.png)]
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215731176.gif)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215730987.gif)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215730938.gif)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215730626.gif)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215730494.gif)
 
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-Kt6gxlmT-1612704912404)(vx_images/5034714244667.png)]
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2021020721574924.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
 
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215756662.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
 
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-010Vypma-1612704912405)(vx_images/2255814247165.png)]
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2021020721580197.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207213048300.gif#pic_center)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215815761.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207213054778.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021020721305998.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215819503.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
+
 
 
 
