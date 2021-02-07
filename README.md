@@ -13,7 +13,8 @@
 # kissDicomViewer
 ## 1 Demo展示
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215738975.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207220052527.gif#pic_center)
+
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215731176.gif)
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215730987.gif)
