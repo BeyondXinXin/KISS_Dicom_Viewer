@@ -11,7 +11,7 @@
 
 @[TOC](kissDicomViewer)
 # kissDicomViewer
-## 1 Demo展示
+## Demo展示
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207220052527.gif#pic_center)
 
@@ -36,7 +36,7 @@
 
 
 ---
-## 2 前言
+## 1 前言
 &emsp;&emsp;一直没有找到一个合适的`Dicom`浏览器。`Windos`下的小蚂蚁(`RadiAnt Dicom Viewer`)很好用但可惜不是跨平台的，只有`Windos`版本。平时工作系统是`Ubuntu/Deepin`，虽然用`deepin-wine5`也可以安装`RadiAnt Dicom Viewer`但是跟`Windos`下比起来很多功能不能用，比如`pacs scu`，数据库（`rdvdb`）用`deepin-wine5`装的也有`bug`，小蚂蚁中文版还有很多乱码。  
 &emsp;&emsp;全平台都支持并且跟小蚂蚁一样又小又快的我找到两个`Papaya`和`DWV`，该有的功能很齐全，虽然开源但是一个是`JavaScript`一个是`lua`，如果想大改自己改也无从下手。  
 &emsp;&emsp;`ItkSnap`和`3DSlicer`也都是全平台的，都很强大而且都是开源的。架构都很好，可以自己任意开发插件添加进去。如果把这两个只当成`DICOM`浏览器实在有点大材小用。    
@@ -54,12 +54,12 @@
 
 
 ---
-## 3 软件介绍
-### 3.1 软件命名
+## 2 软件介绍
+### 2.1 软件命名
 &emsp;&emsp;**KISS Dicom Viewer**   
 &emsp;&emsp;
 &emsp;&emsp;&emsp;&emsp;**KISS**指：**Keep it Simple and Stupid**。
-### 3.2 第三方库
+### 2.2 第三方库
 - 界面 [Qt](https://www.qt.io/)  
 - DICOM协议相关用&emsp;[DCMTK](https://github.com/DCMTK/dcmtk)  
 - 数据库用&emsp;[Sqlite3](https://www.sqlite.org/index.html)  
@@ -70,17 +70,17 @@
 - 三维重建-体渲染用&emsp;   [QVTKOpenGLNativeWidget](https://vtk.org/doc/nightly/html/classQVTKOpenGLNativeWidget.html) + [ITK]()  
 - 图像融合和图像处理用&emsp; [Opencv](https://github.com/opencv/opencv)  
 
-### 3.3 程序架构
+### 2.3 程序架构
 &emsp;&emsp;想了下好像也没啥功能，只是个图片浏览器。简单的事件驱动就够了。
 
-### 3.4 代码规范
+### 2.4 代码规范
 &emsp;&emsp;目前还在开发阶段，而且是空余时间，没做代码优化逻辑很乱也不是很规范，到处抄的代码，命名也一塌糊涂，等想做的功能都实现了在`Reviewer`。
-### 3.5 Modality支持
+### 2.5 Modality支持
 &emsp;&emsp;目前适配的**Modality**包括**CT、XA、IVUS、OCT、US**，其余的可以浏览影像，但是注释等设置和交互参数只能为默认值。这个已经封装成`XML`配置，后续慢慢加。
 
 
 ---
-## 4 开发计划
+## 3 开发计划
 
 * **打开数据**  
 * [x] 打开 dcm 文件  
