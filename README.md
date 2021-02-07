@@ -1,4 +1,4 @@
-﻿
+
 &emsp;&emsp;开发中......  
 
 项目地址：
@@ -13,15 +13,19 @@
 # kissDicomViewer
 ## 1 Demo展示
 
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-7SB2tvaK-1612704912401)(vx_images/2297952220244.png)]
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210203225619771.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-TT6BBWj5-1612704912403)(vx_images/5211054238670.png)]
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021020322562412.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-Kt6gxlmT-1612704912404)(vx_images/5034714244667.png)]
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210203225631300.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/202102032256353.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-010Vypma-1612704912405)(vx_images/2255814247165.png)]
 
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207213048300.gif#pic_center)
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207213054778.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2021020721305998.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70)
 
 
 
@@ -75,14 +79,15 @@
 * **打开数据**  
 * [x] 打开 dcm 文件  
 * [x] 打开 dcm 文件夹  
-* [x] 打开 dcmzip 文件
+* [ ] 打开 dcmzip 文件  
 * **导出数据**  
-* [x] 导出当前显示图像 jpeg bmp dicom tiff pnm png   
-* [x] 导出图片到剪贴板  
-* [x] 导出当前序列 jpegs bmps dicoms tiffs pnms pngs   
+* [x] 导出当前图像 jpeg bmp ...
+* [x] 导出图片到剪贴板
+* [ ] 导出当前序列 pngs
+* [ ] 导出当前序列 mp4
 * **显示ui**
-* [x] 屏幕分割显示布局  
-* [x] 序列预览条  
+* [x] 屏幕分割显示布局
+* [x] 序列预览条
 * [x] 全屏
 * [x] 显示注释
 * [x] 显示鼠标位置和灰度
@@ -180,14 +185,7 @@
 &emsp;&emsp; [KISS Dicom Viewer：插件实现方法](https://beondxin.blog.csdn.net/article/details/113620696)
 ### 4.13 仿照小蚂蚁实现 sharpen smooth Edge Emboss
 &emsp;&emsp; [仿照小蚂蚁实现 sharpen smooth Edge Emboss](https://beondxin.blog.csdn.net/article/details/113620255)
-### 4.14 利用DCMTK实现dcm文件转图片 jpeg bmp dicom tiff pnm png
-&emsp;&emsp; [利用DCMTK实现dcm文件转图片 jpeg bmp dicom tiff pnm pngs](https://beondxin.blog.csdn.net/article/details/113663564)
-### 4.15 打开 DICOM zip文件
-&emsp;&emsp; [打开 DICOM zip文件](https://beondxin.blog.csdn.net/article/details/113663599)
-
-
-
-
 
 ### 4.x 慢慢完善...
 
+1. 优化前处理方法
