@@ -4,24 +4,22 @@
 详细介绍：[KISS Dicom Viewer : 一个简单的 DICOM 浏览器](https://beondxin.blog.csdn.net/article/details/108678403)  
 项目地址：[GitHub](https://github.com/BeyondXinXin/KISS-Dicom-Viewer)
 
-
-
 ---
 
 # kissDicomViewer
 ## Demo展示
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207220052527.gif#pic_center)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215731176.gif#pic_center)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215730987.gif#pic_center)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215730938.gif#pic_center)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215730626.gif#pic_center)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215730494.gif#pic_center)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021020721574924.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70#pic_center)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215756662.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70#pic_center)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021020721580197.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70#pic_center)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215815761.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70#pic_center)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210207215819503.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70#pic_center)
+![](https://cdn.jsdelivr.net/gh/BeyondXinXin/BeyondXinXIn@main/PixX/1.5rf17p9kj0o0.gif)
+![](https://img-blog.csdnimg.cn/20210207220052527.gif#pic_center)
+![](https://img-blog.csdnimg.cn/20210207215731176.gif#pic_center)
+![](https://img-blog.csdnimg.cn/20210207215730987.gif#pic_center)
+![](https://img-blog.csdnimg.cn/20210207215730938.gif#pic_center)
+![](https://img-blog.csdnimg.cn/20210207215730626.gif#pic_center)
+![](https://img-blog.csdnimg.cn/20210207215730494.gif#pic_center)
+![](https://img-blog.csdnimg.cn/2021020721574924.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70#pic_center)
+![](https://img-blog.csdnimg.cn/20210207215756662.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70#pic_center)
+![](https://img-blog.csdnimg.cn/2021020721580197.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70#pic_center)
+![](https://img-blog.csdnimg.cn/20210207215815761.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70#pic_center)
+![](https://img-blog.csdnimg.cn/20210207215819503.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2ExNTAwNTc4NDMyMA==,size_16,color_FFFFFF,t_70#pic_center)
 
 ---
 ## 开发计划
