@@ -8,7 +8,7 @@
 
 # kissDicomViewer
 ## Demo展示
-![](https://cdn.jsdelivr.net/gh/BeyondXinXin/BeyondXinXIn@main/PixX/1.5rf17p9kj0o0.gif)
+![](https://raw.githubusercontent.com/BeyondXinXin/BeyondXinXIn/main/PixX/1.5rf17p9kj0o0.gif#pic_center)
 ![](https://img-blog.csdnimg.cn/20210207220052527.gif#pic_center)
 ![](https://img-blog.csdnimg.cn/20210207215731176.gif#pic_center)
 ![](https://img-blog.csdnimg.cn/20210207215730987.gif#pic_center)
