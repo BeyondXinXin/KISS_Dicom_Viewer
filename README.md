@@ -1,6 +1,3 @@
-
-&emsp;&emsp;开发中......  
-
 详细介绍：[KISS Dicom Viewer : 一个简单的 DICOM 浏览器](https://beondxin.blog.csdn.net/article/details/108678403)  
 项目地址：[GitHub](https://github.com/BeyondXinXin/KISS-Dicom-Viewer)
 
