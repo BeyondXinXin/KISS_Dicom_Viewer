@@ -296,7 +296,8 @@ QString ImageInstanceData::GetTagKeyValue(const DcmTagKey & key) const
     if (dcmff_ && dcmff_->getDataset()) {
         dcmff_->getDataset()->findAndGetOFString(key, val);
     }
-    return QString::fromLocal8Bit(val.c_str());
+    QTextCodec * codec = QTextCodec::codecForName("GBK");
+    return codec->toUnicode(val.c_str());
 }
 
 //----------------------------------------------------------
