@@ -1,7 +1,6 @@
 ﻿#include "kisstabview.h"
 
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+#include "global/stable.h"
 
 //----------------------------------------------------------------
 KissTabView::KissTabView(QAbstractTableModel * model,

@@ -1,8 +1,6 @@
 ﻿#include "sqlimagemodel.h"
 #include "../studydao.h"
-
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+#include "global/stable.h"
 
 #include "dcmtk/dcmdata/dcuid.h"
 

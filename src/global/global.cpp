@@ -1,8 +1,8 @@
 ﻿#include "global.h"
 #include "global/KissDicomViewConfig.h"
-
+#include "global/stable.h"
+#include "global/stdafx.h"
 #include <dao/KissDb>
-#include <engine/KissEngine>
 
 //----------------------------------------------------------------
 namespace Kiss {

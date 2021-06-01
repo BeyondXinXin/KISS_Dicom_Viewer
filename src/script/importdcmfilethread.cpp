@@ -1,8 +1,9 @@
 ﻿#include "importdcmfilethread.h"
-
+#include "global/KissDicomViewConfig.h"
+#include "global/global.h"
+#include "global/stable.h"
+#include "global/studyrecord.h"
 #include <dao/KissDb>
-#include <engine/KissEngine>
-#include <global/KissGlobal>
 
 #include "dcmtk/dcmdata/dcuid.h"
 

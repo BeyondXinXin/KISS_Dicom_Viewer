@@ -2,7 +2,7 @@
 #define DICOMIMAGEVIEW_H
 
 #include "ImageData/seriesinstance.h"
-#include "engine/PluganInterface.h"
+#include "global/PluganInterface.h"
 #include "modalityproperty.h"
 #include "view/currency/videocontrolview.h"
 #include <QGraphicsSimpleTextItem>

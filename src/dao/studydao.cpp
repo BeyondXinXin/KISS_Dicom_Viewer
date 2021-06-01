@@ -1,7 +1,8 @@
 ﻿#include "studydao.h"
-
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+#include "global/KissDicomViewConfig.h"
+#include "global/global.h"
+#include "global/stable.h"
+#include "global/studyrecord.h"
 
 //----------------------------------------------------------------
 const QString StudyDao::study_table_name_ = "StudyTable";

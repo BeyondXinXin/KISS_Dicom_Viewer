@@ -1,8 +1,8 @@
 ﻿#include "abstractpathitem.h"
 #include "graphicssimpletextitem.h"
 
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+
+
 
 #define CURSOR_SIZE 8.0
 #define NORMAL_COLOR Qt::green

@@ -1,7 +1,6 @@
 ﻿#include "scandcmfilethread.h"
-
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+#include "global/global.h"
+#include "global/studyrecord.h"
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcdeftag.h"

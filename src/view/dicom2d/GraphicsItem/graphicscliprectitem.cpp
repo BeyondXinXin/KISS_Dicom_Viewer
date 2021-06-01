@@ -1,7 +1,5 @@
 ﻿#include "graphicscliprectitem.h"
-
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+#include "global/stable.h"
 
 #define NODE_SIZE 32
 #define MIN_CLIP_SIZE 300

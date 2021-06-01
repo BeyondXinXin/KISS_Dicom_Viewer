@@ -1,6 +1,5 @@
 ﻿#include "logdbmanager.h"
-
-#include <global/KissGlobal>
+#include "global/stable.h"
 
 //----------------------------------------------------------------
 const QString LogDao::kTableName = "LogTable";

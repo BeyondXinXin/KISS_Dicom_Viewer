@@ -6,7 +6,7 @@
 #include <QString>
 #include <QXmlStreamReader>
 
-#include <global/KissGlobal>
+
 
 typedef struct AnnoItem
 {

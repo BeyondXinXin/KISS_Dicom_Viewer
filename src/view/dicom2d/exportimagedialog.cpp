@@ -1,8 +1,7 @@
 ﻿#include "exportimagedialog.h"
+#include "global/stable.h"
 #include "ui_exportimagedialog.h"
 
-#include <engine/KissEngine>
-#include <global/KissGlobal>
 #include <script/KissScript>
 
 #define EXPORT_IMAGE_FOLDER "EXPORTIMAGEFOLDER"

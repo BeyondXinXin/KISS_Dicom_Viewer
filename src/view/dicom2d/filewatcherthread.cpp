@@ -1,7 +1,5 @@
 ﻿#include "filewatcherthread.h"
-
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+#include "global/stable.h"
 
 //--------------------------------------
 FileWatcherThread::FileWatcherThread(const QString & dir, QObject * parent)

@@ -1,7 +1,5 @@
 ﻿#include "exportimagethread.h"
-
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+#include "global/stable.h"
 
 #include "dcmtk/dcmdata/dcrledrg.h"
 #include "dcmtk/dcmdata/dctk.h"

@@ -1,8 +1,8 @@
 ﻿#include "imageloadthread.h"
 
 #include <QPointer>
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+
+
 #include <view/KissView>
 
 //----------------------------------------------------------------

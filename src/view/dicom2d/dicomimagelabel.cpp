@@ -1,8 +1,6 @@
 ﻿#include "dicomimagelabel.h"
 #include "ImageData/seriesinstance.h"
-
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+#include "global/stable.h"
 
 #include "dcmtk/dcmdata/dcdeftag.h"
 

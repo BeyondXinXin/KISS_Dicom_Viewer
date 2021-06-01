@@ -1,9 +1,7 @@
 ﻿#include "logdbwidget.h"
+#include "global/KissDicomViewConfig.h"
 #include "ui_logdbwidget.h"
-
 #include <dao/KissDb>
-#include <engine/KissEngine>
-#include <global/KissGlobal>
 
 //----------------------------------------------------------------
 LogDbWidget::LogDbWidget(QWidget * parent)

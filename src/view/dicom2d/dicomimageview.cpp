@@ -1,7 +1,7 @@
 ﻿#include "dicomimageview.h"
 
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+
+
 
 #include "GraphicsItem/abstractpathitem.h"
 #include "GraphicsItem/graphicsangleitem.h"

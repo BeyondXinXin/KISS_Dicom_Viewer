@@ -1,7 +1,5 @@
 ﻿#include "graphicscrossitem.h"
-
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+#include "global/stable.h"
 
 #define NORMAL_COLOR Qt::red
 #define HIGHLIGHT_COLOR Qt::yellow

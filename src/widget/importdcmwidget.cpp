@@ -1,9 +1,8 @@
 ﻿#include "importdcmwidget.h"
+#include "global/KissDicomViewConfig.h"
+#include "global/stable.h"
 #include "ui_importdcmwidget.h"
-
 #include <dao/KissDb>
-#include <engine/KissEngine>
-#include <global/KissGlobal>
 
 #include "script/importdcmfilethread.h"
 #include "script/scandcmfilethread.h"

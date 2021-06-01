@@ -1,6 +1,6 @@
 ﻿#include "importstudymodel.h"
-
-#include <global/KissGlobal>
+#include "global/global.h"
+#include "global/studyrecord.h"
 
 //----------------------------------------------------------------
 ImportStudyModel::ImportStudyModel(QObject * parent)

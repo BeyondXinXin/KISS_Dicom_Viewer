@@ -4,12 +4,12 @@
 #include "logdbwidget.h"
 #include "widget/dicomtagswidget.h"
 #include <dao/KissDb>
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+
+
 
 #include <view/KissView>
 
-#include "engine/PluganInterface.h"
+#include "global/PluganInterface.h"
 
 //-----------------------------------------------
 DicomViewer::DicomViewer(DicomViewer::ViewerType type, QWidget * parent)
@@ -401,32 +401,34 @@ void DicomViewer::SetupPlugin()
     for (const QString & fileName : entryList) {
         QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
         QObject * plugin = loader.instance();
-        if (plugin) {
-            const auto i_pretreatment =
-              qobject_cast<PretreatmentInterface *>(plugin);
-            if (i_pretreatment) {
-                QMenu * m = ui->flipBtn->menu();
-                QAction * a;
-                QActionGroup * filter_group = new QActionGroup(this);
-                QMenu * filter = new QMenu("filter", this);
-                const QStringList texts = i_pretreatment->GetPretreatments();
-                foreach (const QString var, texts) {
-                    if (var.isEmpty()) {
-                        filter->addSeparator();
-                    } else {
-                        a = filter->addAction(var);
-                        Pretreatmen fun = i_pretreatment->PretreatmentFun(var);
-                        connect(a, &QAction::triggered, this, [=] {
-                            ui->viewContainer->SetPretreatmen(fun);
-                        });
-                        a->setCheckable(true);
-                        // a->setChecked(true);
-                        filter_group->addAction(a);
-                    }
-                }
-                m->addMenu(filter);
+        if (!plugin) {
+            return;
+        }
+        const auto i_pretreatment =
+          qobject_cast<PretreatmentInterface *>(plugin);
+        if (!i_pretreatment) {
+            return;
+        }
+        QMenu * m = ui->flipBtn->menu();
+        QAction * a;
+        QActionGroup * filter_group = new QActionGroup(this);
+        QMenu * filter = new QMenu("filter", this);
+        const QStringList texts = i_pretreatment->GetPretreatments();
+        foreach (const QString var, texts) {
+            if (var.isEmpty()) {
+                filter->addSeparator();
+            } else {
+                a = filter->addAction(var);
+                Pretreatmen fun = i_pretreatment->PretreatmentFun(var);
+                connect(a, &QAction::triggered, this, [=] {
+                    ui->viewContainer->SetPretreatmen(fun);
+                });
+                a->setCheckable(true);
+                // a->setChecked(true);
+                filter_group->addAction(a);
             }
         }
+        m->addMenu(filter);
     }
 }
 

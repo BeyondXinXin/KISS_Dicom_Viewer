@@ -1,15 +1,13 @@
 ﻿#include "studyexplorerwidget.h"
-#include "ui_studyexplorerwidget.h"
-
 #include "dicomviewer.h"
-
+#include "global/KissDicomViewConfig.h"
+#include "global/stable.h"
 #include "script/storescpthread.h"
+#include "ui_studyexplorerwidget.h"
 #include "widget/importdcmwidget.h"
 #include "widget/scpsettingview.h"
 
 #include <dao/KissDb>
-#include <engine/KissEngine>
-#include <global/KissGlobal>
 
 //----------------------------------------------------------------
 StudyExplorerWidget::StudyExplorerWidget(QWidget * parent)

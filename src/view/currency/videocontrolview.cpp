@@ -1,7 +1,7 @@
 ﻿#include "videocontrolview.h"
 #include "ui_videocontrolview.h"
 
-#include <engine/KissEngine>
+
 
 VideoControlView::VideoControlView(QWidget * parent)
   : QWidget(parent)

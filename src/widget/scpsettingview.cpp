@@ -1,9 +1,8 @@
 ﻿#include "scpsettingview.h"
-#include "ui_scpsettingview.h"
-
+#include "global/global.h"
+#include "global/stable.h"
 #include "script/echoscu.h"
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+#include "ui_scpsettingview.h"
 
 //-------------------------------------------------------
 ScpSettingView::ScpSettingView(QWidget * parent)

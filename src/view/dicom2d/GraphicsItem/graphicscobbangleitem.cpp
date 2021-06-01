@@ -2,8 +2,8 @@
 #include "graphicscrossitem.h"
 #include "graphicssimpletextitem.h"
 
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+
+
 
 #include "math.h"
 

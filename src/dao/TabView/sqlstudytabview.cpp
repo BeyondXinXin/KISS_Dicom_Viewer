@@ -1,9 +1,7 @@
 ﻿#include "sqlstudytabview.h"
 
 #include "../Model/sqlstudymodel.h"
-
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+#include "global/stable.h"
 
 //----------------------------------------------------------------
 SqlStudyTabView::SqlStudyTabView(QAbstractTableModel * model, QWidget * parent)

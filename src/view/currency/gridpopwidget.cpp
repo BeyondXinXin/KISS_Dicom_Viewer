@@ -1,8 +1,6 @@
 ﻿#include "gridpopwidget.h"
+#include "global/stable.h"
 #include "ui_gridpopwidget.h"
-
-#include <engine/KissEngine>
-#include <global/KissGlobal>
 
 #define NORMAL_STYLE "background-color: rgb(128, 128, 128);"
 #define HIGHLIGHT_STYLE "background-color: rgb(200, 200, 200);"

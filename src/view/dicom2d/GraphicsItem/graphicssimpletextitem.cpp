@@ -1,7 +1,7 @@
 ﻿#include "graphicssimpletextitem.h"
 
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+
+
 
 //----------------------------------------------------------------
 GraphicsSimpleTextItem::GraphicsSimpleTextItem(QGraphicsItem * parent)

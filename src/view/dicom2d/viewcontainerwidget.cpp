@@ -2,8 +2,7 @@
 #include "dicomimageview.h"
 #include "exportimagedialog.h"
 
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+#include "global/KissDicomViewConfig.h"
 
 #include "ImageData/imageinstance.h"
 #include "ImageData/seriesinstance.h"

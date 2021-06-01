@@ -1,7 +1,6 @@
 ﻿#include "sqlstudymodel.h"
-
 #include "../studydao.h"
-#include <global/KissGlobal>
+#include "global/global.h"
 
 //----------------------------------------------------------------
 SqlStudyModel::SqlStudyModel(QObject * parent, QSqlDatabase db)

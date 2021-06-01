@@ -1,7 +1,6 @@
 ﻿#include "dbmanager.h"
-
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+#include "global/KissDicomViewConfig.h"
+#include "global/stable.h"
 
 //----------------------------------------------------------------
 QSqlDatabase DbManager::data_base;

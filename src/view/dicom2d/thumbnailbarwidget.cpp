@@ -1,8 +1,7 @@
 ﻿#include "thumbnailbarwidget.h"
 #include "dicomimagelabel.h"
-
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+#include "global/global.h"
+#include "global/stable.h"
 #include <script/KissScript>
 
 #include "ImageData/imageinstance.h"

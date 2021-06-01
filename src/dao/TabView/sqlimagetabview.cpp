@@ -1,9 +1,6 @@
 ﻿#include "sqlimagetabview.h"
-
 #include "../Model/sqlimagemodel.h"
-
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+#include "global/stable.h"
 
 //----------------------------------------------------------------
 SqlImageTabView::SqlImageTabView(QAbstractTableModel * model, QWidget * parent)

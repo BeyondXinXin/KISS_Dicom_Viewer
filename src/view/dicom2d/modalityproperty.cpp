@@ -1,7 +1,5 @@
 ﻿#include "modalityproperty.h"
-
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+#include "global/stable.h"
 
 //-------------------------------------------------------
 ModalityProperty * ModalityProperty::instance = nullptr;

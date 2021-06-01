@@ -1,7 +1,5 @@
 ﻿#include "imageinstancedata.h"
-
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+#include "global/stable.h"
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcdeftag.h"

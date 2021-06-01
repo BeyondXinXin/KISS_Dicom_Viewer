@@ -1,8 +1,6 @@
 ﻿#include "seriesinstance.h"
+#include "global/KissDicomViewConfig.h"
 #include "imageinstance.h"
-
-#include <engine/KissEngine>
-#include <global/KissGlobal>
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcdeftag.h"

@@ -1,7 +1,7 @@
 ﻿#include "graphicsarrowitem.h"
 
-#include <engine/KissEngine>
-#include <global/KissGlobal>
+
+
 
 #define ARROW_SIZE (12.0 * zoomFactor)
 

@@ -1,5 +1,6 @@
-﻿#include <global/KissGlobal>
-#include <engine/KissEngine>
+﻿#include "global/KissDicomViewConfig.h"
+#include "global/global.h"
+#include "global/stable.h"
 #include <window/KissWindow>
 
 //----------------------------------------------------------------

@@ -5,7 +5,7 @@
 #include "global/global.h"
 #include "ui_dicomtagswidget.h"
 #include <QTreeWidget>
-#include <engine/KissEngine>
+
 
 template<typename T>
 class NewDcmItem : public T
