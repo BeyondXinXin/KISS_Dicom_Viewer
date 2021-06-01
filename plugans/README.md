@@ -26,27 +26,27 @@
 * [x] 17.vr包围盒剪裁交互
 * [x] 18.上传编译后第三方库
 * [x] 19.CPR 选点
-* [ ] 20.CPR 可视化
-* [ ] 21.vs2019
+* [x] 20.CPR 可视化
+* [x] 21.vs2019
 
 
 ## 开源库版本和配置选项
 
 * CMake-3.17.2  
 * Qt-5.15.2   
-&emsp;&emsp;&emsp;msvc2015 64
+&emsp;&emsp;&emsp;msvc2019 64
 * VTK-9.0.1  
 &emsp;&emsp;&emsp;VTK_GROUP_ENABLE_Qt  ON  
 &emsp;&emsp;&emsp;VTK_MODULE_ENABLE_VTK_GUISupportQt  ON  
 &emsp;&emsp;&emsp;VTK_MODULE_ENABLE_VTK_GUISupportQtSQL  ON  
 &emsp;&emsp;&emsp;VTK_MODULE_ENABLE_VTK_RenderingQt  ON  
 &emsp;&emsp;&emsp;VTK_MODULE_ENABLE_VTK_ViewsQt  ON  
-&emsp;&emsp;&emsp;Qt5_DIR C:/Qt/5.15.2/msvc2015_64/lib/cmake/  
+&emsp;&emsp;&emsp;Qt5_DIR 
 * ITK-5.1.2  
 &emsp;&emsp;&emsp;INSTALL_GTEST OFF  
 &emsp;&emsp;&emsp;BULID_TESTING OFF  
 &emsp;&emsp;&emsp;Module_ITKVtkGlue ON  
-&emsp;&emsp;&emsp;VTK_DIR  D:/lib/VTK-9.1.0/bulid  
+&emsp;&emsp;&emsp;VTK_DIR  
 * DCMTK-3.6.5  
 &emsp;&emsp;&emsp;DCMTK_ENABLE_STL_STRING  ON  
 &emsp;&emsp;&emsp;BULID_SHARED_LIBS  ON  
