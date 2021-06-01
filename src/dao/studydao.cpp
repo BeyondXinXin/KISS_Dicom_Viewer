@@ -1,33 +1,36 @@
 ﻿#include "studydao.h"
 
-#include <global/KissGlobal>
 #include <engine/KissEngine>
+#include <global/KissGlobal>
 
 //----------------------------------------------------------------
 const QString StudyDao::study_table_name_ = "StudyTable";
 const QString StudyDao::image_table_name_ = "ImageTable";
 
 //----------------------------------------------------------------
-StudyDao::StudyDao(QObject *parent):
-    QObject(parent) {
+StudyDao::StudyDao(QObject * parent)
+  : QObject(parent)
+{
 }
 
 //----------------------------------------------------------------
-StudyDao::~StudyDao() {
+StudyDao::~StudyDao()
+{
 }
 
 //----------------------------------------------------------------
-bool StudyDao::InsertStudyToDb(const StudyRecord &study, bool imported) {
+bool StudyDao::InsertStudyToDb(const StudyRecord & study, bool imported)
+{
     Q_UNUSED(imported)
     bool success = false;
-    if(DbManager::OpenDb()) {
+    if (DbManager::OpenDb()) {
         QMap<QString, QVariant> data;
         data.insert("StudyUid", study.study_uid_);
         data.insert("AccNumber", study.acc_number_);
         data.insert("PatientId", study.patient_id_);
         data.insert("PatientName", study.patient_name_);
         data.insert("PatientSex", study.patient_sex_);
-        if(study.patient_birth_.toString("yyyy-MM-dd").isEmpty()) {
+        if (study.patient_birth_.toString("yyyy-MM-dd").isEmpty()) {
             data.insert("PatientBirth", "");
         } else {
             data.insert("PatientBirth", study.patient_birth_.toString("yyyy-MM-dd"));
@@ -46,12 +49,13 @@ bool StudyDao::InsertStudyToDb(const StudyRecord &study, bool imported) {
 }
 
 //----------------------------------------------------------------
-bool StudyDao::RemoveStudyFromDb(const QString &study_uid) {
+bool StudyDao::RemoveStudyFromDb(const QString & study_uid)
+{
     bool success = false;
     if (study_uid.isEmpty()) {
         return false;
     }
-    if(DbManager::OpenDb()) {
+    if (DbManager::OpenDb()) {
         QString where = QString("StudyUid = '%1'").arg(study_uid);
         if (DbManager::remove(study_table_name_, where)) {
             success = true;
@@ -68,12 +72,13 @@ bool StudyDao::RemoveStudyFromDb(const QString &study_uid) {
  * @param study_uid
  * @return
  */
-bool StudyDao::VerifyStudyByStuid(const QString &study_uid) {
+bool StudyDao::VerifyStudyByStuid(const QString & study_uid)
+{
     bool success = false;
     if (study_uid.isEmpty()) {
         return false;
     }
-    if(DbManager::OpenDb()) {
+    if (DbManager::OpenDb()) {
         QStringList key_list;
         key_list.append("StudyUid");
         QString where = QString("StudyUid = '%1'").arg(study_uid);
@@ -89,10 +94,11 @@ bool StudyDao::VerifyStudyByStuid(const QString &study_uid) {
 }
 
 //----------------------------------------------------------------
-bool StudyDao::InsertImageToDb(const ImageRecord &image, bool imported) {
+bool StudyDao::InsertImageToDb(const ImageRecord & image, bool imported)
+{
     Q_UNUSED(imported)
     bool success = false;
-    if(DbManager::OpenDb()) {
+    if (DbManager::OpenDb()) {
         QMap<QString, QVariant> data;
         data.insert("ImageUid", image.image_uid_);
         data.insert("SopClassUid", image.sop_class_uid_);
@@ -112,7 +118,8 @@ bool StudyDao::InsertImageToDb(const ImageRecord &image, bool imported) {
 }
 
 //----------------------------------------------------------------
-bool StudyDao::RemoveImageFromDb(const QString &image_uid, bool updateStudy) {
+bool StudyDao::RemoveImageFromDb(const QString & image_uid, bool updateStudy)
+{
     Q_UNUSED(updateStudy)
     bool success = false;
     // select data && Remove file
@@ -126,7 +133,7 @@ bool StudyDao::RemoveImageFromDb(const QString &image_uid, bool updateStudy) {
         QList<QMap<QString, QVariant>> res;
         if (DbManager::select(image_table_name_, key_list, res, where)) {
             if (res.size() == 1) {
-                const QMap<QString, QVariant> &res0 = res.at(0);
+                const QMap<QString, QVariant> & res0 = res.at(0);
                 if (res0.size() == 1) {
                     QString image_file = res0.value("ImageFile").toString();
                     QString file = QString("./DcmFile/%2").arg(image_file);
@@ -141,7 +148,7 @@ bool StudyDao::RemoveImageFromDb(const QString &image_uid, bool updateStudy) {
     }
     DbManager::CloseDb();
     // remove data
-    if(DbManager::OpenDb()) {
+    if (DbManager::OpenDb()) {
         QString where = QString("ImageUid = '%1'").arg(image_uid);
         if (DbManager::remove(image_table_name_, where)) {
             success = true;
@@ -153,7 +160,8 @@ bool StudyDao::RemoveImageFromDb(const QString &image_uid, bool updateStudy) {
 
 //----------------------------------------------------------------
 bool StudyDao::RemoveAllImagesOfStudyFromDb(
-    const QString &study_uid, bool updateStudy) {
+  const QString & study_uid, bool updateStudy)
+{
     Q_UNUSED(updateStudy)
     if (study_uid.isEmpty()) {
         return false;
@@ -170,7 +178,7 @@ bool StudyDao::RemoveAllImagesOfStudyFromDb(
         if (DbManager::select(image_table_name_, key_list, res, where)) {
             if (res.size() >= 1) {
                 for (int i = 0; i < res.size(); i++) {
-                    const QMap<QString, QVariant> &res0 = res.at(i);
+                    const QMap<QString, QVariant> & res0 = res.at(i);
                     if (res0.size() == 1) {
                         image_uids << res0.value("ImageUid").toString();
                     }
@@ -187,7 +195,8 @@ bool StudyDao::RemoveAllImagesOfStudyFromDb(
 }
 
 //----------------------------------------------------------------
-bool StudyDao::UpdateImageFile(const QString &image_uid, const QString &image_file) {
+bool StudyDao::UpdateImageFile(const QString & image_uid, const QString & image_file)
+{
     if (image_uid.isEmpty()) {
         return false;
     }
@@ -196,7 +205,7 @@ bool StudyDao::UpdateImageFile(const QString &image_uid, const QString &image_fi
     }
     bool result = false;
     // Create StudyTable
-    QString str ;
+    QString str;
     str = "UPDATE ImageTable SET ImageFile=%1 WHERE ImageUid=%2";
     str = str.arg(image_uid, image_file);
     result = DbManager::ExecSqlStr(str);
@@ -204,12 +213,13 @@ bool StudyDao::UpdateImageFile(const QString &image_uid, const QString &image_fi
 }
 
 //----------------------------------------------------------------
-bool StudyDao::VerifyImageByIMmuid(const QString &image_uid) {
+bool StudyDao::VerifyImageByIMmuid(const QString & image_uid)
+{
     bool success = false;
     if (image_uid.isEmpty()) {
         return false;
     }
-    if(DbManager::OpenDb()) {
+    if (DbManager::OpenDb()) {
         QStringList key_list;
         key_list.append("ImageUid");
         QString where = QString("ImageUid = '%1'").arg(image_uid);
@@ -225,7 +235,8 @@ bool StudyDao::VerifyImageByIMmuid(const QString &image_uid) {
 }
 
 //----------------------------------------------------------------
-bool StudyDao::Initial() {
+bool StudyDao::Initial()
+{
     bool result = false;
     if (DbManager::OpenDb()) {
         bool exist;
@@ -248,10 +259,11 @@ bool StudyDao::Initial() {
 }
 
 //----------------------------------------------------------------
-bool StudyDao::CreateTable() {
+bool StudyDao::CreateTable()
+{
     bool result = false;
     // Create StudyTable
-    QString str ;
+    QString str;
     str = "CREATE TABLE IF NOT EXISTS StudyTable("
           "StudyUid VARCHAR(128) PRIMARY KEY NOT NULL,"
           "AccNumber VARCHAR(64) NOT NULL, PatientId VARCHAR(64) NOT NULL,"
@@ -284,20 +296,14 @@ bool StudyDao::CreateTable() {
 }
 
 //----------------------------------------------------------------
-bool StudyDao::CheckTable() {
+bool StudyDao::CheckTable()
+{
     bool ok1 = false;
     bool ok2 = false;
-    if (DbManager::IsExistTable(study_table_name_, ok1) &&
-            DbManager::IsExistTable(image_table_name_, ok2) ) {
+    if (DbManager::IsExistTable(study_table_name_, ok1) && DbManager::IsExistTable(image_table_name_, ok2)) {
         if (ok1 && ok2) {
             return true;
         }
     }
     return false;
 }
-
-
-
-
-
-

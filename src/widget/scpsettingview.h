@@ -3,25 +3,25 @@
 
 #include <QWidget>
 
-
 namespace Ui {
-    class ScpSettingView;
+class ScpSettingView;
 }
 
-class ScpSettingView : public QWidget {
+class ScpSettingView : public QWidget
+{
     Q_OBJECT
 
-  public:
-    explicit ScpSettingView(QWidget *parent = nullptr);
+public:
+    explicit ScpSettingView(QWidget * parent = nullptr);
     ~ScpSettingView();
 
-  private slots:
+private slots:
     void on_pushButton_2_clicked();
 
     void on_pushButton_clicked();
 
-  private:
-    Ui::ScpSettingView *ui;
+private:
+    Ui::ScpSettingView * ui;
 };
 
 #endif // SCPSETTINGVIEW_H

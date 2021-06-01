@@ -1,13 +1,13 @@
 #ifndef GRAPHICSSIMPLETEXTITEM_H
 #define GRAPHICSSIMPLETEXTITEM_H
 
-#include <QGraphicsSimpleTextItem>
 #include <QBrush>
+#include <QGraphicsSimpleTextItem>
 
 class GraphicsSimpleTextItem : public QGraphicsSimpleTextItem
 {
 public:
-    explicit GraphicsSimpleTextItem(QGraphicsItem* parent);
+    explicit GraphicsSimpleTextItem(QGraphicsItem * parent);
     void setHighlight(bool yes);
 };
 

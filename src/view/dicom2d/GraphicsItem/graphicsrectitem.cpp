@@ -1,6 +1,6 @@
 #include "graphicsrectitem.h"
-#include "graphicssimpletextitem.h"
 #include "graphicscrossitem.h"
+#include "graphicssimpletextitem.h"
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmimgle/dcmimage.h"
@@ -9,28 +9,32 @@
 #define TEXT_STYLE "Mean=%L1 SD=%L2\nMax=%L3 Min=%L4\nArea=%L5cm^2 (%L6 px)"
 
 //----------------------------------------------------------------
-GraphicsRectItem::GraphicsRectItem(QGraphicsItem *parent):
-    area(0),
-    updated(false),
-    AbstractPathItem(parent) {
+GraphicsRectItem::GraphicsRectItem(QGraphicsItem * parent)
+  : area(0)
+  , updated(false)
+  , AbstractPathItem(parent)
+{
     init();
 }
 
 //----------------------------------------------------------------
-void GraphicsRectItem::init() {
+void GraphicsRectItem::init()
+{
     tl = new GraphicsCrossItem(this);
     br = new GraphicsCrossItem(this);
 }
 
 //----------------------------------------------------------------
-void GraphicsRectItem::setActivePoint(const QPointF &point) {
+void GraphicsRectItem::setActivePoint(const QPointF & point)
+{
     br->setPos(point);
     update();
 }
 
 //----------------------------------------------------------------
-void GraphicsRectItem::recalPixInfo(const DicomImage *dcmImage) {
-    const DiPixel *pixel;
+void GraphicsRectItem::recalPixInfo(const DicomImage * dcmImage)
+{
+    const DiPixel * pixel;
     if (dcmImage && (pixel = dcmImage->getInterData())) {
         int width = dcmImage->getWidth();
         int height = dcmImage->getHeight();
@@ -47,72 +51,72 @@ void GraphicsRectItem::recalPixInfo(const DicomImage *dcmImage) {
         int yEnd = height < bottomRight.toPoint().y() ? height : bottomRight.toPoint().y();
         EP_Representation r = pixel->getRepresentation();
         switch (r) {
-            case EPR_Sint8:
-                for (int y = yStart; y < yEnd; ++y) {
-                    for (int x = xStart; x < xEnd; ++x) {
-                        val = *((qint8 *)(pixel->getData()) + (y * width + x));
-                        valCount += val;
-                        maxVal = maxVal < val ? val : maxVal;
-                        minVal = minVal < val ? minVal : val;
-                        pixCount++;
-                    }
+        case EPR_Sint8:
+            for (int y = yStart; y < yEnd; ++y) {
+                for (int x = xStart; x < xEnd; ++x) {
+                    val = *((qint8 *)(pixel->getData()) + (y * width + x));
+                    valCount += val;
+                    maxVal = maxVal < val ? val : maxVal;
+                    minVal = minVal < val ? minVal : val;
+                    pixCount++;
                 }
-                break;
-            case EPR_Uint8:
-                for (int y = yStart; y < yEnd; ++y) {
-                    for (int x = xStart; x < xEnd; ++x) {
-                        val = *((quint8 *)(pixel->getData()) + (y * width + x));
-                        valCount += val;
-                        maxVal = maxVal < val ? val : maxVal;
-                        minVal = minVal < val ? minVal : val;
-                        pixCount++;
-                    }
+            }
+            break;
+        case EPR_Uint8:
+            for (int y = yStart; y < yEnd; ++y) {
+                for (int x = xStart; x < xEnd; ++x) {
+                    val = *((quint8 *)(pixel->getData()) + (y * width + x));
+                    valCount += val;
+                    maxVal = maxVal < val ? val : maxVal;
+                    minVal = minVal < val ? minVal : val;
+                    pixCount++;
                 }
-                break;
-            case EPR_Sint16:
-                for (int y = yStart; y < yEnd; ++y) {
-                    for (int x = xStart; x < xEnd; ++x) {
-                        val = *((qint16 *)(pixel->getData()) + (y * width + x));
-                        valCount += val;
-                        maxVal = maxVal < val ? val : maxVal;
-                        minVal = minVal < val ? minVal : val;
-                        pixCount++;
-                    }
+            }
+            break;
+        case EPR_Sint16:
+            for (int y = yStart; y < yEnd; ++y) {
+                for (int x = xStart; x < xEnd; ++x) {
+                    val = *((qint16 *)(pixel->getData()) + (y * width + x));
+                    valCount += val;
+                    maxVal = maxVal < val ? val : maxVal;
+                    minVal = minVal < val ? minVal : val;
+                    pixCount++;
                 }
-                break;
-            case EPR_Uint16:
-                for (int y = yStart; y < yEnd; ++y) {
-                    for (int x = xStart; x < xEnd; ++x) {
-                        val = *((quint16 *)(pixel->getData()) + (y * width + x));
-                        valCount += val;
-                        maxVal = maxVal < val ? val : maxVal;
-                        minVal = minVal < val ? minVal : val;
-                        pixCount++;
-                    }
+            }
+            break;
+        case EPR_Uint16:
+            for (int y = yStart; y < yEnd; ++y) {
+                for (int x = xStart; x < xEnd; ++x) {
+                    val = *((quint16 *)(pixel->getData()) + (y * width + x));
+                    valCount += val;
+                    maxVal = maxVal < val ? val : maxVal;
+                    minVal = minVal < val ? minVal : val;
+                    pixCount++;
                 }
-                break;
-            case EPR_Sint32:
-                for (int y = yStart; y < yEnd; ++y) {
-                    for (int x = xStart; x < xEnd; ++x) {
-                        val = *((qint32 *)(pixel->getData()) + (y * width + x));
-                        valCount += val;
-                        maxVal = maxVal < val ? val : maxVal;
-                        minVal = minVal < val ? minVal : val;
-                        pixCount++;
-                    }
+            }
+            break;
+        case EPR_Sint32:
+            for (int y = yStart; y < yEnd; ++y) {
+                for (int x = xStart; x < xEnd; ++x) {
+                    val = *((qint32 *)(pixel->getData()) + (y * width + x));
+                    valCount += val;
+                    maxVal = maxVal < val ? val : maxVal;
+                    minVal = minVal < val ? minVal : val;
+                    pixCount++;
                 }
-                break;
-            case EPR_Uint32:
-                for (int y = yStart; y < yEnd; ++y) {
-                    for (int x = xStart; x < xEnd; ++x) {
-                        val = *((quint32 *)(pixel->getData()) + (y * width + x));
-                        valCount += val;
-                        maxVal = maxVal < val ? val : maxVal;
-                        minVal = minVal < val ? minVal : val;
-                        pixCount++;
-                    }
+            }
+            break;
+        case EPR_Uint32:
+            for (int y = yStart; y < yEnd; ++y) {
+                for (int x = xStart; x < xEnd; ++x) {
+                    val = *((quint32 *)(pixel->getData()) + (y * width + x));
+                    valCount += val;
+                    maxVal = maxVal < val ? val : maxVal;
+                    minVal = minVal < val ? minVal : val;
+                    pixCount++;
                 }
-                break;
+            }
+            break;
         }
         double mean = 0;
         if (pixCount > 0) {
@@ -120,64 +124,64 @@ void GraphicsRectItem::recalPixInfo(const DicomImage *dcmImage) {
         }
         double deviation = 0;
         switch (r) {
-            case EPR_Sint8:
-                for (int y = yStart; y < yEnd; ++y) {
-                    for (int x = xStart; x < xEnd; ++x) {
-                        val = *((qint8 *)(pixel->getData()) + (y * width + x));
-                        deviation += (val - mean) * (val - mean);
-                    }
+        case EPR_Sint8:
+            for (int y = yStart; y < yEnd; ++y) {
+                for (int x = xStart; x < xEnd; ++x) {
+                    val = *((qint8 *)(pixel->getData()) + (y * width + x));
+                    deviation += (val - mean) * (val - mean);
                 }
-                break;
-            case EPR_Uint8:
-                for (int y = yStart; y < yEnd; ++y) {
-                    for (int x = xStart; x < xEnd; ++x) {
-                        val = *((quint8 *)(pixel->getData()) + (y * width + x));
-                        deviation += (val - mean) * (val - mean);
-                    }
+            }
+            break;
+        case EPR_Uint8:
+            for (int y = yStart; y < yEnd; ++y) {
+                for (int x = xStart; x < xEnd; ++x) {
+                    val = *((quint8 *)(pixel->getData()) + (y * width + x));
+                    deviation += (val - mean) * (val - mean);
                 }
-                break;
-            case EPR_Sint16:
-                for (int y = yStart; y < yEnd; ++y) {
-                    for (int x = xStart; x < xEnd; ++x) {
-                        val = *((qint16 *)(pixel->getData()) + (y * width + x));
-                        deviation += (val - mean) * (val - mean);
-                    }
+            }
+            break;
+        case EPR_Sint16:
+            for (int y = yStart; y < yEnd; ++y) {
+                for (int x = xStart; x < xEnd; ++x) {
+                    val = *((qint16 *)(pixel->getData()) + (y * width + x));
+                    deviation += (val - mean) * (val - mean);
                 }
-                break;
-            case EPR_Uint16:
-                for (int y = yStart; y < yEnd; ++y) {
-                    for (int x = xStart; x < xEnd; ++x) {
-                        val = *((quint16 *)(pixel->getData()) + (y * width + x));
-                        deviation += (val - mean) * (val - mean);
-                    }
+            }
+            break;
+        case EPR_Uint16:
+            for (int y = yStart; y < yEnd; ++y) {
+                for (int x = xStart; x < xEnd; ++x) {
+                    val = *((quint16 *)(pixel->getData()) + (y * width + x));
+                    deviation += (val - mean) * (val - mean);
                 }
-                break;
-            case EPR_Sint32:
-                for (int y = yStart; y < yEnd; ++y) {
-                    for (int x = xStart; x < xEnd; ++x) {
-                        val = *((qint32 *)(pixel->getData()) + (y * width + x));
-                        deviation += (val - mean) * (val - mean);
-                    }
+            }
+            break;
+        case EPR_Sint32:
+            for (int y = yStart; y < yEnd; ++y) {
+                for (int x = xStart; x < xEnd; ++x) {
+                    val = *((qint32 *)(pixel->getData()) + (y * width + x));
+                    deviation += (val - mean) * (val - mean);
                 }
-                break;
-            case EPR_Uint32:
-                for (int y = yStart; y < yEnd; ++y) {
-                    for (int x = xStart; x < xEnd; ++x) {
-                        val = *((quint32 *)(pixel->getData()) + (y * width + x));
-                        deviation += (val - mean) * (val - mean);
-                    }
+            }
+            break;
+        case EPR_Uint32:
+            for (int y = yStart; y < yEnd; ++y) {
+                for (int x = xStart; x < xEnd; ++x) {
+                    val = *((quint32 *)(pixel->getData()) + (y * width + x));
+                    deviation += (val - mean) * (val - mean);
                 }
-                break;
+            }
+            break;
         }
         double sd = sqrt(deviation);
         updated = true;
-        textItem->setText(QString(TEXT_STYLE).arg(qint64(mean)).arg(sd, 0, 'f', 2)
-                          .arg(maxVal).arg(minVal).arg(area, 0, 'f', 2).arg(pixCount));
+        textItem->setText(QString(TEXT_STYLE).arg(qint64(mean)).arg(sd, 0, 'f', 2).arg(maxVal).arg(minVal).arg(area, 0, 'f', 2).arg(pixCount));
     }
 }
 
 //----------------------------------------------------------------
-bool GraphicsRectItem::isModified() {
+bool GraphicsRectItem::isModified()
+{
     if (tl->x() >= br->x()) {
         tl->setX(prevTl.x());
         br->setX(prevBr.x());
@@ -197,7 +201,8 @@ bool GraphicsRectItem::isModified() {
 }
 
 //----------------------------------------------------------------
-void GraphicsRectItem::updateTextItem() {
+void GraphicsRectItem::updateTextItem()
+{
     textItem->setText(QString());
     if (xSpacing > 0 && ySpacing > 0) {
         QPointF p1 = mapToParent(tl->pos());
@@ -210,12 +215,14 @@ void GraphicsRectItem::updateTextItem() {
 }
 
 //----------------------------------------------------------------
-QPointF GraphicsRectItem::textItemPos() {
+QPointF GraphicsRectItem::textItemPos()
+{
     return QPointF(br->x() + br->crossSize().width(), tl->y() + (br->y() - tl->y()) / 2);
 }
 
 //----------------------------------------------------------------
-QPainterPath GraphicsRectItem::itemPath() {
+QPainterPath GraphicsRectItem::itemPath()
+{
     QPainterPath rect;
     rect.addRect(tl->x(), tl->y(), br->x() - tl->x(), br->y() - tl->y());
     return rect;

@@ -1,26 +1,29 @@
 ﻿#include "filewatcherthread.h"
 
-#include <global/KissGlobal>
 #include <engine/KissEngine>
+#include <global/KissGlobal>
 
 //--------------------------------------
-FileWatcherThread::FileWatcherThread(const QString &dir, QObject *parent):
-    QThread(parent) {
+FileWatcherThread::FileWatcherThread(const QString & dir, QObject * parent)
+  : QThread(parent)
+{
     m_dir_ = dir;
 }
 
 //--------------------------------------
-void FileWatcherThread::run()  {
+void FileWatcherThread::run()
+{
     ScanDir();
     exec();
 }
 
 //--------------------------------------
-void FileWatcherThread::ScanDir() {
+void FileWatcherThread::ScanDir()
+{
     QStringList removed, added;
     removed = m_files_;
     QStringList files = QDir(m_dir_).entryList(QDir::Files);
-    foreach (const QString &f, files) {
+    foreach (const QString & f, files) {
         QString file = m_dir_ + QDir::separator() + f;
         if (m_files_.contains(file)) {
             removed.removeOne(file);

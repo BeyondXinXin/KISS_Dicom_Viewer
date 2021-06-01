@@ -27,7 +27,8 @@ see quazip/(un)zip.h files for details. Basically it's the zlib license.
 
 #include <QObject>
 
-class TestQuaZipDir: public QObject {
+class TestQuaZipDir : public QObject
+{
     Q_OBJECT
 private slots:
     void entryList_data();

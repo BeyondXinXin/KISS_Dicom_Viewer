@@ -25,8 +25,8 @@ Original ZIP package is copyrighted by Gilles Vollant and contributors,
 see quazip/(un)zip.h files for details. Basically it's the zlib license.
 */
 
-#include <QByteArray>
 #include "quazip_global.h"
+#include <QByteArray>
 
 /// Checksum interface.
 /** \class QuaChecksum32 quachecksum32.h <quazip/quachecksum32.h>
@@ -53,26 +53,26 @@ class QUAZIP_EXPORT QuaChecksum32
 {
 
 public:
-	///Calculates the checksum for data.
-	/** \a data source data
+    ///Calculates the checksum for data.
+    /** \a data source data
 	 * \return data checksum
 	 *
 	 * This function has no efect on the value returned by value().
 	 */
-	virtual quint32 calculate(const QByteArray &data) = 0;
+    virtual quint32 calculate(const QByteArray & data) = 0;
 
-	///Resets the calculation on a checksun for a stream.
-	virtual void reset() = 0;
+    ///Resets the calculation on a checksun for a stream.
+    virtual void reset() = 0;
 
-	///Updates the calculated checksum for the stream
-	/** \a buf next portion of data from the stream
+    ///Updates the calculated checksum for the stream
+    /** \a buf next portion of data from the stream
 	 */
-	virtual void update(const QByteArray &buf) = 0;
+    virtual void update(const QByteArray & buf) = 0;
 
-	///Value of the checksum calculated for the stream passed throw update().
-	/** \return checksum
+    ///Value of the checksum calculated for the stream passed throw update().
+    /** \return checksum
 	 */
-	virtual quint32 value() = 0;
+    virtual quint32 value() = 0;
 };
 
 #endif //QUACHECKSUM32_H

@@ -1,16 +1,17 @@
 ﻿#include "gridpopwidget.h"
 #include "ui_gridpopwidget.h"
 
-#include <global/KissGlobal>
 #include <engine/KissEngine>
+#include <global/KissGlobal>
 
 #define NORMAL_STYLE "background-color: rgb(128, 128, 128);"
 #define HIGHLIGHT_STYLE "background-color: rgb(200, 200, 200);"
 
 //-------------------------------------------------------
-GridPopWidget::GridPopWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::GridPopWidget) {
+GridPopWidget::GridPopWidget(QWidget * parent)
+  : QWidget(parent)
+  , ui(new Ui::GridPopWidget)
+{
     ui->setupUi(this);
     setWindowFlags(windowFlags() | Qt::Popup | Qt::FramelessWindowHint);
     setMouseTracking(true);
@@ -21,12 +22,14 @@ GridPopWidget::GridPopWidget(QWidget *parent) :
 }
 
 //-------------------------------------------------------
-GridPopWidget::~GridPopWidget() {
+GridPopWidget::~GridPopWidget()
+{
     delete ui;
 }
 
 //-------------------------------------------------------
-void GridPopWidget::mousePressEvent(QMouseEvent *e) {
+void GridPopWidget::mousePressEvent(QMouseEvent * e)
+{
     QWidget::mousePressEvent(e);
     QPoint p = e->pos();
     int row = 0, col = 0;
@@ -34,7 +37,7 @@ void GridPopWidget::mousePressEvent(QMouseEvent *e) {
     if (p.x() > lim.x() || p.y() > lim.y()) {
         return;
     }
-    foreach (QWidget *w, wArr.first()) {
+    foreach (QWidget * w, wArr.first()) {
         if (p.x() > w->pos().x()) {
             col++;
         }
@@ -49,11 +52,12 @@ void GridPopWidget::mousePressEvent(QMouseEvent *e) {
 }
 
 //-------------------------------------------------------
-void GridPopWidget::mouseMoveEvent(QMouseEvent *e) {
+void GridPopWidget::mouseMoveEvent(QMouseEvent * e)
+{
     QWidget::mouseMoveEvent(e);
     QPoint p = e->pos();
     foreach (QList<QWidget *> ws, wArr) {
-        foreach (QWidget *w, ws) {
+        foreach (QWidget * w, ws) {
             if (p.x() > w->pos().x() && p.y() > w->pos().y()) {
                 w->setStyleSheet(HIGHLIGHT_STYLE);
             } else {
@@ -64,7 +68,8 @@ void GridPopWidget::mouseMoveEvent(QMouseEvent *e) {
 }
 
 //-------------------------------------------------------
-void GridPopWidget::hideEvent(QHideEvent *e) {
+void GridPopWidget::hideEvent(QHideEvent * e)
+{
     QWidget::hideEvent(e);
     deleteLater();
 }

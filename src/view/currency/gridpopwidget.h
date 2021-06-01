@@ -4,28 +4,29 @@
 #include <QWidget>
 
 namespace Ui {
-    class GridPopWidget;
+class GridPopWidget;
 }
 
-class GridPopWidget : public QWidget {
+class GridPopWidget : public QWidget
+{
     Q_OBJECT
 
-  public:
-    explicit GridPopWidget(QWidget *parent = nullptr);
+public:
+    explicit GridPopWidget(QWidget * parent = nullptr);
     ~GridPopWidget();
 
-  signals:
+signals:
     void Signal_ViewLayout(int col, int row);
 
-  protected:
-    void mousePressEvent(QMouseEvent *e);
-    void mouseMoveEvent(QMouseEvent *e);
-    void hideEvent(QHideEvent *e);
+protected:
+    void mousePressEvent(QMouseEvent * e);
+    void mouseMoveEvent(QMouseEvent * e);
+    void hideEvent(QHideEvent * e);
 
-  private:
-    Ui::GridPopWidget *ui;
+private:
+    Ui::GridPopWidget * ui;
 
-    QList<QList<QWidget *> > wArr;
+    QList<QList<QWidget *>> wArr;
 };
 
 #endif // GRIDPOPWIDGET_H

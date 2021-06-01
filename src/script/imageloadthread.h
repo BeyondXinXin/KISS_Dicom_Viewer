@@ -1,28 +1,29 @@
 ﻿#ifndef IMAGELOADTHREAD_H
 #define IMAGELOADTHREAD_H
 
-#include <QThread>
 #include <QStringList>
+#include <QThread>
 class ImageInstance;
 
-class ImageLoadThread : public QThread {
+class ImageLoadThread : public QThread
+{
     Q_OBJECT
-  public:
+public:
     explicit ImageLoadThread(
-        const QStringList &paths = QStringList(),
-        QObject *parent = nullptr);
+      const QStringList & paths = QStringList(),
+      QObject * parent = nullptr);
 
-    void SetImagePaths(const QStringList &paths);
+    void SetImagePaths(const QStringList & paths);
     virtual ~ImageLoadThread();
     void run();
 
-  signals:
-    void ResultReady(ImageInstance *image);
+signals:
+    void ResultReady(ImageInstance * image);
     void SignalPathReady(const QString path);
     void Signal_ImageLoadFinished();
-  public :
 
-  private:
+public:
+private:
     QStringList m_paths_;
 };
 

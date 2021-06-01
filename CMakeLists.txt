@@ -4,11 +4,11 @@ project(KissDicomViewer)
 
 # Set self path
 if(WIN32)
-    set(VTK_DIR  "D:/lib/VTK-8.2.0/bulid")
-    set(ITK_DIR  "D:/lib/InsightToolkit-4.13.2/bulid")
-    set(OpenCV_DIR  "D:/lib/opencv-3.4.9/bulid")
-    set(CGAL_DIR  "D:/lib/CGAL/bulid")
-    set(DCMTK_DIR  "D:/lib/DCMTK3.6.5/bulid")
+    list(APPEND CMAKE_PREFIX_PATH "D:/lib/eigen-3.3.9/bulid")
+    list(APPEND CMAKE_PREFIX_PATH "D:/lib/VTK-8.2.0/bulid")
+    list(APPEND CMAKE_PREFIX_PATH "D:/lib/ITK-4.13.3/bulid")
+    list(APPEND CMAKE_PREFIX_PATH "D:/lib/DCMTK3.6.5/bulid")
+    list(APPEND CMAKE_PREFIX_PATH "D:/lib/opencv/bulid")
 endif()
 
 

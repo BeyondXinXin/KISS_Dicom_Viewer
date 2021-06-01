@@ -3,9 +3,11 @@
 
 #include <QGraphicsRectItem>
 
-class GraphicsClipRectItem : public QGraphicsRectItem {
-  public:
-    enum NodeName {
+class GraphicsClipRectItem : public QGraphicsRectItem
+{
+public:
+    enum NodeName
+    {
         TopLeft,
         TopMiddle,
         TopRight,
@@ -16,21 +18,22 @@ class GraphicsClipRectItem : public QGraphicsRectItem {
         MiddleLeft,
         NodeCount,
     };
-    explicit GraphicsClipRectItem(QGraphicsItem *parent = nullptr);
-    explicit GraphicsClipRectItem(QRectF &rect, QGraphicsItem *parent = nullptr);
-    void setRect(const QRectF &rect);
-    void setPen(const QPen &pen);
+    explicit GraphicsClipRectItem(QGraphicsItem * parent = nullptr);
+    explicit GraphicsClipRectItem(QRectF & rect, QGraphicsItem * parent = nullptr);
+    void setRect(const QRectF & rect);
+    void setPen(const QPen & pen);
     QRectF getClipRect() const;
     void reverseCornerCursor();
     void reverseMiddleCursor();
-  protected:
-    void paint(QPainter *painter,
-               const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr);
 
-  private:
+protected:
+    void paint(QPainter * painter,
+               const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr);
+
+private:
     void init();
     void repositionNode();
-    void setRectPrivate(const QRectF &rect);
+    void setRectPrivate(const QRectF & rect);
     void setCornerCursor();
     void setMiddleCursor();
     QList<QGraphicsRectItem *> nodeList;

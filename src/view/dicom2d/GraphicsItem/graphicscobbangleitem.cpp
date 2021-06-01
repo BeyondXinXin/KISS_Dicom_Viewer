@@ -8,13 +8,15 @@
 #include "math.h"
 
 //----------------------------------------------------------------
-GraphicsCobbAngleItem::GraphicsCobbAngleItem(QGraphicsItem *parent):
-    AbstractPathItem(parent) {
+GraphicsCobbAngleItem::GraphicsCobbAngleItem(QGraphicsItem * parent)
+  : AbstractPathItem(parent)
+{
     init();
 }
 
 //----------------------------------------------------------------
-void GraphicsCobbAngleItem::init() {
+void GraphicsCobbAngleItem::init()
+{
     line1Vertex1 = new GraphicsCrossItem(this);
     line1Vertex2 = new GraphicsCrossItem(this);
     auxVertex = new GraphicsCrossItem(this);
@@ -24,10 +26,9 @@ void GraphicsCobbAngleItem::init() {
 }
 
 //----------------------------------------------------------------
-bool GraphicsCobbAngleItem::isModified() {
-    if (currentStage != Final || line1Vertex1->pos() != prevl1v1 ||
-            line1Vertex2->pos() != prevl1v2 || line2Vertex1->pos() != prevl2v1 ||
-            line2Vertex2->pos() != prevl2v2) {
+bool GraphicsCobbAngleItem::isModified()
+{
+    if (currentStage != Final || line1Vertex1->pos() != prevl1v1 || line1Vertex2->pos() != prevl1v2 || line2Vertex1->pos() != prevl2v1 || line2Vertex2->pos() != prevl2v2) {
         prevl1v1 = line1Vertex1->pos();
         prevl1v2 = line1Vertex2->pos();
         prevl2v1 = line2Vertex1->pos();
@@ -38,42 +39,45 @@ bool GraphicsCobbAngleItem::isModified() {
 }
 
 //----------------------------------------------------------------
-void GraphicsCobbAngleItem::setActivePoint(const QPointF &point) {
+void GraphicsCobbAngleItem::setActivePoint(const QPointF & point)
+{
     switch (currentStage) {
-        case First:
-            line1Vertex2->setPos(point);
-            break;
-        case Second:
-            line2Vertex1->setPos(point);
-            line2Vertex2->setPos(point);
-            break;
-        case Third:
-            line2Vertex2->setPos(point);
-            break;
+    case First:
+        line1Vertex2->setPos(point);
+        break;
+    case Second:
+        line2Vertex1->setPos(point);
+        line2Vertex2->setPos(point);
+        break;
+    case Third:
+        line2Vertex2->setPos(point);
+        break;
     }
 }
 
 //----------------------------------------------------------------
-void GraphicsCobbAngleItem::nextStage() {
+void GraphicsCobbAngleItem::nextStage()
+{
     switch (currentStage) {
-        case First:
-            if (line1Vertex2->pos() != line1Vertex1->pos()) {
-                currentStage = Second;
-            }
-            break;
-        case Second:
-            currentStage = Third;
-            break;
-        case Third:
-            if (line2Vertex2->pos() != line2Vertex1->pos()) {
-                currentStage = Final;
-            }
-            break;
+    case First:
+        if (line1Vertex2->pos() != line1Vertex1->pos()) {
+            currentStage = Second;
+        }
+        break;
+    case Second:
+        currentStage = Third;
+        break;
+    case Third:
+        if (line2Vertex2->pos() != line2Vertex1->pos()) {
+            currentStage = Final;
+        }
+        break;
     }
 }
 
 //----------------------------------------------------------------
-void GraphicsCobbAngleItem::updateTextItem() {
+void GraphicsCobbAngleItem::updateTextItem()
+{
     if (line2Vertex1->pos() == line2Vertex2->pos()) {
         return;
     }
@@ -81,7 +85,8 @@ void GraphicsCobbAngleItem::updateTextItem() {
 }
 
 //----------------------------------------------------------------
-QPointF GraphicsCobbAngleItem::textItemPos() {
+QPointF GraphicsCobbAngleItem::textItemPos()
+{
     if (line2Vertex1->pos() == line2Vertex2->pos()) {
         return QPointF();
     }
@@ -110,18 +115,17 @@ QPointF GraphicsCobbAngleItem::textItemPos() {
                            line1Vertex2->pos().y() - textItem->boundingRect().height());
     } else {
         if (angleCacheData <= 90.0)
-            return QPointF(line1Vertex1->pos().x() -
-                           (line1Vertex1->crossSize().width() + textItem->boundingRect().width()),
+            return QPointF(line1Vertex1->pos().x() - (line1Vertex1->crossSize().width() + textItem->boundingRect().width()),
                            line1Vertex1->y());
         else
-            return QPointF(line1Vertex2->pos().x() -
-                           (line1Vertex2->crossSize().width() + textItem->boundingRect().width()),
+            return QPointF(line1Vertex2->pos().x() - (line1Vertex2->crossSize().width() + textItem->boundingRect().width()),
                            line1Vertex2->y());
     }
 }
 
 //----------------------------------------------------------------
-QPainterPath GraphicsCobbAngleItem::itemPath() {
+QPainterPath GraphicsCobbAngleItem::itemPath()
+{
     QPainterPath cobbAngle;
     cobbAngle.moveTo(line1Vertex1->pos());
     cobbAngle.lineTo(line1Vertex2->pos());
@@ -143,10 +147,10 @@ QPainterPath GraphicsCobbAngleItem::itemPath() {
 }
 
 //----------------------------------------------------------------
-void GraphicsCobbAngleItem::angle() {
+void GraphicsCobbAngleItem::angle()
+{
     QPointF v1 = line1Vertex2->pos() - line1Vertex1->pos();
     QPointF v2 = line2Vertex2->pos() - line2Vertex1->pos();
-    double modulusProduct = sqrt((v1.x() * v1.x() + v1.y() * v1.y()) *
-                                 (v2.x() * v2.x() + v2.y() * v2.y()));
+    double modulusProduct = sqrt((v1.x() * v1.x() + v1.y() * v1.y()) * (v2.x() * v2.x() + v2.y() * v2.y()));
     angleCacheData = acos(QPointF::dotProduct(v1, v2) / modulusProduct) * 180 / PI;
 }

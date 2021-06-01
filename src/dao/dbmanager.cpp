@@ -1,7 +1,7 @@
 ﻿#include "dbmanager.h"
 
-#include <global/KissGlobal>
 #include <engine/KissEngine>
+#include <global/KissGlobal>
 
 //----------------------------------------------------------------
 QSqlDatabase DbManager::data_base;
@@ -13,7 +13,8 @@ QStringList DbManager::sqlite_type_string_;
 bool DbManager::init_ = false;
 
 //----------------------------------------------------------------
-bool DbManager::DbInitial() {
+bool DbManager::DbInitial()
+{
     QMutexLocker locker(&data_mutex_);
     if (!init_) {
         init_ = true;
@@ -36,7 +37,8 @@ bool DbManager::DbInitial() {
 }
 
 //----------------------------------------------------------------
-bool DbManager::Deallocate() {
+bool DbManager::Deallocate()
+{
     QMutexLocker locker(&data_mutex_);
     data_base = QSqlDatabase();
     if (QSqlDatabase::contains(db_name_)) {
@@ -46,7 +48,8 @@ bool DbManager::Deallocate() {
 }
 
 //----------------------------------------------------------------
-bool DbManager::CreateDbFile() {
+bool DbManager::CreateDbFile()
+{
     if (!QFile::exists(file_name_)) {
         QFile db_file(file_name_);
         if (!db_file.open(QIODevice::WriteOnly)) {
@@ -60,13 +63,15 @@ bool DbManager::CreateDbFile() {
 }
 
 //----------------------------------------------------------------
-bool DbManager::IsOpenedDb() {
+bool DbManager::IsOpenedDb()
+{
     QMutexLocker locker(&data_mutex_);
     return data_base.isOpen();
 }
 
 //----------------------------------------------------------------
-bool DbManager::OpenDb() {
+bool DbManager::OpenDb()
+{
     file_mutex_.lock();
     if (!IsOpenedDb()) {
         QMutexLocker locker(&data_mutex_);
@@ -80,7 +85,8 @@ bool DbManager::OpenDb() {
 }
 
 //----------------------------------------------------------------
-bool DbManager::CloseDb() {
+bool DbManager::CloseDb()
+{
     file_mutex_.unlock();
     if (IsOpenedDb()) {
         QMutexLocker locker(&data_mutex_);
@@ -90,14 +96,16 @@ bool DbManager::CloseDb() {
 }
 
 //----------------------------------------------------------------
-bool DbManager::IsExistTable(const QString &table_name, bool &result) {
+bool DbManager::IsExistTable(const QString & table_name, bool & result)
+{
     if (!IsOpenedDb()) {
         qWarning() << "database not open error!";
         return false;
     }
     QString sql_str = QString("SELECT 1 FROM sqlite_master "
                               "WHERE type = 'table' AND  "
-                              "name = '%1'").arg(table_name);
+                              "name = '%1'")
+                        .arg(table_name);
     QMutexLocker locker(&data_mutex_);
     QSqlQuery query(data_base);
     if (query.exec(sql_str)) {
@@ -121,9 +129,10 @@ bool DbManager::IsExistTable(const QString &table_name, bool &result) {
 }
 
 //----------------------------------------------------------------
-bool DbManager::CreateTable(const QString &table_name,
-                            const QStringList &key_list,
-                            const QList<DbManager::SQLiteType> &type_list) {
+bool DbManager::CreateTable(const QString & table_name,
+                            const QStringList & key_list,
+                            const QList<DbManager::SQLiteType> & type_list)
+{
     if (key_list.size() != type_list.size()) {
         qWarning() << "keylist != typelist error";
         return false;
@@ -136,11 +145,11 @@ bool DbManager::CreateTable(const QString &table_name,
     QString sql_str_2 = "%1 %2 PRIMARY KEY ,";
     QString sql_str_temp = "%1 %2 ,";
     sql_str_2 = sql_str_2
-                .arg(key_list.at(0))
-                .arg(sqlite_type_string_.at(type_list.at(0)));
+                  .arg(key_list.at(0))
+                  .arg(sqlite_type_string_.at(type_list.at(0)));
     for (qint32 i = 1; i < type_list.size(); ++i) {
         sql_str_2 += sql_str_temp.arg(key_list.at(i))
-                     .arg(sqlite_type_string_.at(type_list.at(i)));
+                       .arg(sqlite_type_string_.at(type_list.at(i)));
     }
     sql_str_2 = sql_str_2.left(sql_str_2.size() - 1);
     QString sql_str_3 = ");";
@@ -156,7 +165,8 @@ bool DbManager::CreateTable(const QString &table_name,
 }
 
 //----------------------------------------------------------------
-bool DbManager::RemoveTable(const QString &table_name) {
+bool DbManager::RemoveTable(const QString & table_name)
+{
     if (!IsOpenedDb()) {
         qWarning() << "database not open error!";
         return false;
@@ -173,17 +183,19 @@ bool DbManager::RemoveTable(const QString &table_name) {
 }
 
 //----------------------------------------------------------------
-bool DbManager::IsExistColumn(const QString &table_name,
-                              const QString &column_name,
-                              bool &result) {
+bool DbManager::IsExistColumn(const QString & table_name,
+                              const QString & column_name,
+                              bool & result)
+{
     if (!IsOpenedDb()) {
         qWarning() << "database not open error!";
         return false;
     }
     QString sql_str = QString("SELECT 1 FROM sqlite_master "
                               "WHERE type = 'table' and "
-                              "name = '%1' and sql like '%%2%' "
-                             ).arg(table_name).arg(column_name);
+                              "name = '%1' and sql like '%%2%' ")
+                        .arg(table_name)
+                        .arg(column_name);
     QMutexLocker locker(&data_mutex_);
     QSqlQuery query(data_base);
     if (query.exec(sql_str)) {
@@ -207,9 +219,10 @@ bool DbManager::IsExistColumn(const QString &table_name,
 }
 
 //----------------------------------------------------------------
-bool DbManager::update(const QString &table_name,
-                       const QMap<QString, QVariant> &values,
-                       const QString &where) {
+bool DbManager::update(const QString & table_name,
+                       const QMap<QString, QVariant> & values,
+                       const QString & where)
+{
     if (!IsOpenedDb()) {
         qWarning() << "database not open error!";
         return false;
@@ -224,11 +237,9 @@ bool DbManager::update(const QString &table_name,
     }
     QString sql_str;
     if (where.isEmpty()) {
-        sql_str = QString("UPDATE %1 SET %2"
-                         ).arg(table_name).arg(sql_str_data);
+        sql_str = QString("UPDATE %1 SET %2").arg(table_name).arg(sql_str_data);
     } else {
-        sql_str = QString("UPDATE %1 SET %2 WHERE %3"
-                         ).arg(table_name).arg(sql_str_data).arg(where);
+        sql_str = QString("UPDATE %1 SET %2 WHERE %3").arg(table_name).arg(sql_str_data).arg(where);
     }
     QMutexLocker locker(&data_mutex_);
     QSqlQuery query(data_base);
@@ -245,15 +256,15 @@ bool DbManager::update(const QString &table_name,
 }
 
 //----------------------------------------------------------------
-bool DbManager::remove(const QString &table_name,
-                       const QString &where) {
+bool DbManager::remove(const QString & table_name,
+                       const QString & where)
+{
     if (!IsOpenedDb()) {
         qWarning() << "database not open error!";
         return false;
     }
     QMutexLocker locker(&data_mutex_);
-    QString sql_str = QString("DELETE FROM %1 WHERE %2"
-                             ).arg(table_name).arg(where);
+    QString sql_str = QString("DELETE FROM %1 WHERE %2").arg(table_name).arg(where);
     QSqlQuery query(data_base);
     if (query.exec(sql_str)) {
         return true;
@@ -264,8 +275,9 @@ bool DbManager::remove(const QString &table_name,
 }
 
 //----------------------------------------------------------------
-bool DbManager::insert(const QString &table_name,
-                       const QMap<QString, QVariant> &values) {
+bool DbManager::insert(const QString & table_name,
+                       const QMap<QString, QVariant> & values)
+{
     if (!IsOpenedDb()) {
         qWarning() << "database not open error!";
         return false;
@@ -283,15 +295,17 @@ bool DbManager::insert(const QString &table_name,
         sql_str_data += "?";
     }
     QString sql_str = QString("INSERT INTO %1(%2) VALUES(%3)")
-                      .arg(table_name).arg(sql_str_column).arg(sql_str_data);
+                        .arg(table_name)
+                        .arg(sql_str_column)
+                        .arg(sql_str_data);
     QMutexLocker locker(&data_mutex_);
     QSqlQuery query(data_base);
     query.prepare(sql_str);
     for (qint32 i = 0; i < key_list.count(); ++i) {
-        if(values.value(key_list.at(i)).toString().isEmpty()) {
+        if (values.value(key_list.at(i)).toString().isEmpty()) {
             query.bindValue(i, "--");
         } else {
-            query.bindValue(i, values.value(key_list.at(i) ));
+            query.bindValue(i, values.value(key_list.at(i)));
         }
     }
     if (query.exec()) {
@@ -303,10 +317,11 @@ bool DbManager::insert(const QString &table_name,
 }
 
 //----------------------------------------------------------------
-bool DbManager::select(const QString &table_name,
-                       const QStringList &colunms,
-                       QList<QMap<QString, QVariant>> &values,
-                       const QString &where) {
+bool DbManager::select(const QString & table_name,
+                       const QStringList & colunms,
+                       QList<QMap<QString, QVariant>> & values,
+                       const QString & where)
+{
     if (!IsOpenedDb()) {
         qWarning() << "database not open error!";
         return false;
@@ -315,19 +330,20 @@ bool DbManager::select(const QString &table_name,
     if (colunms.size()) {
         sql_str_columns = colunms.join(",");
     } else {
-//        sql_str_columns = "*";
+        //        sql_str_columns = "*";
         qWarning() << "colunms is null";
         return false;
     }
     QString sql_str;
     if (where.isEmpty()) {
         sql_str = QString("SELECT %1 FROM %2")
-                  .arg(sql_str_columns)
-                  .arg(table_name);
+                    .arg(sql_str_columns)
+                    .arg(table_name);
     } else {
         sql_str = QString("SELECT %1 FROM %2 WHERE %3")
-                  .arg(sql_str_columns)
-                  .arg(table_name).arg(where);
+                    .arg(sql_str_columns)
+                    .arg(table_name)
+                    .arg(where);
     }
     QMutexLocker locker(&data_mutex_);
     QSqlQuery query(data_base);
@@ -348,7 +364,8 @@ bool DbManager::select(const QString &table_name,
 }
 
 //----------------------------------------------------------------
-bool DbManager::ExecSqlStr(const QString &sql_str) {
+bool DbManager::ExecSqlStr(const QString & sql_str)
+{
     if (!IsOpenedDb()) {
         qWarning() << "database not open error!";
         return false;
@@ -364,10 +381,12 @@ bool DbManager::ExecSqlStr(const QString &sql_str) {
 }
 
 //----------------------------------------------------------------
-DbManager::DbManager(QObject *parent) : QObject(parent) {
+DbManager::DbManager(QObject * parent)
+  : QObject(parent)
+{
 }
 
 //----------------------------------------------------------------
-DbManager::~DbManager() {
+DbManager::~DbManager()
+{
 }
-

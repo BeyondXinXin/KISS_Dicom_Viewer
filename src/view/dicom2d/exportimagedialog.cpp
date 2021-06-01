@@ -1,37 +1,40 @@
 ﻿#include "exportimagedialog.h"
 #include "ui_exportimagedialog.h"
 
-#include <global/KissGlobal>
 #include <engine/KissEngine>
+#include <global/KissGlobal>
 #include <script/KissScript>
-
 
 #define EXPORT_IMAGE_FOLDER "EXPORTIMAGEFOLDER"
 
 //-------------------------------------------------------
-ExportImageDialog::ExportImageDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::ExportImageDialog),
-    export_thread_(new ExportImageThread(this)),
-    image_count_(0) {
+ExportImageDialog::ExportImageDialog(QWidget * parent)
+  : QDialog(parent)
+  , ui(new Ui::ExportImageDialog)
+  , export_thread_(new ExportImageThread(this))
+  , image_count_(0)
+{
     ui->setupUi(this);
     Initialization();
 }
 
 //-------------------------------------------------------
-ExportImageDialog::~ExportImageDialog() {
+ExportImageDialog::~ExportImageDialog()
+{
     delete ui;
 }
 
 //-------------------------------------------------------
-void ExportImageDialog::closeEvent(QCloseEvent *e) {
+void ExportImageDialog::closeEvent(QCloseEvent * e)
+{
     if (export_thread_->isRunning()) {
         e->ignore();
     }
 }
 
 //-------------------------------------------------------
-void ExportImageDialog::Slot_SelectFolder() {
+void ExportImageDialog::Slot_SelectFolder()
+{
     QSettings settings;
     QString folder = settings.value(EXPORT_IMAGE_FOLDER, ".").toString();
     folder = QFileDialog::getExistingDirectory(this, tr("Select Destination Folder"), folder);
@@ -42,7 +45,8 @@ void ExportImageDialog::Slot_SelectFolder() {
 }
 
 //-------------------------------------------------------
-void ExportImageDialog::Slot_Start(bool checked) {
+void ExportImageDialog::Slot_Start(bool checked)
+{
     if (checked) {
         if (ui->exportDestEdit->text().isEmpty()) {
             Slot_SelectFolder();
@@ -95,7 +99,8 @@ void ExportImageDialog::Slot_Start(bool checked) {
 }
 
 //-------------------------------------------------------
-void ExportImageDialog::Slot_ExportFinished() {
+void ExportImageDialog::Slot_ExportFinished()
+{
     ui->selectFolderButton->setDisabled(false);
     ui->startBtn->setText(tr("Start"));
     ui->startBtn->setChecked(false);
@@ -103,28 +108,32 @@ void ExportImageDialog::Slot_ExportFinished() {
 }
 
 //-------------------------------------------------------
-void ExportImageDialog::Slot_ResultReady(const QString &msg) {
+void ExportImageDialog::Slot_ResultReady(const QString & msg)
+{
     ui->progressBar->setValue(ui->progressBar->value() + 1);
     ui->textBrowser->append(msg);
 }
 
 //-------------------------------------------------------
-void ExportImageDialog::SetMultiplePng(const QStringList &images) {
+void ExportImageDialog::SetMultiplePng(const QStringList & images)
+{
     export_thread_->SetMultiplePng(images);
     image_count_ = images.size();
     ui->textBrowser->append(tr("%1 images to export.").arg(image_count_));
 }
 
 //-------------------------------------------------------
-void ExportImageDialog::SetLeafletPng(const bool &leaflet,
-                                      const int &frame, const QString &image) {
+void ExportImageDialog::SetLeafletPng(const bool & leaflet,
+                                      const int & frame, const QString & image)
+{
     export_thread_->SetLeafletPng(leaflet, frame, image);
     image_count_ = 1;
     ui->textBrowser->append(tr("%1 images to export.").arg(image_count_));
 }
 
 //-------------------------------------------------------
-void ExportImageDialog::Initialization() {
+void ExportImageDialog::Initialization()
+{
     ui->bmpGroup->setVisible(false);
     ui->pnmGroup->setVisible(false);
     //
@@ -138,7 +147,7 @@ void ExportImageDialog::Initialization() {
     connect(ui->selectFolderButton, &QPushButton::clicked,
             this, &ExportImageDialog::Slot_SelectFolder);
     connect(ui->startBtn, &QPushButton::clicked,
-            this,  &ExportImageDialog::Slot_Start);
+            this, &ExportImageDialog::Slot_Start);
     connect(export_thread_, &ExportImageThread::finished,
             this, &ExportImageDialog::Slot_ExportFinished);
     connect(export_thread_, &ExportImageThread::resultReady,
@@ -146,28 +155,3 @@ void ExportImageDialog::Initialization() {
     //
     ui->exportDestEdit->setText(QSettings().value(EXPORT_IMAGE_FOLDER).toString());
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

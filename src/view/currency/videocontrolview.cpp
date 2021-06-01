@@ -3,36 +3,43 @@
 
 #include <engine/KissEngine>
 
-VideoControlView::VideoControlView(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::VideoControlView) {
+VideoControlView::VideoControlView(QWidget * parent)
+  : QWidget(parent)
+  , ui(new Ui::VideoControlView)
+{
     ui->setupUi(this);
     this->Initial();
 }
 
-VideoControlView::~VideoControlView() {
+VideoControlView::~VideoControlView()
+{
     delete ui;
 }
 
-void VideoControlView::GetCurrentTimeIn(qint32 &time) const {
+void VideoControlView::GetCurrentTimeIn(qint32 & time) const
+{
     time = ui->progress_slider->value();
 }
 
-void VideoControlView::GetMaxTimeIn(qint32 &time) const {
+void VideoControlView::GetMaxTimeIn(qint32 & time) const
+{
     time = ui->progress_slider->maximum();
 }
 
-void VideoControlView::SetCurrentTimeIn(const qint32 &time) {
+void VideoControlView::SetCurrentTimeIn(const qint32 & time)
+{
     time_ = time;
     ui->progress_slider->setValue(time);
 }
 
-void VideoControlView::StopMovie() {
+void VideoControlView::StopMovie()
+{
     play_speed_->start();
     ui->play_button->click();
 }
 
-void VideoControlView::SlotTimeChangeIn(const qint32 time, const qint32 total_time) {
+void VideoControlView::SlotTimeChangeIn(const qint32 time, const qint32 total_time)
+{
     time_ = time;
     total_time_ = total_time;
     ui->progress_slider->setRange(0, total_time_ - 1);
@@ -44,7 +51,7 @@ void VideoControlView::SlotTimeChangeIn(const qint32 time, const qint32 total_ti
         ui->play_button->style()->polish(ui->play_button);
         ui->play_button->update();
     }
-    if(0 == total_time) {
+    if (0 == total_time) {
         this->StopMovie();
         this->setVisible(0);
     } else {
@@ -52,21 +59,25 @@ void VideoControlView::SlotTimeChangeIn(const qint32 time, const qint32 total_ti
     }
 }
 
-void VideoControlView::enterEvent(QEvent *e) {
+void VideoControlView::enterEvent(QEvent * e)
+{
     this->SetToolVisible(true);
     QWidget::enterEvent(e);
 }
 
-void VideoControlView::leaveEvent(QEvent *e) {
+void VideoControlView::leaveEvent(QEvent * e)
+{
     this->SetToolVisible(false);
     QWidget::leaveEvent(e);
 }
 
-void VideoControlView::paintEvent(QPaintEvent *event) {
+void VideoControlView::paintEvent(QPaintEvent * event)
+{
     QWidget::paintEvent(event);
 }
 
-void VideoControlView::Initial() {
+void VideoControlView::Initial()
+{
     time_ = 0;
     total_time_ = 0;
     this->SetToolVisible(false);
@@ -102,17 +113,20 @@ void VideoControlView::Initial() {
             this, &VideoControlView::SlotPlusMinusButtonClicked);
 }
 
-void VideoControlView::SetToolVisible(bool type) {
+void VideoControlView::SetToolVisible(bool type)
+{
     ui->wid->setVisible(type);
 }
 
-void VideoControlView::SetTimerStop() {
+void VideoControlView::SetTimerStop()
+{
     play_speed_->stop();
     next_speed_->stop();
     prev_speed_->stop();
 }
 
-void VideoControlView::SlotControlButtonClicked() {
+void VideoControlView::SlotControlButtonClicked()
+{
     if (total_time_ <= 0) {
         return;
     }
@@ -132,9 +146,7 @@ void VideoControlView::SlotControlButtonClicked() {
         this->SetTimerStop();
         prev_speed_->start();
     } else if (QObject::sender() == ui->play_button) {
-        if (play_speed_->isActive() ||
-                next_speed_->isActive() ||
-                prev_speed_->isActive()) {
+        if (play_speed_->isActive() || next_speed_->isActive() || prev_speed_->isActive()) {
             ui->play_button->setProperty("pause", "true");
             polish = true;
             this->SetTimerStop();
@@ -147,39 +159,42 @@ void VideoControlView::SlotControlButtonClicked() {
             play_speed_->start();
         }
     }
-    if(polish) {
+    if (polish) {
         ui->play_button->style()->unpolish(ui->play_button);
         ui->play_button->style()->polish(ui->play_button);
         ui->play_button->update();
     }
 }
 
-void VideoControlView::SlotSpeedTimeOut() {
+void VideoControlView::SlotSpeedTimeOut()
+{
     if (QObject::sender() == play_speed_) {
         ui->progress_slider->setValue(time_ + 1);
-        if(time_ >= total_time_ - 1) {
+        if (time_ >= total_time_ - 1) {
             ui->progress_slider->setValue(0);
         }
     } else if (QObject::sender() == next_speed_) {
         ui->progress_slider->setValue(time_ + 1);
-        if(time_ >= total_time_ - 1) {
+        if (time_ >= total_time_ - 1) {
             this->StopMovie();
         }
     } else if (QObject::sender() == prev_speed_) {
         ui->progress_slider->setValue(time_ - 1);
-        if(time_ <= 0) {
+        if (time_ <= 0) {
             this->StopMovie();
         }
     }
 }
 
-void VideoControlView::SlotValueChangedIn(int value) {
+void VideoControlView::SlotValueChangedIn(int value)
+{
     play_speed_->setInterval(1000 / value);
     next_speed_->setInterval(400 / value);
     prev_speed_->setInterval(400 / value);
 }
 
-void VideoControlView::SlotPlusMinusButtonClicked() {
+void VideoControlView::SlotPlusMinusButtonClicked()
+{
     if (QObject::sender() == ui->plus_button) {
         ui->frame_box->setValue(ui->frame_box->value() + 1);
     } else if (QObject::sender() == ui->minus_button) {

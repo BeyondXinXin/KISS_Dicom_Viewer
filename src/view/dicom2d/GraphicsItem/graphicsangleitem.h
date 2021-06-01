@@ -9,27 +9,27 @@ class GraphicsCrossItem;
  * @brief The GraphicsAngleItem class
  * 角度
  */
-class GraphicsAngleItem : public AbstractPathItem {
-  public:
-    explicit GraphicsAngleItem(QGraphicsItem *parent = nullptr);
-    void setActivePoint(const QPointF &point);
+class GraphicsAngleItem : public AbstractPathItem
+{
+public:
+    explicit GraphicsAngleItem(QGraphicsItem * parent = nullptr);
+    void setActivePoint(const QPointF & point);
     void nextStage();
 
-  private:
+private:
     void init();
     void updateTextItem();
     QPointF textItemPos();
     QPainterPath itemPath();
     bool isModified();
 
-    GraphicsCrossItem *pointAngle;
-    GraphicsCrossItem *point1;
-    GraphicsCrossItem *point2;
+    GraphicsCrossItem * pointAngle;
+    GraphicsCrossItem * point1;
+    GraphicsCrossItem * point2;
 
     QPointF prevPAngle;
     QPointF prevP1;
     QPointF prevP2;
-
 };
 
 #endif // GRAPHICSANGLEITEM_H

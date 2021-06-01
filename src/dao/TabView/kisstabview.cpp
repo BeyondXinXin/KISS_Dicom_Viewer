@@ -4,26 +4,30 @@
 #include <global/KissGlobal>
 
 //----------------------------------------------------------------
-KissTabView::KissTabView(QAbstractTableModel *model,
-                         QWidget *parent):
-    QTableView(parent)  {
+KissTabView::KissTabView(QAbstractTableModel * model,
+                         QWidget * parent)
+  : QTableView(parent)
+{
     this->setModel(model);
     this->Initial();
 }
 
 //----------------------------------------------------------------
-KissTabView::KissTabView(QWidget *parent) :
-    QTableView(parent)  {
+KissTabView::KissTabView(QWidget * parent)
+  : QTableView(parent)
+{
     this->Initial();
 }
 
 //----------------------------------------------------------------
-QModelIndexList KissTabView::getSelectedIndexes() const {
+QModelIndexList KissTabView::getSelectedIndexes() const
+{
     return this->selection_.indexes();
 }
 
 //----------------------------------------------------------------
-void KissTabView::Initial() {
+void KissTabView::Initial()
+{
     horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     setSortingEnabled(true);
     setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -33,10 +37,9 @@ void KissTabView::Initial() {
 }
 
 //----------------------------------------------------------------
-void KissTabView::contextMenuEvent(QContextMenuEvent *e) {
+void KissTabView::contextMenuEvent(QContextMenuEvent * e)
+{
     if (indexAt(e->pos()).isValid()) {
         context_menu_->popup(e->globalPos());
     }
 }
-
-

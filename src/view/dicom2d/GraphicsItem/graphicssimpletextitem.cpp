@@ -4,14 +4,16 @@
 #include <global/KissGlobal>
 
 //----------------------------------------------------------------
-GraphicsSimpleTextItem::GraphicsSimpleTextItem(QGraphicsItem *parent):
-    QGraphicsSimpleTextItem(parent) {
+GraphicsSimpleTextItem::GraphicsSimpleTextItem(QGraphicsItem * parent)
+  : QGraphicsSimpleTextItem(parent)
+{
     setHighlight(false);
     setFlags(QGraphicsItem::ItemIgnoresTransformations);
 }
 
 //----------------------------------------------------------------
-void GraphicsSimpleTextItem::setHighlight(bool yes) {
+void GraphicsSimpleTextItem::setHighlight(bool yes)
+{
     if (yes) {
         setBrush(QBrush(Qt::magenta));
     } else {

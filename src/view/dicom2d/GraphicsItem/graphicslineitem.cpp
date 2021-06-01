@@ -1,29 +1,33 @@
 #include "graphicslineitem.h"
-#include "graphicscrossitem.h"
 #include "abstractpathitem.h"
+#include "graphicscrossitem.h"
 #include "graphicssimpletextitem.h"
 #include "math.h"
 
 //----------------------------------------------------------------
-GraphicsLineItem::GraphicsLineItem(QGraphicsItem *parent) :
-    AbstractPathItem(parent) {
+GraphicsLineItem::GraphicsLineItem(QGraphicsItem * parent)
+  : AbstractPathItem(parent)
+{
     init();
 }
 
 //----------------------------------------------------------------
-void GraphicsLineItem::init() {
+void GraphicsLineItem::init()
+{
     crossItem1 = new GraphicsCrossItem(this);
     crossItem2 = new GraphicsCrossItem(this);
 }
 
 //----------------------------------------------------------------
-void GraphicsLineItem::setActivePoint(const QPointF &point) {
+void GraphicsLineItem::setActivePoint(const QPointF & point)
+{
     crossItem2->setPos(point);
     update();
 }
 
 //----------------------------------------------------------------
-bool GraphicsLineItem::isModified() {
+bool GraphicsLineItem::isModified()
+{
     if (crossItem1->pos() != prev1 || crossItem2->pos() != prev2) {
         prev1 = crossItem1->pos();
         prev2 = crossItem2->pos();
@@ -33,7 +37,8 @@ bool GraphicsLineItem::isModified() {
 }
 
 //----------------------------------------------------------------
-void GraphicsLineItem::updateTextItem() {
+void GraphicsLineItem::updateTextItem()
+{
     textItem->setText(QString());
     if (xSpacing < 0 || ySpacing < 0) {
         return;
@@ -46,7 +51,8 @@ void GraphicsLineItem::updateTextItem() {
 }
 
 //----------------------------------------------------------------
-QPointF GraphicsLineItem::textItemPos() {
+QPointF GraphicsLineItem::textItemPos()
+{
     if (crossItem1->x() > crossItem2->x()) {
         return QPointF(crossItem1->x() + crossItem1->crossSize().width(), crossItem1->y());
     } else {
@@ -55,7 +61,8 @@ QPointF GraphicsLineItem::textItemPos() {
 }
 
 //----------------------------------------------------------------
-QPainterPath GraphicsLineItem::itemPath() {
+QPainterPath GraphicsLineItem::itemPath()
+{
     QPainterPath line;
     line.moveTo(crossItem1->pos());
     line.lineTo(crossItem2->pos());

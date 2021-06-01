@@ -6,13 +6,18 @@
 class GraphicsTextMarkItem : public AbstractPathItem
 {
 public:
-    GraphicsTextMarkItem(QGraphicsItem *parent);
+    GraphicsTextMarkItem(QGraphicsItem * parent);
 
-    void setLabelItemText(const QString &text);
-    void setActivePoint(const QPointF &/*point*/) {}
+    void setLabelItemText(const QString & text);
+    void setActivePoint(const QPointF & /*point*/)
+    {
+    }
 
 private:
-    QPointF textItemPos() { return QPointF(0, 0); }
+    QPointF textItemPos()
+    {
+        return QPointF(0, 0);
+    }
 };
 
 #endif // GRAPHICSTEXTMARKITEM_H

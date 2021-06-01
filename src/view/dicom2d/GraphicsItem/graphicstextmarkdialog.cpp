@@ -2,18 +2,21 @@
 #include "ui_graphicstextmarkdialog.h"
 
 //----------------------------------------------------------------
-GraphicsTextMarkDialog::GraphicsTextMarkDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::GraphicsTextMarkDialog) {
+GraphicsTextMarkDialog::GraphicsTextMarkDialog(QWidget * parent)
+  : QDialog(parent)
+  , ui(new Ui::GraphicsTextMarkDialog)
+{
     ui->setupUi(this);
 }
 
 //----------------------------------------------------------------
-GraphicsTextMarkDialog::~GraphicsTextMarkDialog() {
+GraphicsTextMarkDialog::~GraphicsTextMarkDialog()
+{
     delete ui;
 }
 
 //----------------------------------------------------------------
-QString GraphicsTextMarkDialog::getText() {
+QString GraphicsTextMarkDialog::getText()
+{
     return ui->textEdit->text();
 }

@@ -1,36 +1,38 @@
 ﻿#ifndef DICOMVIEWER_H
 #define DICOMVIEWER_H
 
-
-#include <QWidget>
 #include <QBoxLayout>
-
-
+#include <QWidget>
 
 class ThumbnailBarWidget;
 class ViewContainerWidget;
 class QLocalServer;
 
 namespace Ui {
-    class DicomViewer;
+class DicomViewer;
 }
 
-class DicomViewer : public QWidget {
+class DicomViewer : public QWidget
+{
     Q_OBJECT
-  public:
-    enum ViewerType {
+public:
+    enum ViewerType
+    {
         SingleInstance, // 单实例风格
-        Embed,// 嵌入其他软件
+        Embed, // 嵌入其他软件
     };
-  public:
+
+public:
     explicit DicomViewer(
-        ViewerType type = SingleInstance, QWidget *parent = nullptr);
+      ViewerType type = SingleInstance, QWidget * parent = nullptr);
     ~DicomViewer();
-    void SetDicomFile(const QString &path);
-    void SetDicomFile(const QStringList &path);
-  protected:
-    bool eventFilter(QObject *watched, QEvent *event);
-  private:
+    void SetDicomFile(const QString & path);
+    void SetDicomFile(const QStringList & path);
+
+protected:
+    bool eventFilter(QObject * watched, QEvent * event);
+
+private:
     void Initial();
     void SetupToolBar();
     void SetupFileTool();
@@ -47,13 +49,11 @@ class DicomViewer : public QWidget {
     void SetupConnection();
     void SetupPlugin();
     void InitViewType();
-    void SetWidgetDirection(const QBoxLayout::Direction &lay);
+    void SetWidgetDirection(const QBoxLayout::Direction & lay);
 
-  private:
-    Ui::DicomViewer *ui;
+private:
+    Ui::DicomViewer * ui;
     ViewerType m_type_;
-
-
 };
 
 #endif // DICOMVIEWER_H

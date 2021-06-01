@@ -6,20 +6,23 @@
 #include <global/KissGlobal>
 
 //----------------------------------------------------------------
-LogDbWidget::LogDbWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::LogDbWidget) {
+LogDbWidget::LogDbWidget(QWidget * parent)
+  : QWidget(parent)
+  , ui(new Ui::LogDbWidget)
+{
     ui->setupUi(this);
     this->Initial();
 }
 
 //----------------------------------------------------------------
-LogDbWidget::~LogDbWidget() {
+LogDbWidget::~LogDbWidget()
+{
     delete ui;
 }
 
 //----------------------------------------------------------------
-void LogDbWidget::Initial() {
+void LogDbWidget::Initial()
+{
     ui->fromDateTimeEdit->setDate(QDate::currentDate());
     ui->fromDateTimeEdit->setTime(QTime(0, 0));
     ui->toDateTimeEdit->setDate(QDate::currentDate());
@@ -36,15 +39,17 @@ void LogDbWidget::Initial() {
 }
 
 //----------------------------------------------------------------
-void LogDbWidget::InitialConnections() {
+void LogDbWidget::InitialConnections()
+{
     connect(ui->searchButton, &QPushButton::clicked,
             this, &LogDbWidget::Slot_Search);
 }
 
 //----------------------------------------------------------------
-void LogDbWidget::RefreshReadLogModel(const QString &filter) {
-    QSqlTableModel *log_model = new QSqlTableModel(
-        nullptr, QSqlDatabase::database(DB_CONNECTION_NAME));
+void LogDbWidget::RefreshReadLogModel(const QString & filter)
+{
+    QSqlTableModel * log_model = new QSqlTableModel(
+      nullptr, QSqlDatabase::database(DB_CONNECTION_NAME));
     log_model->setTable(LogDao::kTableName);
     log_model->setHeaderData(0, Qt::Horizontal, tr("Log Time"));
     log_model->setHeaderData(1, Qt::Horizontal, tr("User Name"));
@@ -56,18 +61,19 @@ void LogDbWidget::RefreshReadLogModel(const QString &filter) {
 }
 
 //----------------------------------------------------------------
-void LogDbWidget::Slot_Search() {
+void LogDbWidget::Slot_Search()
+{
     QString filter;
     if (ui->fromCheckBox->isChecked()) {
         filter = QString("LogTime>\'%1\'")
-                 .arg(ui->fromDateTimeEdit->dateTime().toString(NORMAL_DATETIME_FORMAT));
+                   .arg(ui->fromDateTimeEdit->dateTime().toString(NORMAL_DATETIME_FORMAT));
     }
     if (ui->toCheckBox->isChecked()) {
         if (!filter.isEmpty()) {
             filter.append(" and ");
         }
         filter.append(QString("LogTime<\'%1\'")
-                      .arg(ui->toDateTimeEdit->dateTime().toString(NORMAL_DATETIME_FORMAT)));
+                        .arg(ui->toDateTimeEdit->dateTime().toString(NORMAL_DATETIME_FORMAT)));
     }
     if (!ui->userNameEdit->text().isEmpty()) {
         if (!filter.isEmpty()) {
@@ -83,7 +89,7 @@ void LogDbWidget::Slot_Search() {
                     eventFilter.append(" or ");
                 }
                 eventFilter.append(QString("EventType=\'%1\'")
-                                   .arg(LogDao::string_tables_[i]));
+                                     .arg(LogDao::string_tables_[i]));
             }
         }
         if (!eventFilter.isEmpty()) {
@@ -99,8 +105,9 @@ void LogDbWidget::Slot_Search() {
 }
 
 //----------------------------------------------------------------
-EventSelectionModel::EventSelectionModel(QObject *parent) :
-    QStandardItemModel(parent) {
+EventSelectionModel::EventSelectionModel(QObject * parent)
+  : QStandardItemModel(parent)
+{
     setupModel();
     connect(this, &EventSelectionModel::itemChanged,
             this, &EventSelectionModel::Slot_ItemChanged);
@@ -108,23 +115,26 @@ EventSelectionModel::EventSelectionModel(QObject *parent) :
 }
 
 //----------------------------------------------------------------
-int EventSelectionModel::columnCount(const QModelIndex &) const {
+int EventSelectionModel::columnCount(const QModelIndex &) const
+{
     return 1;
 }
 
 //----------------------------------------------------------------
-void EventSelectionModel::setupModel() {
-    int count =  LogDao::string_tables_.size();
+void EventSelectionModel::setupModel()
+{
+    int count = LogDao::string_tables_.size();
     for (int i = 0; i < count; ++i) {
-        QStandardItem *item = new QStandardItem(
-            LogDao::string_tables_[i]);
+        QStandardItem * item = new QStandardItem(
+          LogDao::string_tables_[i]);
         item->setCheckable(true);
         appendRow(item);
     }
 }
 
 //----------------------------------------------------------------
-void EventSelectionModel::Slot_ItemChanged(QStandardItem *item) {
+void EventSelectionModel::Slot_ItemChanged(QStandardItem * item)
+{
     if (this->item(0) == item) {
         Qt::CheckState state = item->checkState();
         if (state != Qt::PartiallyChecked) {

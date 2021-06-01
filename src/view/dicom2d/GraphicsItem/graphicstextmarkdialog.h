@@ -4,20 +4,21 @@
 #include <QDialog>
 
 namespace Ui {
-    class GraphicsTextMarkDialog;
+class GraphicsTextMarkDialog;
 }
 
-class GraphicsTextMarkDialog : public QDialog {
+class GraphicsTextMarkDialog : public QDialog
+{
     Q_OBJECT
 
-  public:
-    explicit GraphicsTextMarkDialog(QWidget *parent = nullptr);
+public:
+    explicit GraphicsTextMarkDialog(QWidget * parent = nullptr);
     ~GraphicsTextMarkDialog();
 
     QString getText();
 
-  private:
-    Ui::GraphicsTextMarkDialog *ui;
+private:
+    Ui::GraphicsTextMarkDialog * ui;
 };
 
 #endif // GRAPHICSTEXTMARKDIALOG_H

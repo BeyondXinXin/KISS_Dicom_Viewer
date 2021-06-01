@@ -1,44 +1,47 @@
 ﻿#include "dicomviewer.h"
 #include "ui_dicomviewer.h"
 
-
 #include "logdbwidget.h"
 #include "widget/dicomtagswidget.h"
 #include <dao/KissDb>
-#include <global/KissGlobal>
 #include <engine/KissEngine>
+#include <global/KissGlobal>
 
 #include <view/KissView>
 
 #include "engine/PluganInterface.h"
 
-
-
 //-----------------------------------------------
-DicomViewer::DicomViewer(DicomViewer::ViewerType type, QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::DicomViewer), m_type_(type) {
+DicomViewer::DicomViewer(DicomViewer::ViewerType type, QWidget * parent)
+  : QWidget(parent)
+  , ui(new Ui::DicomViewer)
+  , m_type_(type)
+{
     ui->setupUi(this);
     this->Initial();
 }
 
 //-----------------------------------------------
-DicomViewer::~DicomViewer() {
+DicomViewer::~DicomViewer()
+{
     delete ui;
 }
 
 //-----------------------------------------------
-void DicomViewer::SetDicomFile(const QString &path) {
+void DicomViewer::SetDicomFile(const QString & path)
+{
     ui->thumbnailBar->setImagePaths(QStringList() << path);
 }
 
 //----------------------------------------------------------------
-void DicomViewer::SetDicomFile(const QStringList &path) {
+void DicomViewer::SetDicomFile(const QStringList & path)
+{
     ui->thumbnailBar->setImagePaths(QStringList() << path);
 }
 
 //-----------------------------------------------
-void DicomViewer::Initial() {
+void DicomViewer::Initial()
+{
     ui->thumbnailBar->installEventFilter(this);
     ui->viewContainer->installEventFilter(this);
     QWidget::setWindowTitle(Project_NAME);
@@ -48,7 +51,8 @@ void DicomViewer::Initial() {
 }
 
 //-----------------------------------------------
-void DicomViewer::SetupToolBar() {
+void DicomViewer::SetupToolBar()
+{
     this->SetupFileTool();
     this->SetupExportTool();
     this->SetupGridTool();
@@ -64,9 +68,10 @@ void DicomViewer::SetupToolBar() {
 }
 
 //-----------------------------------------------
-void DicomViewer::SetupFileTool() {
+void DicomViewer::SetupFileTool()
+{
     // Menu
-    QMenu *m;
+    QMenu * m;
     m = new QMenu(this);
     m->addAction(tr("Open DICOM folder"), this, [&] {
         QSettings s;
@@ -81,7 +86,7 @@ void DicomViewer::SetupFileTool() {
         QSettings s;
         QString p = s.value(OPEN_FILE_PATH).toString();
         QStringList fs =
-        QFileDialog::getOpenFileNames(this, tr("Open dicom files"), p);
+          QFileDialog::getOpenFileNames(this, tr("Open dicom files"), p);
         if (!fs.isEmpty()) {
             s.setValue(OPEN_DIR_PATH, fs.first());
             ui->thumbnailBar->setImagePaths(fs);
@@ -106,9 +111,10 @@ void DicomViewer::SetupFileTool() {
 }
 
 //-----------------------------------------------
-void DicomViewer::SetupExportTool() {
+void DicomViewer::SetupExportTool()
+{
     // Menu
-    QMenu *m;
+    QMenu * m;
     m = new QMenu(this);
     m->addAction(tr("Export image"), this, [&] {
         ui->viewContainer->ExportImage();
@@ -127,10 +133,11 @@ void DicomViewer::SetupExportTool() {
 }
 
 //-----------------------------------------------
-void DicomViewer::SetupGridTool() {
+void DicomViewer::SetupGridTool()
+{
     // Menu
-    QMenu *m;
-    QAction *a;
+    QMenu * m;
+    QAction * a;
     m = new QMenu(this);
     a = m->addAction(tr("Preview bar"), this, [&](bool value) {
         ui->scrollArea->setVisible(value);
@@ -141,7 +148,7 @@ void DicomViewer::SetupGridTool() {
     // connect
     connect(ui->gridBtn, &QToolButton::clicked, this, [&] {
         // auto delete while hidden
-        GridPopWidget *gpw = new GridPopWidget(ui->gridBtn);
+        GridPopWidget * gpw = new GridPopWidget(ui->gridBtn);
         connect(gpw, &GridPopWidget::Signal_ViewLayout,
                 ui->viewContainer, &ViewContainerWidget::Slot_SetViewLayout);
         gpw->move(this->geometry().topLeft() + ui->gridBtn->geometry().bottomLeft() + QPoint(25, 25));
@@ -150,10 +157,11 @@ void DicomViewer::SetupGridTool() {
 }
 
 //-----------------------------------------------
-void DicomViewer::SetupAnnoTool() {
+void DicomViewer::SetupAnnoTool()
+{
     // Menu
-    QMenu *m;
-    QAction *a;
+    QMenu * m;
+    QAction * a;
     m = new QMenu(this);
     a = m->addAction(tr("Annotations"));
     a->setCheckable(true);
@@ -164,7 +172,7 @@ void DicomViewer::SetupAnnoTool() {
     a->setCheckable(true);
     a->setChecked(true);
     m->addSeparator();
-    m->addAction(tr("Increase font"),  this, [&] {
+    m->addAction(tr("Increase font"), this, [&] {
         ui->viewContainer->incAnnoFont();
     });
     m->addAction(tr("Decrease font"), this, [&] {
@@ -175,10 +183,9 @@ void DicomViewer::SetupAnnoTool() {
     });
     m->addSeparator();
     m->addAction(tr("DICOM tags"), this, [&] {
-        DicomTagsWidget *wid =
-        new DicomTagsWidget{this->ui->viewContainer->GetCurrentImageFile()};
+        DicomTagsWidget * wid =
+          new DicomTagsWidget { this->ui->viewContainer->GetCurrentImageFile() };
         wid->show();
-
     });
     ui->annoBtn->setMenu(m);
     // connect
@@ -190,9 +197,10 @@ void DicomViewer::SetupAnnoTool() {
 }
 
 //-----------------------------------------------
-void DicomViewer::SetupAdjustTool() {
+void DicomViewer::SetupAdjustTool()
+{
     // Menu
-    QMenu *m;
+    QMenu * m;
     m = new QMenu(this);
     m->addAction(tr("Default"), this, [&] {
         ui->viewContainer->SetOperation(DicomImageView::DefaultWL);
@@ -201,7 +209,7 @@ void DicomViewer::SetupAdjustTool() {
         ui->viewContainer->SetOperation(DicomImageView::FullDynamic);
     });
     m->addSeparator();
-    m->addAction(QIcon(":/png/contrast.png"), tr("Negative"),  this, [&] {
+    m->addAction(QIcon(":/png/contrast.png"), tr("Negative"), this, [&] {
         ui->viewContainer->SetOperation(DicomImageView::InverseWl);
     });
     ui->adjustBtn->setMenu(m);
@@ -212,11 +220,12 @@ void DicomViewer::SetupAdjustTool() {
 }
 
 //-----------------------------------------------
-void DicomViewer::SetupPanTool() {
+void DicomViewer::SetupPanTool()
+{
     // Menu
-    QMenu *m;
+    QMenu * m;
     m = new QMenu(this);
-    m->addAction(QIcon(":/png/reset.png"), tr("Reset"),  this, [&] {
+    m->addAction(QIcon(":/png/reset.png"), tr("Reset"), this, [&] {
         ui->viewContainer->SetOperation(DicomImageView::RestPan);
     });
     ui->panBtn->setMenu(m);
@@ -227,34 +236,36 @@ void DicomViewer::SetupPanTool() {
 }
 
 //-----------------------------------------------
-void DicomViewer::SetupSlicingTool() {
+void DicomViewer::SetupSlicingTool()
+{
     connect(ui->slicingBtn, &QToolButton::clicked, this, [&] {
         ui->viewContainer->SetOperation(DicomImageView::Slicing);
     });
 }
 
 //-----------------------------------------------
-void DicomViewer::SetupMarksTool() {
+void DicomViewer::SetupMarksTool()
+{
     // Menu
-    QMenu *m;
+    QMenu * m;
     m = new QMenu(this);
-    m->addAction(QIcon(":/png/line.png"), tr("Length"), this,  [&] {
+    m->addAction(QIcon(":/png/line.png"), tr("Length"), this, [&] {
         ui->marksBtn->setIcon(QIcon(":/png/line.png"));
         ui->viewContainer->SetOperation(DicomImageView::DrawLine);
     });
-    m->addAction(QIcon(":/png/ellipse.png"), tr("Ellipse"), this,  [&] {
+    m->addAction(QIcon(":/png/ellipse.png"), tr("Ellipse"), this, [&] {
         ui->marksBtn->setIcon(QIcon(":/png/ellipse.png"));
         ui->viewContainer->SetOperation(DicomImageView::DrawEllipse);
     });
-    m->addAction(QIcon(":/png/rect.png"), tr("Rectangle"), this,  [&] {
+    m->addAction(QIcon(":/png/rect.png"), tr("Rectangle"), this, [&] {
         ui->marksBtn->setIcon(QIcon(":/png/rect.png"));
         ui->viewContainer->SetOperation(DicomImageView::DrawRect);
     });
-    m->addAction(QIcon(":/png/angle.png"), tr("Angle"),  this,  [&] {
+    m->addAction(QIcon(":/png/angle.png"), tr("Angle"), this, [&] {
         ui->marksBtn->setIcon(QIcon(":/png/angle.png"));
         ui->viewContainer->SetOperation(DicomImageView::DrawAngle);
     });
-    m->addAction(QIcon(":/png/text.png"), tr("Text"), this,  [&] {
+    m->addAction(QIcon(":/png/text.png"), tr("Text"), this, [&] {
         ui->marksBtn->setIcon(QIcon(":/png/text.png"));
         ui->viewContainer->SetOperation(DicomImageView::DrawTextMark);
     });
@@ -271,15 +282,16 @@ void DicomViewer::SetupMarksTool() {
 }
 
 //-----------------------------------------------
-void DicomViewer::SetupZoomTool() {
+void DicomViewer::SetupZoomTool()
+{
     // Menu
-    QMenu *m;
+    QMenu * m;
     m = new QMenu(this);
-    m->addAction(tr("Fill viewport"),  this, [&] {
+    m->addAction(tr("Fill viewport"), this, [&] {
         ui->viewContainer->SetOperation(DicomImageView::FillViewport);
     });
     m->addSeparator();
-    m->addAction(tr("100%"),  this, [&] {
+    m->addAction(tr("100%"), this, [&] {
         ui->viewContainer->SetOperation(DicomImageView::Zoom100);
     });
     m->addAction(tr("200%"), this, [&] {
@@ -289,14 +301,14 @@ void DicomViewer::SetupZoomTool() {
         ui->viewContainer->SetOperation(DicomImageView::Zoom400);
     });
     m->addSeparator();
-    m->addAction(QIcon(":/png/zoomin.png"), tr("Zoom in"), this,  [&] {
+    m->addAction(QIcon(":/png/zoomin.png"), tr("Zoom in"), this, [&] {
         ui->viewContainer->SetOperation(DicomImageView::ZoomIn);
     });
-    m->addAction(QIcon(":/png/zoomout.png"), tr("Zoom out"), this,  [&] {
+    m->addAction(QIcon(":/png/zoomout.png"), tr("Zoom out"), this, [&] {
         ui->viewContainer->SetOperation(DicomImageView::Zoomout);
     });
     m->addSeparator();
-    m->addAction(QIcon(":/png/magnifier.png"), tr("Magnifier"), this,  [&] {
+    m->addAction(QIcon(":/png/magnifier.png"), tr("Magnifier"), this, [&] {
         ui->viewContainer->SetOperation(DicomImageView::Magnifier);
     });
     ui->zoomBtn->setMenu(m);
@@ -307,9 +319,10 @@ void DicomViewer::SetupZoomTool() {
 }
 
 //-----------------------------------------------
-void DicomViewer::SetupFlipTool() {
+void DicomViewer::SetupFlipTool()
+{
     // Menu
-    QMenu *m;
+    QMenu * m;
     m = new QMenu(this);
     m->addAction(QIcon(":/png/rrotate.png"), tr("Rotate CW"), this, [&] {
         ui->viewContainer->SetOperation(DicomImageView::RoateCW);
@@ -327,7 +340,7 @@ void DicomViewer::SetupFlipTool() {
     m->addAction(QIcon(":/png/vflip.png"), tr("Flip vertical"), this, [&] {
         ui->viewContainer->SetOperation(DicomImageView::VFlip);
     });
-    m->addAction(QIcon(":/png/reset.png"), tr("Flip Reset"),  this, [&] {
+    m->addAction(QIcon(":/png/reset.png"), tr("Flip Reset"), this, [&] {
         ui->viewContainer->SetOperation(DicomImageView::ClearFlip);
     });
     ui->flipBtn->setMenu(m);
@@ -338,8 +351,9 @@ void DicomViewer::SetupFlipTool() {
 }
 
 //-----------------------------------------------
-void DicomViewer::SetupFullTool() {
-    connect(ui->fullScreenBtn, &QToolButton::clicked, this,  [&](bool checked) {
+void DicomViewer::SetupFullTool()
+{
+    connect(ui->fullScreenBtn, &QToolButton::clicked, this, [&](bool checked) {
         if (checked) {
             QRect r = geometry();
             QSettings().setValue("WindowGeometry", r);
@@ -357,7 +371,8 @@ void DicomViewer::SetupFullTool() {
 }
 
 //-----------------------------------------------
-void DicomViewer::SetupConnection() {
+void DicomViewer::SetupConnection()
+{
     // thumbnailBar <==> viewContainer
     connect(ui->thumbnailBar, SIGNAL(Signal_SeriesInserted(SeriesInstance *)),
             ui->viewContainer, SLOT(SLot_SeriesInserted(SeriesInstance *)));
@@ -367,40 +382,41 @@ void DicomViewer::SetupConnection() {
             ui->viewContainer, SLOT(SLot_SeriesAppend()));
     // thumbnailBar <==> DicomViewer
     connect(ui->thumbnailBar, &ThumbnailBarWidget::Signal_ImageLoadBegin,
-    this, [&] {
-        ui->tool_widget->setVisible(0);
-        this->update();
-    });
+            this, [&] {
+                ui->tool_widget->setVisible(0);
+                this->update();
+            });
     connect(ui->thumbnailBar, &ThumbnailBarWidget::Signal_ImageLoadFinished,
-    this, [&] {
-        ui->tool_widget->setVisible(1);
-        ui->viewContainer->ImageLoadFinished();
-    });
+            this, [&] {
+                ui->tool_widget->setVisible(1);
+                ui->viewContainer->ImageLoadFinished();
+            });
 }
 
 //-----------------------------------------------
-void DicomViewer::SetupPlugin() {
+void DicomViewer::SetupPlugin()
+{
     QDir pluginsDir("./plugins");
     const auto entryList = pluginsDir.entryList(QDir::Files);
-    for (const QString &fileName : entryList) {
+    for (const QString & fileName : entryList) {
         QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
-        QObject *plugin = loader.instance();
+        QObject * plugin = loader.instance();
         if (plugin) {
             const auto i_pretreatment =
-                qobject_cast<PretreatmentInterface *>(plugin);
+              qobject_cast<PretreatmentInterface *>(plugin);
             if (i_pretreatment) {
-                QMenu *m = ui->flipBtn->menu();
-                QAction *a;
-                QActionGroup *filter_group = new QActionGroup(this);
-                QMenu *filter = new QMenu("filter", this);
+                QMenu * m = ui->flipBtn->menu();
+                QAction * a;
+                QActionGroup * filter_group = new QActionGroup(this);
+                QMenu * filter = new QMenu("filter", this);
                 const QStringList texts = i_pretreatment->GetPretreatments();
                 foreach (const QString var, texts) {
-                    if(var.isEmpty()) {
+                    if (var.isEmpty()) {
                         filter->addSeparator();
                     } else {
                         a = filter->addAction(var);
                         Pretreatmen fun = i_pretreatment->PretreatmentFun(var);
-                        connect(a, &QAction::triggered, this, [ = ] {
+                        connect(a, &QAction::triggered, this, [=] {
                             ui->viewContainer->SetPretreatmen(fun);
                         });
                         a->setCheckable(true);
@@ -415,14 +431,15 @@ void DicomViewer::SetupPlugin() {
 }
 
 //-----------------------------------------------
-void DicomViewer::InitViewType() {
-    if(this->m_type_ == Embed) {
+void DicomViewer::InitViewType()
+{
+    if (this->m_type_ == Embed) {
         ui->fullScreenBtn->setVisible(0);
         ui->gridBtn->setVisible(0);
         qint32 size = ui->fileBtn->menu()->actions().size() - 1;
-        QAction *a = ui->fileBtn->menu()->actions().at(size);
+        QAction * a = ui->fileBtn->menu()->actions().at(size);
         ui->fileBtn->menu()->removeAction(a);
-    } else if(this->m_type_ == SingleInstance) {
+    } else if (this->m_type_ == SingleInstance) {
         LogDao dao;
         dao.InsertMessageToDao("",
                                LogDao::ET_SysInfo,
@@ -432,7 +449,8 @@ void DicomViewer::InitViewType() {
 }
 
 //-----------------------------------------------
-void DicomViewer::SetWidgetDirection(const QBoxLayout::Direction &lay) {
+void DicomViewer::SetWidgetDirection(const QBoxLayout::Direction & lay)
+{
     if (lay == QBoxLayout::LeftToRight) {
         DicomImageLabel::setImage_label_size(180);
         this->update();
@@ -453,39 +471,37 @@ void DicomViewer::SetWidgetDirection(const QBoxLayout::Direction &lay) {
 }
 
 //-----------------------------------------------
-bool DicomViewer::eventFilter(QObject *watched, QEvent *event) {
+bool DicomViewer::eventFilter(QObject * watched, QEvent * event)
+{
     if (event->type() == QEvent::KeyPress) {
-        QKeyEvent *e = static_cast<QKeyEvent *>(event);
+        QKeyEvent * e = static_cast<QKeyEvent *>(event);
         switch (e->key()) {
-            case Qt::Key_Home:
-                ui->thumbnailBar->firstSeries();
-                break;
-            case Qt::Key_End:
-                ui->thumbnailBar->lastSeries();
-                break;
-            case Qt::Key_Return:
-                ui->thumbnailBar->currSeries();
-                break;
-            case Qt::Key_Right:
-                ui->thumbnailBar->nextSeries();
-                break;
-            case Qt::Key_Left:
-                ui->thumbnailBar->prevSeries();
-                break;
-            case Qt::Key_Up:
-                ui->viewContainer->prevFrame();
-                break;
-            case Qt::Key_Down:
-                ui->viewContainer->nextFrame();
-                break;
-            default:
-                return QObject::eventFilter(watched, event);
+        case Qt::Key_Home:
+            ui->thumbnailBar->firstSeries();
+            break;
+        case Qt::Key_End:
+            ui->thumbnailBar->lastSeries();
+            break;
+        case Qt::Key_Return:
+            ui->thumbnailBar->currSeries();
+            break;
+        case Qt::Key_Right:
+            ui->thumbnailBar->nextSeries();
+            break;
+        case Qt::Key_Left:
+            ui->thumbnailBar->prevSeries();
+            break;
+        case Qt::Key_Up:
+            ui->viewContainer->prevFrame();
+            break;
+        case Qt::Key_Down:
+            ui->viewContainer->nextFrame();
+            break;
+        default:
+            return QObject::eventFilter(watched, event);
         }
         return true;
     } else {
         return QObject::eventFilter(watched, event);
     }
 }
-
-
-

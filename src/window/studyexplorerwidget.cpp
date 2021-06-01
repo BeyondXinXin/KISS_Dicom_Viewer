@@ -3,30 +3,33 @@
 
 #include "dicomviewer.h"
 
+#include "script/storescpthread.h"
 #include "widget/importdcmwidget.h"
 #include "widget/scpsettingview.h"
-#include "script/storescpthread.h"
 
 #include <dao/KissDb>
 #include <engine/KissEngine>
 #include <global/KissGlobal>
 
 //----------------------------------------------------------------
-StudyExplorerWidget::StudyExplorerWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::StudyExplorerWidget) {
+StudyExplorerWidget::StudyExplorerWidget(QWidget * parent)
+  : QWidget(parent)
+  , ui(new Ui::StudyExplorerWidget)
+{
     ui->setupUi(this);
     Initial();
 }
 
 //----------------------------------------------------------------
-StudyExplorerWidget::~StudyExplorerWidget() {
+StudyExplorerWidget::~StudyExplorerWidget()
+{
     store_scp_->terminate();
     delete ui;
 }
 
 //----------------------------------------------------------------
-void StudyExplorerWidget::Slot_Today() {
+void StudyExplorerWidget::Slot_Today()
+{
     ui->fromCheckBox->setChecked(true);
     ui->fromDateTimeEdit->setDate(QDate::currentDate());
     ui->fromDateTimeEdit->setTime(QTime(0, 0));
@@ -37,7 +40,8 @@ void StudyExplorerWidget::Slot_Today() {
 }
 
 //----------------------------------------------------------------
-void StudyExplorerWidget::Slot_LatestWeek() {
+void StudyExplorerWidget::Slot_LatestWeek()
+{
     ui->fromCheckBox->setChecked(true);
     ui->fromDateTimeEdit->setDate(QDate::currentDate().addDays(-6));
     ui->fromDateTimeEdit->setTime(QTime(0, 0));
@@ -48,7 +52,8 @@ void StudyExplorerWidget::Slot_LatestWeek() {
 }
 
 //----------------------------------------------------------------
-void StudyExplorerWidget::Slot_LatestMonth() {
+void StudyExplorerWidget::Slot_LatestMonth()
+{
     ui->fromCheckBox->setChecked(true);
     ui->fromDateTimeEdit->setDate(QDate::currentDate().addDays(-30));
     ui->fromDateTimeEdit->setTime(QTime(0, 0));
@@ -59,7 +64,8 @@ void StudyExplorerWidget::Slot_LatestMonth() {
 }
 
 //----------------------------------------------------------------
-void StudyExplorerWidget::Slot_ClearOptional() {
+void StudyExplorerWidget::Slot_ClearOptional()
+{
     ui->fromCheckBox->setChecked(false);
     ui->toCheckBox->setChecked(false);
     ui->patientIDEdit->clear();
@@ -68,18 +74,17 @@ void StudyExplorerWidget::Slot_ClearOptional() {
 }
 
 //----------------------------------------------------------------
-void StudyExplorerWidget::SetStudyFilter() {
+void StudyExplorerWidget::SetStudyFilter()
+{
     QString filter, temp;
     if (ui->fromCheckBox->isChecked()) {
-        filter = QString("StudyTime>\'%1\'").arg(
-                     ui->fromDateTimeEdit->dateTime().toString("yyyy-MM-dd hh:mm:ss"));
+        filter = QString("StudyTime>\'%1\'").arg(ui->fromDateTimeEdit->dateTime().toString("yyyy-MM-dd hh:mm:ss"));
     }
     if (ui->toCheckBox->isChecked()) {
         if (!filter.isEmpty()) {
             filter.append(" and ");
         }
-        filter.append(QString("StudyTime<\'%1\'").arg(
-                          ui->toDateTimeEdit->dateTime().toString("yyyy-MM-dd hh:mm:ss")));
+        filter.append(QString("StudyTime<\'%1\'").arg(ui->toDateTimeEdit->dateTime().toString("yyyy-MM-dd hh:mm:ss")));
     }
     if (!ui->modalityCombo->currentText().isEmpty()) {
         if (!filter.isEmpty()) {
@@ -118,9 +123,10 @@ void StudyExplorerWidget::SetStudyFilter() {
 }
 
 //----------------------------------------------------------------
-void StudyExplorerWidget::RefreshReadStudyModel(const QString &filter) {
+void StudyExplorerWidget::RefreshReadStudyModel(const QString & filter)
+{
     bool close = false;
-    if(DbManager::IsOpenedDb()) {
+    if (DbManager::IsOpenedDb()) {
     } else {
         if (DbManager::OpenDb()) {
             close = true;
@@ -128,18 +134,20 @@ void StudyExplorerWidget::RefreshReadStudyModel(const QString &filter) {
     }
     study_model_->setFilter(filter);
     study_model_->select();
-    if(close) {
+    if (close) {
         DbManager::CloseDb();
     }
 }
 
 //----------------------------------------------------------------
-void StudyExplorerWidget::Slot_StudySearch() {
+void StudyExplorerWidget::Slot_StudySearch()
+{
     this->SetStudyFilter();
 }
 
 //----------------------------------------------------------------
-void StudyExplorerWidget::Initial() {
+void StudyExplorerWidget::Initial()
+{
     study_model_ = new SqlStudyModel(this, QSqlDatabase::database(DB_CONNECTION_NAME));
     study_model_->setTable(StudyDao::study_table_name_);
     study_view_ = new SqlStudyTabView(study_model_);
@@ -163,7 +171,8 @@ void StudyExplorerWidget::Initial() {
 }
 
 //----------------------------------------------------------------
-void StudyExplorerWidget::CreateConnections() {
+void StudyExplorerWidget::CreateConnections()
+{
     // UI
     connect(ui->btn_import, &QPushButton::clicked,
             this, &StudyExplorerWidget::Slot_LocalImportImage);
@@ -187,16 +196,16 @@ void StudyExplorerWidget::CreateConnections() {
     connect(image_view_, &SqlImageTabView::Signal_ShowDirectories,
             image_model_, &SqlImageModel::SLot_ShowDirectories);
     connect(image_model_, &SqlImageModel::viewImages,
-    this, [](QStringList file) {
-        QStringList path;
-        foreach (auto var, file) {
-            var = "./DcmFile/" + var;
-            path << var;
-        }
-        DicomViewer *w = new DicomViewer(DicomViewer::SingleInstance);
-        w->SetDicomFile(path);
-        w->show();
-    });
+            this, [](QStringList file) {
+                QStringList path;
+                foreach (auto var, file) {
+                    var = "./DcmFile/" + var;
+                    path << var;
+                }
+                DicomViewer * w = new DicomViewer(DicomViewer::SingleInstance);
+                w->SetDicomFile(path);
+                w->show();
+            });
     // remove Studies
     connect(study_view_, &SqlStudyTabView::Signal_RemoveStudies,
             study_model_, &SqlStudyModel::Slot_RemoveStudies);
@@ -213,31 +222,35 @@ void StudyExplorerWidget::CreateConnections() {
     connect(study_model_, &SqlStudyModel::Signal_studySelectionChanged,
             image_model_, &SqlImageModel::Slot_StudySelected);
     // PACS
-    connect(store_scp_, &StoreScpThread::finished, this, [ = ] {
+    connect(store_scp_, &StoreScpThread::finished, this, [=] {
         QMessageBox::critical(this, QString("StoreScp 意外退出"), "软件将自动关闭");
         qApp->exit();
     });
 }
 
 //----------------------------------------------------------------
-QStringList StudyExplorerWidget::getAllImageFiles() const {
+QStringList StudyExplorerWidget::getAllImageFiles() const
+{
     return image_model_->getAllImageFiles();
 }
 
 //----------------------------------------------------------------
-void StudyExplorerWidget::showEvent(QShowEvent *e) {
+void StudyExplorerWidget::showEvent(QShowEvent * e)
+{
     study_model_->select();
     QWidget::showEvent(e);
 }
 
 //----------------------------------------------------------------
-void StudyExplorerWidget::Slot_LocalImportImage() {
-    ImportDcmWidget *w = new ImportDcmWidget();
+void StudyExplorerWidget::Slot_LocalImportImage()
+{
+    ImportDcmWidget * w = new ImportDcmWidget();
     w->show();
 }
 
 //----------------------------------------------------------------
-void StudyExplorerWidget::Slot_ScpSetting() {
-    ScpSettingView *w = new ScpSettingView();
+void StudyExplorerWidget::Slot_ScpSetting()
+{
+    ScpSettingView * w = new ScpSettingView();
     w->show();
 }

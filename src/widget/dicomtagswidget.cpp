@@ -3,17 +3,20 @@
 #include <engine/KissEngine>
 #include <global/KissGlobal>
 
-
-KissQTreeWidget::KissQTreeWidget(QWidget *parent): QTreeWidget(parent) {
+KissQTreeWidget::KissQTreeWidget(QWidget * parent)
+  : QTreeWidget(parent)
+{
     this->Initial();
 }
 
-KissQTreeWidget::~KissQTreeWidget() {
+KissQTreeWidget::~KissQTreeWidget()
+{
 }
 
-void KissQTreeWidget::Initial() {
-    QStringList header_list = {"Tag ID", "VR", "VM", "Length", "Description", "value"};
-    QList<int> headerwidth_list = {200, 70, 100, 50, 300, 300};
+void KissQTreeWidget::Initial()
+{
+    QStringList header_list = { "Tag ID", "VR", "VM", "Length", "Description", "value" };
+    QList<int> headerwidth_list = { 200, 70, 100, 50, 300, 300 };
     this->setHeaderLabels(header_list);
     qint32 i = 0;
     foreach (auto var, headerwidth_list) {
@@ -27,23 +30,23 @@ void KissQTreeWidget::Initial() {
     context_menu_->addAction(tr("Open the folder where DCM is located"),
                              this, &KissQTreeWidget::Signal_OpenFolder);
     context_menu_->addSeparator();
-    context_menu_->addAction(tr("Copy current selection"), this, [ = ]() {
-        QTreeWidgetItem *item = this->selectedItems().first();
-        QClipboard *clip = QApplication::clipboard();
+    context_menu_->addAction(tr("Copy current selection"), this, [=]() {
+        QTreeWidgetItem * item = this->selectedItems().first();
+        QClipboard * clip = QApplication::clipboard();
         QStringList str;
-        for(qint32 i = 0; i < item->columnCount(); i++) {
+        for (qint32 i = 0; i < item->columnCount(); i++) {
             str << item->text(i);
         }
         clip->setText(str.join("      "));
     });
-    context_menu_->addAction(tr("Copy all values"), this, [ = ]() {
-        QList<int> right_justified = {12, 4, 4, 4, 50, 50};
-        QClipboard *clip = QApplication::clipboard();
+    context_menu_->addAction(tr("Copy all values"), this, [=]() {
+        QList<int> right_justified = { 12, 4, 4, 4, 50, 50 };
+        QClipboard * clip = QApplication::clipboard();
         QStringList list_str;
         QTreeWidgetItemIterator it(this);
         while (*it) {
             QStringList tmp_list_str;
-            for(qint32 i = 0; i < (*it)->columnCount(); i++) {
+            for (qint32 i = 0; i < (*it)->columnCount(); i++) {
                 QString str = (*it)->text(i);
                 auto var = *it;
                 while (var->parent()) {
@@ -60,15 +63,16 @@ void KissQTreeWidget::Initial() {
     });
 }
 
-void KissQTreeWidget::contextMenuEvent(QContextMenuEvent *e) {
+void KissQTreeWidget::contextMenuEvent(QContextMenuEvent * e)
+{
     if (indexAt(e->pos()).isValid()) {
         context_menu_->popup(e->globalPos());
     }
 }
 
-
-DicomTagsWidget::DicomTagsWidget(const QString &str, QWidget *parent) :
-    QWidget(parent) {
+DicomTagsWidget::DicomTagsWidget(const QString & str, QWidget * parent)
+  : QWidget(parent)
+{
     // 界面初始化
     ui.setupUi(this);
     this->tree_wid_ = new KissQTreeWidget(this);
@@ -82,34 +86,36 @@ DicomTagsWidget::DicomTagsWidget(const QString &str, QWidget *parent) :
     // 读取文件
     DcmFileFormat dfile;
     dfile.loadFile(str.toLocal8Bit().data());
-    QTreeWidgetItem *metainfo_item = new QTreeWidgetItem;
+    QTreeWidgetItem * metainfo_item = new QTreeWidgetItem;
     metainfo_item->setText(0, "Dicom-MetaInfo");
     items << metainfo_item;
-    MyDcmMetaInfo *meta_info = new MyDcmMetaInfo(*dfile.getMetaInfo());
+    MyDcmMetaInfo * meta_info = new MyDcmMetaInfo(*dfile.getMetaInfo());
     GenerateItems(items, *meta_info);
-    QTreeWidgetItem *dataset_item = new QTreeWidgetItem;
+    QTreeWidgetItem * dataset_item = new QTreeWidgetItem;
     dataset_item->setText(0, "Dicom-Data-Set");
     items << dataset_item;
-    MyDcmDataset *dataset_info = new MyDcmDataset(*dfile.getDataset());
+    MyDcmDataset * dataset_info = new MyDcmDataset(*dfile.getDataset());
     GenerateItems(items, *dataset_info);
     this->tree_wid_->addTopLevelItems(items);
 }
 
-void DicomTagsWidget::changeEvent(QEvent *e) {
+void DicomTagsWidget::changeEvent(QEvent * e)
+{
     QWidget::changeEvent(e);
     switch (e->type()) {
-        case QEvent::LanguageChange:
-            ui.retranslateUi(this);
-            break;
-        default:
-            break;
+    case QEvent::LanguageChange:
+        ui.retranslateUi(this);
+        break;
+    default:
+        break;
     }
 }
 
-void DicomTagsWidget::SlotFilterChanged() {
+void DicomTagsWidget::SlotFilterChanged()
+{
     QTreeWidgetItemIterator it(tree_wid_);
     QString str = ui.filter->text();
-    if(str.isEmpty()) {
+    if (str.isEmpty()) {
         while (*it) {
             (*it)->setHidden(false);
             ++it;
@@ -121,7 +127,7 @@ void DicomTagsWidget::SlotFilterChanged() {
         ++it;
     }
     QList<QTreeWidgetItem *> items;
-    for(qint32 i = 0; i < tree_wid_->columnCount(); i++) {
+    for (qint32 i = 0; i < tree_wid_->columnCount(); i++) {
         items << tree_wid_->findItems(str, Qt::MatchContains | Qt::MatchRecursive, i);
     }
     foreach (auto var, items) {
@@ -133,10 +139,10 @@ void DicomTagsWidget::SlotFilterChanged() {
     }
 }
 
-void DicomTagsWidget::SLot_OpenFolder() {
+void DicomTagsWidget::SLot_OpenFolder()
+{
     QString str = this->windowTitle();
     QFileInfo file(str);
     QDesktopServices::openUrl(
-        QUrl("file:///" + file.absolutePath(), QUrl::TolerantMode));
+      QUrl("file:///" + file.absolutePath(), QUrl::TolerantMode));
 }
-

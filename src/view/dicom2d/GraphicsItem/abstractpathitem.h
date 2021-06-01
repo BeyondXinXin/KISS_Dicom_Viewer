@@ -9,9 +9,11 @@ class DicomImage;
 #define PI double(3.1415926)
 #define MARGIN 2
 
-class AbstractPathItem : public QGraphicsPathItem {
-  public:
-    enum Stage {
+class AbstractPathItem : public QGraphicsPathItem
+{
+public:
+    enum Stage
+    {
         First,
         Second,
         Third,
@@ -20,43 +22,56 @@ class AbstractPathItem : public QGraphicsPathItem {
         Final,
     };
 
-    explicit AbstractPathItem(QGraphicsItem *parent = nullptr);
+    explicit AbstractPathItem(QGraphicsItem * parent = nullptr);
 
-    void setFont(const QFont &font);
-    virtual void setActivePoint(const QPointF &point) = 0;
-    AbstractPathItem::Stage getCurrentStage() {
+    void setFont(const QFont & font);
+    virtual void setActivePoint(const QPointF & point) = 0;
+    AbstractPathItem::Stage getCurrentStage()
+    {
         return currentStage;
     }
-    virtual void nextStage() {}
-    void setZoomFactor(const double &factor);
-    void setPixelSpacing(const double &x, const double &y);
-    virtual void recalPixInfo(const DicomImage * /*dcmImage*/) {}
-    virtual void recalPixInfo(const short ** /*data*/) {}
-    virtual bool pixInfoUpdated() const {
+    virtual void nextStage()
+    {
+    }
+    void setZoomFactor(const double & factor);
+    void setPixelSpacing(const double & x, const double & y);
+    virtual void recalPixInfo(const DicomImage * /*dcmImage*/)
+    {
+    }
+    virtual void recalPixInfo(const short ** /*data*/)
+    {
+    }
+    virtual bool pixInfoUpdated() const
+    {
         return true;
     }
 
-  protected:
-    void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
-    void paint(QPainter *painter,
-               const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr);
+protected:
+    void hoverEnterEvent(QGraphicsSceneHoverEvent * event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent * event);
+    void paint(QPainter * painter,
+               const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr);
 
-  private:
+private:
     void init();
-    virtual void updateTextItem() {}
-    virtual QPointF textItemPos() {
+    virtual void updateTextItem()
+    {
+    }
+    virtual QPointF textItemPos()
+    {
         return QPointF();
     }
-    virtual QPainterPath itemPath() {
+    virtual QPainterPath itemPath()
+    {
         return QPainterPath();
     }
-    virtual bool isModified() {
+    virtual bool isModified()
+    {
         return false;
     }
 
-  protected:
-    GraphicsSimpleTextItem *textItem;
+protected:
+    GraphicsSimpleTextItem * textItem;
     Stage currentStage;
     double xSpacing;
     double ySpacing;

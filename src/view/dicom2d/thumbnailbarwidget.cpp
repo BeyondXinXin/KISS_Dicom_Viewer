@@ -1,21 +1,22 @@
 ﻿#include "thumbnailbarwidget.h"
 #include "dicomimagelabel.h"
 
-#include <script/KissScript>
-#include <global/KissGlobal>
 #include <engine/KissEngine>
+#include <global/KissGlobal>
+#include <script/KissScript>
 
-#include "ImageData/seriesinstance.h"
 #include "ImageData/imageinstance.h"
-#include "filewatcherthread.h"
-#include "dcmtk/dcmdata/dcuid.h"
-#include <QTimer>
+#include "ImageData/seriesinstance.h"
 #include "JlCompress.h"
+#include "dcmtk/dcmdata/dcuid.h"
+#include "filewatcherthread.h"
+#include <QTimer>
 
 //-------------------------------------------------------
-ThumbnailBarWidget::ThumbnailBarWidget(QWidget *parent) :
-    QWidget(parent),
-    currentImageLabel(nullptr) {
+ThumbnailBarWidget::ThumbnailBarWidget(QWidget * parent)
+  : QWidget(parent)
+  , currentImageLabel(nullptr)
+{
     setFocusPolicy(Qt::StrongFocus);
     layout = new QBoxLayout(QBoxLayout::TopToBottom, this);
     layout->setContentsMargins(6, 6, 6, 6);
@@ -24,18 +25,20 @@ ThumbnailBarWidget::ThumbnailBarWidget(QWidget *parent) :
 }
 
 //-------------------------------------------------------
-ThumbnailBarWidget::~ThumbnailBarWidget() {
+ThumbnailBarWidget::~ThumbnailBarWidget()
+{
     clear();
     emit Signal_QuitFileWatcher();
 }
 
 //-------------------------------------------------------
-void ThumbnailBarWidget::setCurrentImageLabel(const SeriesInstance *series) {
+void ThumbnailBarWidget::setCurrentImageLabel(const SeriesInstance * series)
+{
     if (currentImageLabel && currentImageLabel->getSeriesInstance() == series) {
         currentImageLabel->setHighlight(true);
     } else {
         bool found = false;
-        foreach (DicomImageLabel *label, imageLabelList) {
+        foreach (DicomImageLabel * label, imageLabelList) {
             if (series == label->getSeriesInstance()) {
                 if (currentImageLabel) {
                     currentImageLabel->setHighlight(false);
@@ -54,24 +57,26 @@ void ThumbnailBarWidget::setCurrentImageLabel(const SeriesInstance *series) {
 }
 
 //-------------------------------------------------------
-void ThumbnailBarWidget::firstSeries() {
+void ThumbnailBarWidget::firstSeries()
+{
     if (!imageLabelList.isEmpty()) {
         Slot_ImageDoubleClicked(imageLabelList.first());
     }
 }
 
 //-------------------------------------------------------
-void ThumbnailBarWidget::lastSeries() {
+void ThumbnailBarWidget::lastSeries()
+{
     if (!imageLabelList.isEmpty()) {
-        if ((!currentImageLabel) ||
-                (currentImageLabel && currentImageLabel != imageLabelList.last())) {
+        if ((!currentImageLabel) || (currentImageLabel && currentImageLabel != imageLabelList.last())) {
             Slot_ImageDoubleClicked(imageLabelList.last());
         }
     }
 }
 
 //-------------------------------------------------------
-void ThumbnailBarWidget::prevSeries() {
+void ThumbnailBarWidget::prevSeries()
+{
     if (currentImageLabel && (imageLabelList.size())) {
         int i = imageLabelList.indexOf(currentImageLabel);
         if (i > 0) {
@@ -81,7 +86,8 @@ void ThumbnailBarWidget::prevSeries() {
 }
 
 //-------------------------------------------------------
-void ThumbnailBarWidget::nextSeries() {
+void ThumbnailBarWidget::nextSeries()
+{
     if (currentImageLabel && (imageLabelList.size())) {
         int i = imageLabelList.indexOf(currentImageLabel);
         if (i < imageLabelList.size() - 1) {
@@ -91,22 +97,25 @@ void ThumbnailBarWidget::nextSeries() {
 }
 
 //-------------------------------------------------------
-void ThumbnailBarWidget::currSeries() {
+void ThumbnailBarWidget::currSeries()
+{
     if (currentImageLabel) {
         emit Signal_ImageDoubleClicked(currentImageLabel->getSeriesInstance());
     }
 }
 
-void ThumbnailBarWidget::UpdataLabeSize() {
-    foreach (DicomImageLabel *label, imageLabelList) {
+void ThumbnailBarWidget::UpdataLabeSize()
+{
+    foreach (DicomImageLabel * label, imageLabelList) {
         label->setFixedSize(label->sizeHint());
     }
 }
 
 //-------------------------------------------------------
-void ThumbnailBarWidget::setFileWatcher(const QString &dir) {
+void ThumbnailBarWidget::setFileWatcher(const QString & dir)
+{
     emit Signal_QuitFileWatcher();
-    FileWatcherThread *t = new FileWatcherThread(dir);
+    FileWatcherThread * t = new FileWatcherThread(dir);
     connect(this, &ThumbnailBarWidget::Signal_QuitFileWatcher,
             t, &FileWatcherThread::quit);
     connect(t, &FileWatcherThread::finished,
@@ -117,12 +126,13 @@ void ThumbnailBarWidget::setFileWatcher(const QString &dir) {
 }
 
 //-------------------------------------------------------
-void ThumbnailBarWidget::updateLabelImage(const SeriesInstance *series) {
+void ThumbnailBarWidget::updateLabelImage(const SeriesInstance * series)
+{
     if (currentImageLabel && currentImageLabel->getSeriesInstance() == series) {
         currentImageLabel->updateThumbnailImage();
         return;
     }
-    foreach (DicomImageLabel *label, imageLabelList) {
+    foreach (DicomImageLabel * label, imageLabelList) {
         if (label->getSeriesInstance() == series) {
             label->updateThumbnailImage();
             break;
@@ -131,21 +141,23 @@ void ThumbnailBarWidget::updateLabelImage(const SeriesInstance *series) {
 }
 
 //-------------------------------------------------------
-void ThumbnailBarWidget::setImagePaths(const QStringList &paths) {
+void ThumbnailBarWidget::setImagePaths(const QStringList & paths)
+{
     appendImagePaths(paths, true);
 }
 
 //-------------------------------------------------------
 void ThumbnailBarWidget::appendImagePaths(
-    const QStringList &paths, bool clear_old) {
+  const QStringList & paths, bool clear_old)
+{
     emit Signal_ImageLoadBegin();
-    if(1 == paths.size() && paths.first().right(4) == ".zip") {
+    if (1 == paths.size() && paths.first().right(4) == ".zip") {
         QPointer<UnzipDicomFile> script_recoery_;
         script_recoery_ = new UnzipDicomFile();
         connect(script_recoery_, &UnzipDicomFile::finished,
-        this, [&] {
-            appendImagePaths(QStringList() << "./ZipCache", true);
-        });
+                this, [&] {
+                    appendImagePaths(QStringList() << "./ZipCache", true);
+                });
         connect(script_recoery_, &UnzipDicomFile::finished,
                 script_recoery_, &UnzipDicomFile::deleteLater);
         script_recoery_->SetPath(paths.first());
@@ -160,11 +172,11 @@ void ThumbnailBarWidget::appendImagePaths(
         QDir dir(p);
         if (dir.exists()) {
             QStringList subs = dir.entryList(QDir::Files);
-            foreach (const QString &s, subs) {
+            foreach (const QString & s, subs) {
                 files += p + QDir::separator() + s;
             }
             subs = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-            foreach (const QString &s, subs) {
+            foreach (const QString & s, subs) {
                 path_list += p + QDir::separator() + s;
             }
         } else {
@@ -175,9 +187,9 @@ void ThumbnailBarWidget::appendImagePaths(
         unloaded_files = files;
         clear();
     } else {
-        foreach (const QString &file, files) {
+        foreach (const QString & file, files) {
             bool found = false;
-            foreach (DicomImageLabel *label, imageLabelList) {
+            foreach (DicomImageLabel * label, imageLabelList) {
                 if (label->HasImage(file)) {
                     found = true;
                     break;
@@ -188,13 +200,13 @@ void ThumbnailBarWidget::appendImagePaths(
             }
         }
     }
-    if(unloaded_files.size() > 3000) {
+    if (unloaded_files.size() > 3000) {
         qDebug() << unloaded_files.size()
                  << "files. That's too much";
         return;
     }
     OFLog::configure(OFLogger::WARN_LOG_LEVEL);
-    foreach (const QString &p, unloaded_files) {
+    foreach (const QString & p, unloaded_files) {
         QApplication::processEvents();
         Slot_ImagePathReady(p);
     }
@@ -204,9 +216,10 @@ void ThumbnailBarWidget::appendImagePaths(
 }
 
 //-------------------------------------------------------
-void ThumbnailBarWidget::Slot_ImageReady(ImageInstance *image) {
+void ThumbnailBarWidget::Slot_ImageReady(ImageInstance * image)
+{
     bool inserted = false;
-    foreach (DicomImageLabel *label, imageLabelList) {
+    foreach (DicomImageLabel * label, imageLabelList) {
         if (label->insertImage(image)) {
             inserted = true;
             emit Signal_SeriesAppend();
@@ -214,9 +227,9 @@ void ThumbnailBarWidget::Slot_ImageReady(ImageInstance *image) {
         }
     }
     if ((!inserted) && image) {
-        DicomImageLabel *imageLabel =
-            new DicomImageLabel(new SeriesInstance(image->GetSeriesUid()));
-        if( imageLabel->insertImage(image)) {
+        DicomImageLabel * imageLabel =
+          new DicomImageLabel(new SeriesInstance(image->GetSeriesUid()));
+        if (imageLabel->insertImage(image)) {
             connect(imageLabel, &DicomImageLabel::Signal_ImageClicked,
                     this, &ThumbnailBarWidget::SLot_ImageClicked);
             connect(imageLabel, &DicomImageLabel::Signal_ImageDoubleClicked,
@@ -233,10 +246,11 @@ void ThumbnailBarWidget::Slot_ImageReady(ImageInstance *image) {
     }
 }
 
-void ThumbnailBarWidget::Slot_ImagePathReady(const QString path) {
-    ImageInstance *image = new ImageInstance(path);
+void ThumbnailBarWidget::Slot_ImagePathReady(const QString path)
+{
+    ImageInstance * image = new ImageInstance(path);
     bool inserted = false;
-    foreach (DicomImageLabel *label, imageLabelList) {
+    foreach (DicomImageLabel * label, imageLabelList) {
         if (label->insertImage(image)) {
             inserted = true;
             emit Signal_SeriesAppend();
@@ -244,10 +258,10 @@ void ThumbnailBarWidget::Slot_ImagePathReady(const QString path) {
         }
     }
     if ((!inserted) && image) {
-        DicomImageLabel *imageLabel =
-            new DicomImageLabel(
+        DicomImageLabel * imageLabel =
+          new DicomImageLabel(
             new SeriesInstance(image->GetSeriesUid()));
-        if(imageLabel->insertImage(image)) {
+        if (imageLabel->insertImage(image)) {
             connect(imageLabel, &DicomImageLabel::Signal_ImageClicked,
                     this, &ThumbnailBarWidget::SLot_ImageClicked);
             connect(imageLabel, &DicomImageLabel::Signal_ImageDoubleClicked,
@@ -265,15 +279,14 @@ void ThumbnailBarWidget::Slot_ImagePathReady(const QString path) {
     QApplication::processEvents();
 }
 
-
 //-------------------------------------------------------
 void ThumbnailBarWidget::Slot_FilesChanged(
-    const QStringList &removed,
-    const QStringList &added) {
-    foreach (const QString &f, removed) {
-        foreach (DicomImageLabel *l, imageLabelList) {
-            if (l->removeImage(f) &&
-                    l->getSeriesInstance()->IsEmpty()) {
+  const QStringList & removed,
+  const QStringList & added)
+{
+    foreach (const QString & f, removed) {
+        foreach (DicomImageLabel * l, imageLabelList) {
+            if (l->removeImage(f) && l->getSeriesInstance()->IsEmpty()) {
                 layout->removeWidget(l);
                 imageLabelList.removeOne(l);
                 if (currentImageLabel == l) {
@@ -292,7 +305,8 @@ void ThumbnailBarWidget::Slot_FilesChanged(
 
 //-------------------------------------------------------
 void ThumbnailBarWidget::SLot_ImageClicked(
-    DicomImageLabel *imageLabel) {
+  DicomImageLabel * imageLabel)
+{
     if (currentImageLabel != imageLabel) {
         if (currentImageLabel) {
             currentImageLabel->select_ = false;
@@ -308,7 +322,8 @@ void ThumbnailBarWidget::SLot_ImageClicked(
 
 //-------------------------------------------------------
 void ThumbnailBarWidget::Slot_ImageDoubleClicked(
-    DicomImageLabel *imageLabel) {
+  DicomImageLabel * imageLabel)
+{
     if (currentImageLabel) {
         currentImageLabel->select_ = false;
         currentImageLabel->setHighlight(false);
@@ -318,21 +333,23 @@ void ThumbnailBarWidget::Slot_ImageDoubleClicked(
         currentImageLabel->select_ = true;
         currentImageLabel->setHighlight(true);
         emit Signal_ImageDoubleClicked(
-            currentImageLabel->getSeriesInstance());
+          currentImageLabel->getSeriesInstance());
     }
 }
 
 //-------------------------------------------------------
-QList<SeriesInstance *> ThumbnailBarWidget::getSeriesList() const {
+QList<SeriesInstance *> ThumbnailBarWidget::getSeriesList() const
+{
     QList<SeriesInstance *> seriesList;
-    foreach (DicomImageLabel *label, imageLabelList) {
+    foreach (DicomImageLabel * label, imageLabelList) {
         seriesList << label->getSeriesInstance();
     }
     return seriesList;
 }
 
 //-------------------------------------------------------
-QSize ThumbnailBarWidget::sizeHint() const {
+QSize ThumbnailBarWidget::sizeHint() const
+{
     QMargins margin = layout->contentsMargins();
     int width = DicomImageLabel::getImageLabelSize();
     int height = DicomImageLabel::getImageLabelSize() * imageLabelList.size();
@@ -340,28 +357,30 @@ QSize ThumbnailBarWidget::sizeHint() const {
         height += (imageLabelList.size() - 1) * layout->spacing();
     }
     switch (layout->direction()) {
-        case QBoxLayout::TopToBottom:
-        case QBoxLayout::BottomToTop:
-            return QSize(width + margin.left() + margin.right(),
-                         height + margin.top() + margin.bottom());
-        case QBoxLayout::LeftToRight:
-        case QBoxLayout::RightToLeft:
-            return QSize(width + margin.top() + margin.bottom(),
-                         height + margin.left() + margin.right());
-            /*default:
+    case QBoxLayout::TopToBottom:
+    case QBoxLayout::BottomToTop:
+        return QSize(width + margin.left() + margin.right(),
+                     height + margin.top() + margin.bottom());
+    case QBoxLayout::LeftToRight:
+    case QBoxLayout::RightToLeft:
+        return QSize(width + margin.top() + margin.bottom(),
+                     height + margin.left() + margin.right());
+        /*default:
                 return QSize();*/
     }
 }
 
 //-------------------------------------------------------
-void ThumbnailBarWidget::clear() {
+void ThumbnailBarWidget::clear()
+{
     qDeleteAll(imageLabelList);
     imageLabelList.clear();
     currentImageLabel = nullptr;
 }
 
 //-------------------------------------------------------
-void UnzipDicomFile::run() {
+void UnzipDicomFile::run()
+{
     Kiss::FileUtil::DirRemove("./ZipCache");
     Kiss::FileUtil::DirMake("./ZipCache/");
     JlCompress::extractDir(this->path_, "./ZipCache/");
@@ -369,6 +388,7 @@ void UnzipDicomFile::run() {
 
 //-------------------------------------------------------
 void UnzipDicomFile::SetPath(
-    const QString &path) {
+  const QString & path)
+{
     this->path_ = path;
 }

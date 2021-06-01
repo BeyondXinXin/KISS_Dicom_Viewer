@@ -5,32 +5,36 @@
 class ExportImageThread;
 
 namespace Ui {
-    class ExportImageDialog;
+class ExportImageDialog;
 }
 
-class ExportImageDialog : public QDialog {
+class ExportImageDialog : public QDialog
+{
     Q_OBJECT
 
-  public:
-    explicit ExportImageDialog(QWidget *parent = nullptr);
+public:
+    explicit ExportImageDialog(QWidget * parent = nullptr);
     ~ExportImageDialog();
-    void SetMultiplePng(const QStringList &images);
-    void SetLeafletPng(const bool &leaflet,
-                       const int &frame,
-                       const QString &image);
-  protected:
-    void closeEvent(QCloseEvent *e);
+    void SetMultiplePng(const QStringList & images);
+    void SetLeafletPng(const bool & leaflet,
+                       const int & frame,
+                       const QString & image);
 
-  protected slots:
+protected:
+    void closeEvent(QCloseEvent * e);
+
+protected slots:
     void Slot_Start(bool checked);
     void Slot_SelectFolder();
     void Slot_ExportFinished();
-    void Slot_ResultReady(const QString &msg);
-  private:
+    void Slot_ResultReady(const QString & msg);
+
+private:
     void Initialization();
-  private:
-    Ui::ExportImageDialog *ui;
-    ExportImageThread *export_thread_;
+
+private:
+    Ui::ExportImageDialog * ui;
+    ExportImageThread * export_thread_;
     int image_count_;
 };
 

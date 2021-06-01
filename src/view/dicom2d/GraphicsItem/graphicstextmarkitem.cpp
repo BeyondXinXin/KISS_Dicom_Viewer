@@ -2,10 +2,10 @@
 #include "graphicssimpletextitem.h"
 
 //----------------------------------------------------------------
-GraphicsTextMarkItem::GraphicsTextMarkItem(QGraphicsItem *parent) :
-    AbstractPathItem(parent) {
-    setFlags(flags() | QGraphicsItem::ItemDoesntPropagateOpacityToChildren |
-             QGraphicsItem::ItemIgnoresTransformations);
+GraphicsTextMarkItem::GraphicsTextMarkItem(QGraphicsItem * parent)
+  : AbstractPathItem(parent)
+{
+    setFlags(flags() | QGraphicsItem::ItemDoesntPropagateOpacityToChildren | QGraphicsItem::ItemIgnoresTransformations);
     textItem->setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
     textItem->setFlag(QGraphicsItem::ItemIgnoresParentOpacity);
     textItem->setFlag(QGraphicsItem::ItemIsMovable);
@@ -14,6 +14,7 @@ GraphicsTextMarkItem::GraphicsTextMarkItem(QGraphicsItem *parent) :
 }
 
 //----------------------------------------------------------------
-void GraphicsTextMarkItem::setLabelItemText(const QString &text) {
+void GraphicsTextMarkItem::setLabelItemText(const QString & text)
+{
     textItem->setText(text);
 }

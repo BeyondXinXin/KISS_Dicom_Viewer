@@ -28,68 +28,69 @@ see quazip/(un)zip.h files for details. Basically it's the zlib license.
 #define QUAZIO_OUTBUFSIZE 4096
 
 /// \cond internal
-class QuaZIODevicePrivate {
+class QuaZIODevicePrivate
+{
     friend class QuaZIODevice;
-    QuaZIODevicePrivate(QIODevice *io, QuaZIODevice *q);
+    QuaZIODevicePrivate(QIODevice * io, QuaZIODevice * q);
     ~QuaZIODevicePrivate();
-    QIODevice *io;
-    QuaZIODevice *q;
+    QIODevice * io;
+    QuaZIODevice * q;
     z_stream zins;
     z_stream zouts;
-    char *inBuf;
+    char * inBuf;
     int inBufPos;
     int inBufSize;
-    char *outBuf;
+    char * outBuf;
     int outBufPos;
     int outBufSize;
     bool zBufError;
     bool atEnd;
     bool flush(int sync);
-    int doFlush(QString &error);
+    int doFlush(QString & error);
 };
 
-QuaZIODevicePrivate::QuaZIODevicePrivate(QIODevice *io, QuaZIODevice *q):
-  io(io),
-  q(q),
-  inBuf(NULL),
-  inBufPos(0),
-  inBufSize(0),
-  outBuf(NULL),
-  outBufPos(0),
-  outBufSize(0),
-  zBufError(false),
-  atEnd(false)
+QuaZIODevicePrivate::QuaZIODevicePrivate(QIODevice * io, QuaZIODevice * q)
+  : io(io)
+  , q(q)
+  , inBuf(NULL)
+  , inBufPos(0)
+  , inBufSize(0)
+  , outBuf(NULL)
+  , outBufPos(0)
+  , outBufSize(0)
+  , zBufError(false)
+  , atEnd(false)
 {
-  zins.zalloc = (alloc_func) NULL;
-  zins.zfree = (free_func) NULL;
-  zins.opaque = NULL;
-  zouts.zalloc = (alloc_func) NULL;
-  zouts.zfree = (free_func) NULL;
-  zouts.opaque = NULL;
-  inBuf = new char[QUAZIO_INBUFSIZE];
-  outBuf = new char[QUAZIO_OUTBUFSIZE];
+    zins.zalloc = (alloc_func)NULL;
+    zins.zfree = (free_func)NULL;
+    zins.opaque = NULL;
+    zouts.zalloc = (alloc_func)NULL;
+    zouts.zfree = (free_func)NULL;
+    zouts.opaque = NULL;
+    inBuf = new char[QUAZIO_INBUFSIZE];
+    outBuf = new char[QUAZIO_OUTBUFSIZE];
 #ifdef QUAZIP_ZIODEVICE_DEBUG_OUTPUT
-  debug.setFileName("debug.out");
-  debug.open(QIODevice::WriteOnly);
+    debug.setFileName("debug.out");
+    debug.open(QIODevice::WriteOnly);
 #endif
 #ifdef QUAZIP_ZIODEVICE_DEBUG_INPUT
-  indebug.setFileName("debug.in");
-  indebug.open(QIODevice::WriteOnly);
+    indebug.setFileName("debug.in");
+    indebug.open(QIODevice::WriteOnly);
 #endif
 }
 
 QuaZIODevicePrivate::~QuaZIODevicePrivate()
 {
 #ifdef QUAZIP_ZIODEVICE_DEBUG_OUTPUT
-  debug.close();
+    debug.close();
 #endif
 #ifdef QUAZIP_ZIODEVICE_DEBUG_INPUT
-  indebug.close();
+    indebug.close();
 #endif
-  if (inBuf != NULL)
-    delete[] inBuf;
-  if (outBuf != NULL)
-      delete[] outBuf;
+    if (inBuf != NULL)
+        delete[] inBuf;
+    if (outBuf != NULL)
+        delete[] outBuf;
 }
 
 bool QuaZIODevicePrivate::flush(int sync)
@@ -106,48 +107,48 @@ bool QuaZIODevicePrivate::flush(int sync)
     zouts.next_in = &c; // fake input buffer
     zouts.avail_in = 0; // of zero size
     do {
-        zouts.next_out = (Bytef *) outBuf;
+        zouts.next_out = (Bytef *)outBuf;
         zouts.avail_out = QUAZIO_OUTBUFSIZE;
         int result = deflate(&zouts, sync);
         switch (result) {
         case Z_OK:
         case Z_STREAM_END:
-          outBufSize = (char *) zouts.next_out - outBuf;
-          if (doFlush(error) < 0) {
-              q->setErrorString(error);
-              return false;
-          }
-          if (outBufPos < outBufSize)
-              return true;
-          break;
+            outBufSize = (char *)zouts.next_out - outBuf;
+            if (doFlush(error) < 0) {
+                q->setErrorString(error);
+                return false;
+            }
+            if (outBufPos < outBufSize)
+                return true;
+            break;
         case Z_BUF_ERROR: // nothing to write?
-          return true;
+            return true;
         default:
-          q->setErrorString(QString::fromLocal8Bit(zouts.msg));
-          return false;
+            q->setErrorString(QString::fromLocal8Bit(zouts.msg));
+            return false;
         }
     } while (zouts.avail_out == 0);
     return true;
 }
 
-int QuaZIODevicePrivate::doFlush(QString &error)
+int QuaZIODevicePrivate::doFlush(QString & error)
 {
-  int flushed = 0;
-  while (outBufPos < outBufSize) {
-    int more = io->write(outBuf + outBufPos, outBufSize - outBufPos);
-    if (more == -1) {
-      error = io->errorString();
-      return -1;
+    int flushed = 0;
+    while (outBufPos < outBufSize) {
+        int more = io->write(outBuf + outBufPos, outBufSize - outBufPos);
+        if (more == -1) {
+            error = io->errorString();
+            return -1;
+        }
+        if (more == 0)
+            break;
+        outBufPos += more;
+        flushed += more;
     }
-    if (more == 0)
-      break;
-    outBufPos += more;
-    flushed += more;
-  }
-  if (outBufPos == outBufSize) {
-    outBufPos = outBufSize = 0;
-  }
-  return flushed;
+    if (outBufPos == outBufSize) {
+        outBufPos = outBufSize = 0;
+    }
+    return flushed;
 }
 
 /// \endcond
@@ -163,11 +164,11 @@ static QFile debug;
 static QFile indebug;
 #endif
 
-QuaZIODevice::QuaZIODevice(QIODevice *io, QObject *parent):
-    QIODevice(parent),
-    d(new QuaZIODevicePrivate(io, this))
+QuaZIODevice::QuaZIODevice(QIODevice * io, QObject * parent)
+  : QIODevice(parent)
+  , d(new QuaZIODevicePrivate(io, this))
 {
-  connect(io, SIGNAL(readyRead()), SIGNAL(readyRead()));
+    connect(io, SIGNAL(readyRead()), SIGNAL(readyRead()));
 }
 
 QuaZIODevice::~QuaZIODevice()
@@ -177,7 +178,7 @@ QuaZIODevice::~QuaZIODevice()
     delete d;
 }
 
-QIODevice *QuaZIODevice::getIoDevice() const
+QIODevice * QuaZIODevice::getIoDevice() const
 {
     return d->io;
 }
@@ -186,12 +187,12 @@ bool QuaZIODevice::open(QIODevice::OpenMode mode)
 {
     if ((mode & QIODevice::Append) != 0) {
         setErrorString(trUtf8("QIODevice::Append is not supported for"
-                    " QuaZIODevice"));
+                              " QuaZIODevice"));
         return false;
     }
     if ((mode & QIODevice::ReadWrite) == QIODevice::ReadWrite) {
         setErrorString(trUtf8("QIODevice::ReadWrite is not supported for"
-                    " QuaZIODevice"));
+                              " QuaZIODevice"));
         return false;
     }
     if ((mode & QIODevice::ReadOnly) != 0) {
@@ -225,101 +226,101 @@ void QuaZIODevice::close()
     QIODevice::close();
 }
 
-qint64 QuaZIODevice::readData(char *data, qint64 maxSize)
+qint64 QuaZIODevice::readData(char * data, qint64 maxSize)
 {
-  int read = 0;
-  while (read < maxSize) {
-    if (d->inBufPos == d->inBufSize) {
-      d->inBufPos = 0;
-      d->inBufSize = d->io->read(d->inBuf, QUAZIO_INBUFSIZE);
-      if (d->inBufSize == -1) {
-        d->inBufSize = 0;
-        setErrorString(d->io->errorString());
-        return -1;
-      }
-      if (d->inBufSize == 0)
-        break;
-    }
-    while (read < maxSize && d->inBufPos < d->inBufSize) {
-      d->zins.next_in = (Bytef *) (d->inBuf + d->inBufPos);
-      d->zins.avail_in = d->inBufSize - d->inBufPos;
-      d->zins.next_out = (Bytef *) (data + read);
-      d->zins.avail_out = (uInt) (maxSize - read); // hope it's less than 2GB
-      int more = 0;
-      switch (inflate(&d->zins, Z_SYNC_FLUSH)) {
-      case Z_OK:
-        read = (char *) d->zins.next_out - data;
-        d->inBufPos = (char *) d->zins.next_in - d->inBuf;
-        break;
-      case Z_STREAM_END:
-        read = (char *) d->zins.next_out - data;
-        d->inBufPos = (char *) d->zins.next_in - d->inBuf;
-        d->atEnd = true;
-        return read;
-      case Z_BUF_ERROR: // this should never happen, but just in case
-        if (!d->zBufError) {
-          qWarning("Z_BUF_ERROR detected with %d/%d in/out, weird",
-              d->zins.avail_in, d->zins.avail_out);
-          d->zBufError = true;
+    int read = 0;
+    while (read < maxSize) {
+        if (d->inBufPos == d->inBufSize) {
+            d->inBufPos = 0;
+            d->inBufSize = d->io->read(d->inBuf, QUAZIO_INBUFSIZE);
+            if (d->inBufSize == -1) {
+                d->inBufSize = 0;
+                setErrorString(d->io->errorString());
+                return -1;
+            }
+            if (d->inBufSize == 0)
+                break;
         }
-        memmove(d->inBuf, d->inBuf + d->inBufPos, d->inBufSize - d->inBufPos);
-        d->inBufSize -= d->inBufPos;
-        d->inBufPos = 0;
-        more = d->io->read(d->inBuf + d->inBufSize, QUAZIO_INBUFSIZE - d->inBufSize);
-        if (more == -1) {
-          setErrorString(d->io->errorString());
-          return -1;
+        while (read < maxSize && d->inBufPos < d->inBufSize) {
+            d->zins.next_in = (Bytef *)(d->inBuf + d->inBufPos);
+            d->zins.avail_in = d->inBufSize - d->inBufPos;
+            d->zins.next_out = (Bytef *)(data + read);
+            d->zins.avail_out = (uInt)(maxSize - read); // hope it's less than 2GB
+            int more = 0;
+            switch (inflate(&d->zins, Z_SYNC_FLUSH)) {
+            case Z_OK:
+                read = (char *)d->zins.next_out - data;
+                d->inBufPos = (char *)d->zins.next_in - d->inBuf;
+                break;
+            case Z_STREAM_END:
+                read = (char *)d->zins.next_out - data;
+                d->inBufPos = (char *)d->zins.next_in - d->inBuf;
+                d->atEnd = true;
+                return read;
+            case Z_BUF_ERROR: // this should never happen, but just in case
+                if (!d->zBufError) {
+                    qWarning("Z_BUF_ERROR detected with %d/%d in/out, weird",
+                             d->zins.avail_in, d->zins.avail_out);
+                    d->zBufError = true;
+                }
+                memmove(d->inBuf, d->inBuf + d->inBufPos, d->inBufSize - d->inBufPos);
+                d->inBufSize -= d->inBufPos;
+                d->inBufPos = 0;
+                more = d->io->read(d->inBuf + d->inBufSize, QUAZIO_INBUFSIZE - d->inBufSize);
+                if (more == -1) {
+                    setErrorString(d->io->errorString());
+                    return -1;
+                }
+                if (more == 0)
+                    return read;
+                d->inBufSize += more;
+                break;
+            default:
+                setErrorString(QString::fromLocal8Bit(d->zins.msg));
+                return -1;
+            }
         }
-        if (more == 0)
-          return read;
-        d->inBufSize += more;
-        break;
-      default:
-        setErrorString(QString::fromLocal8Bit(d->zins.msg));
-        return -1;
-      }
     }
-  }
 #ifdef QUAZIP_ZIODEVICE_DEBUG_INPUT
-  indebug.write(data, read);
+    indebug.write(data, read);
 #endif
-  return read;
+    return read;
 }
 
-qint64 QuaZIODevice::writeData(const char *data, qint64 maxSize)
+qint64 QuaZIODevice::writeData(const char * data, qint64 maxSize)
 {
-  int written = 0;
-  QString error;
-  if (d->doFlush(error) == -1) {
-    setErrorString(error);
-    return -1;
-  }
-  while (written < maxSize) {
-      // there is some data waiting in the output buffer
-    if (d->outBufPos < d->outBufSize)
-      return written;
-    d->zouts.next_in = (Bytef *) (data + written);
-    d->zouts.avail_in = (uInt) (maxSize - written); // hope it's less than 2GB
-    d->zouts.next_out = (Bytef *) d->outBuf;
-    d->zouts.avail_out = QUAZIO_OUTBUFSIZE;
-    switch (deflate(&d->zouts, Z_NO_FLUSH)) {
-    case Z_OK:
-      written = (char *) d->zouts.next_in - data;
-      d->outBufSize = (char *) d->zouts.next_out - d->outBuf;
-      break;
-    default:
-      setErrorString(QString::fromLocal8Bit(d->zouts.msg));
-      return -1;
-    }
+    int written = 0;
+    QString error;
     if (d->doFlush(error) == -1) {
-      setErrorString(error);
-      return -1;
+        setErrorString(error);
+        return -1;
     }
-  }
+    while (written < maxSize) {
+        // there is some data waiting in the output buffer
+        if (d->outBufPos < d->outBufSize)
+            return written;
+        d->zouts.next_in = (Bytef *)(data + written);
+        d->zouts.avail_in = (uInt)(maxSize - written); // hope it's less than 2GB
+        d->zouts.next_out = (Bytef *)d->outBuf;
+        d->zouts.avail_out = QUAZIO_OUTBUFSIZE;
+        switch (deflate(&d->zouts, Z_NO_FLUSH)) {
+        case Z_OK:
+            written = (char *)d->zouts.next_in - data;
+            d->outBufSize = (char *)d->zouts.next_out - d->outBuf;
+            break;
+        default:
+            setErrorString(QString::fromLocal8Bit(d->zouts.msg));
+            return -1;
+        }
+        if (d->doFlush(error) == -1) {
+            setErrorString(error);
+            return -1;
+        }
+    }
 #ifdef QUAZIP_ZIODEVICE_DEBUG_OUTPUT
-  debug.write(data, written);
+    debug.write(data, written);
 #endif
-  return written;
+    return written;
 }
 
 bool QuaZIODevice::flush()

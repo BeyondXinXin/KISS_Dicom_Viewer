@@ -7,26 +7,26 @@ const QString LogDao::kTableName = "LogTable";
 
 //----------------------------------------------------------------
 const QStringList LogDao::string_tables_ =
-    QStringList()
-    << QObject::tr("All Type") <<
-    QObject::tr("System Info") <<
-    QObject::tr("System Warn") <<
-    QObject::tr("System Error");
+  QStringList()
+  << QObject::tr("All Type") << QObject::tr("System Info") << QObject::tr("System Warn") << QObject::tr("System Error");
 
 //----------------------------------------------------------------
-LogDao::LogDao(QObject *parent):
-    QObject(parent) {
+LogDao::LogDao(QObject * parent)
+  : QObject(parent)
+{
 }
 
 //----------------------------------------------------------------
-LogDao::~LogDao() {
+LogDao::~LogDao()
+{
 }
 
 //----------------------------------------------------------------
 bool LogDao::InsertMessageToDao(
-    const QString &name, const LogDao::EventType &type, const QString &msg) {
+  const QString & name, const LogDao::EventType & type, const QString & msg)
+{
     bool success = false;
-    if(DbManager::OpenDb()) {
+    if (DbManager::OpenDb()) {
         QMap<QString, QVariant> data;
         data.insert("UserName", name);
         if (type < ET_TypeCount) {
@@ -47,7 +47,8 @@ bool LogDao::InsertMessageToDao(
 }
 
 //----------------------------------------------------------------
-bool LogDao::Initial() {
+bool LogDao::Initial()
+{
     bool result = false;
     if (DbManager::OpenDb()) {
         bool exist;
@@ -70,7 +71,8 @@ bool LogDao::Initial() {
 }
 
 //----------------------------------------------------------------
-bool LogDao::CreateTable() {
+bool LogDao::CreateTable()
+{
     QStringList key_list;
     key_list.append("LogTime");
     key_list.append("UserName");
@@ -85,19 +87,16 @@ bool LogDao::CreateTable() {
 }
 
 //----------------------------------------------------------------
-bool LogDao::CheckTable() {
+bool LogDao::CheckTable()
+{
     bool ok1 = false;
     bool ok2 = false;
     bool ok3 = false;
     bool ok4 = false;
-    if (DbManager::IsExistColumn(kTableName, "LogTime", ok1) &&
-            DbManager::IsExistColumn(kTableName, "UserName", ok2) &&
-            DbManager::IsExistColumn(kTableName, "EventType", ok3) &&
-            DbManager::IsExistColumn(kTableName, "EventContent", ok4)) {
+    if (DbManager::IsExistColumn(kTableName, "LogTime", ok1) && DbManager::IsExistColumn(kTableName, "UserName", ok2) && DbManager::IsExistColumn(kTableName, "EventType", ok3) && DbManager::IsExistColumn(kTableName, "EventContent", ok4)) {
         if (ok1 && ok2 && ok3 && ok4) {
             return true;
         }
     }
     return false;
 }
-

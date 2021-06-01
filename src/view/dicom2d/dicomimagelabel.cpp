@@ -1,16 +1,17 @@
 ﻿#include "dicomimagelabel.h"
 #include "ImageData/seriesinstance.h"
 
-#include <global/KissGlobal>
 #include <engine/KissEngine>
+#include <global/KissGlobal>
 
 #include "dcmtk/dcmdata/dcdeftag.h"
 
 qint32 DicomImageLabel::image_label_size_ = 120;
 
 //-------------------------------------------------------
-DicomImageLabel::DicomImageLabel(SeriesInstance *seriesPtr, QWidget *parent) :
-    QLabel(parent) {
+DicomImageLabel::DicomImageLabel(SeriesInstance * seriesPtr, QWidget * parent)
+  : QLabel(parent)
+{
     m_series_ = seriesPtr;
     name_label_ = new QLabel(this);
     frame_label_ = new QLabel(this);
@@ -27,35 +28,38 @@ DicomImageLabel::DicomImageLabel(SeriesInstance *seriesPtr, QWidget *parent) :
 }
 
 //-------------------------------------------------------
-DicomImageLabel::~DicomImageLabel() {
+DicomImageLabel::~DicomImageLabel()
+{
     delete m_series_;
 }
 
 //-------------------------------------------------------
-bool DicomImageLabel::HasImage(const QString &file) const {
+bool DicomImageLabel::HasImage(const QString & file) const
+{
     return m_series_ && m_series_->HasImage(file);
 }
 
 //-------------------------------------------------------
-bool DicomImageLabel::insertImage(ImageInstance *image) {
+bool DicomImageLabel::insertImage(ImageInstance * image)
+{
     if (m_series_ && m_series_->InsertImage(image)) {
         if (m_series_->GetFrameCount(VT_XYPlane) > 0) {
             QPixmap pixmap;
             if (m_series_->GetPixmap(pixmap, VT_XYPlane)) {
                 setPixmap(pixmap.scaled(
-                              image_label_size_ - 2, image_label_size_ - 2,
-                              Qt::KeepAspectRatio, Qt::SmoothTransformation));
+                  image_label_size_ - 2, image_label_size_ - 2,
+                  Qt::KeepAspectRatio, Qt::SmoothTransformation));
             }
             name_label_->setText(m_series_->GetTagKeyValue(DCM_PatientName));
-#if HideNmae==1
+#if HideNmae == 1
             name_label_->setText("hide name");
 #endif
             name_label_->move(4, 4);
         }
         QString tag = QString("%1: %2-%3")
-                      .arg(m_series_->GetTagKeyValue(DCM_Modality),
-                           m_series_->GetTagKeyValue(DCM_SeriesNumber),
-                           QString::number(m_series_->GetFrameCount(VT_XYPlane)));
+                        .arg(m_series_->GetTagKeyValue(DCM_Modality),
+                             m_series_->GetTagKeyValue(DCM_SeriesNumber),
+                             QString::number(m_series_->GetFrameCount(VT_XYPlane)));
         frame_label_->setText(tag);
         QSize tagSize = frame_label_->sizeHint();
         frame_label_->resize(tagSize);
@@ -67,12 +71,14 @@ bool DicomImageLabel::insertImage(ImageInstance *image) {
 }
 
 //-------------------------------------------------------
-bool DicomImageLabel::removeImage(const QString &imgFile) {
+bool DicomImageLabel::removeImage(const QString & imgFile)
+{
     return m_series_ && m_series_->RemoveImage(imgFile);
 }
 
 //-------------------------------------------------------
-void DicomImageLabel::setHighlight(bool yes) {
+void DicomImageLabel::setHighlight(bool yes)
+{
     QPalette p = palette();
     if (yes) {
         p.setColor(QPalette::Window, Qt::green);
@@ -83,7 +89,8 @@ void DicomImageLabel::setHighlight(bool yes) {
 }
 
 //-------------------------------------------------------
-void DicomImageLabel::updateThumbnailImage() {
+void DicomImageLabel::updateThumbnailImage()
+{
     if (m_series_) {
         QPixmap pixmap;
         if (m_series_->GetPixmap(pixmap, VT_XYPlane)) {
@@ -95,9 +102,10 @@ void DicomImageLabel::updateThumbnailImage() {
     }
 }
 
-void DicomImageLabel::paintEvent(QPaintEvent *e) {
+void DicomImageLabel::paintEvent(QPaintEvent * e)
+{
     QLabel::paintEvent(e);
-    if(select_) {
+    if (select_) {
         QPainter painter(this);
         painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
         painter.save();
@@ -108,19 +116,19 @@ void DicomImageLabel::paintEvent(QPaintEvent *e) {
 }
 
 //-------------------------------------------------------
-void DicomImageLabel::mousePressEvent(QMouseEvent *e) {
+void DicomImageLabel::mousePressEvent(QMouseEvent * e)
+{
     emit Signal_ImageClicked(this);
     drag_org_ = e->pos();
     QLabel::mousePressEvent(e);
 }
 
 //-------------------------------------------------------
-void DicomImageLabel::mouseMoveEvent(QMouseEvent *e) {
-    if ((e->buttons() & Qt::LeftButton) &&
-            ((e->pos() - drag_org_).manhattanLength() >
-             QApplication::startDragDistance())) {
-        QDrag *drag = new QDrag(this);
-        QMimeData *data = new QMimeData;
+void DicomImageLabel::mouseMoveEvent(QMouseEvent * e)
+{
+    if ((e->buttons() & Qt::LeftButton) && ((e->pos() - drag_org_).manhattanLength() > QApplication::startDragDistance())) {
+        QDrag * drag = new QDrag(this);
+        QMimeData * data = new QMimeData;
         data->setText(QString::number((qulonglong)m_series_));
         drag->setMimeData(data);
         drag->exec(Qt::CopyAction);
@@ -128,16 +136,19 @@ void DicomImageLabel::mouseMoveEvent(QMouseEvent *e) {
     QLabel::mouseMoveEvent(e);
 }
 
-qint32 DicomImageLabel::getImage_label_size() {
+qint32 DicomImageLabel::getImage_label_size()
+{
     return image_label_size_;
 }
 
-void DicomImageLabel::setImage_label_size(const qint32 &value) {
+void DicomImageLabel::setImage_label_size(const qint32 & value)
+{
     image_label_size_ = value;
 }
 
 //-------------------------------------------------------
-void DicomImageLabel::mouseDoubleClickEvent(QMouseEvent *e) {
+void DicomImageLabel::mouseDoubleClickEvent(QMouseEvent * e)
+{
     emit Signal_ImageDoubleClicked(this);
     QLabel::mouseDoubleClickEvent(e);
 }

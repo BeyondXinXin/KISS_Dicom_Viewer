@@ -4,23 +4,28 @@
 #include "abstractpathitem.h"
 #include <view/KissView>
 
-class GraphicsTumorItem : public AbstractPathItem {
-  public:
-    GraphicsTumorItem(QGraphicsItem *parent = nullptr);
+class GraphicsTumorItem : public AbstractPathItem
+{
+public:
+    GraphicsTumorItem(QGraphicsItem * parent = nullptr);
 
-    void setActivePoint(const QPointF &) {}
-    void setPoints(const QList<QPoint> &starts, const QList<QPoint> &ends) {
+    void setActivePoint(const QPointF &)
+    {
+    }
+    void setPoints(const QList<QPoint> & starts, const QList<QPoint> & ends)
+    {
         m_starts = starts;
         m_ends = ends;
         modified = true;
     }
-    void recalPixInfo(const short **vol, int width, int height,
+    void recalPixInfo(const short ** vol, int width, int height,
                       int slice, int index, ViewType type);
 
-  private:
+private:
     QPointF textItemPos();
     QPainterPath itemPath();
-    bool isModified() {
+    bool isModified()
+    {
         return modified;
     }
 

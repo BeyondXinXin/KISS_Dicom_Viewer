@@ -7,9 +7,10 @@
 #define HIGHLIGHT_COLOR Qt::yellow
 
 //----------------------------------------------------------------
-GraphicsCrossItem::GraphicsCrossItem(QGraphicsItem *parent, double crossSize) :
-    size(crossSize),
-    QGraphicsPathItem(parent) {
+GraphicsCrossItem::GraphicsCrossItem(QGraphicsItem * parent, double crossSize)
+  : size(crossSize)
+  , QGraphicsPathItem(parent)
+{
     setPen(QPen(NORMAL_COLOR));
     setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIgnoresTransformations);
     setAcceptHoverEvents(true);
@@ -22,11 +23,13 @@ GraphicsCrossItem::GraphicsCrossItem(QGraphicsItem *parent, double crossSize) :
 }
 
 //----------------------------------------------------------------
-void GraphicsCrossItem::setHighlight(bool yes) {
+void GraphicsCrossItem::setHighlight(bool yes)
+{
     setPen(QPen(yes ? HIGHLIGHT_COLOR : NORMAL_COLOR));
 }
 
 //----------------------------------------------------------------
-QSizeF GraphicsCrossItem::crossSize() {
+QSizeF GraphicsCrossItem::crossSize()
+{
     return QSizeF(size, size);
 }

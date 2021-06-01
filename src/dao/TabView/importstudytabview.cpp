@@ -1,13 +1,15 @@
 #include "importstudytabview.h"
 
 //----------------------------------------------------------------
-ImportStudyTabView::ImportStudyTabView(QWidget *parent)  :
-    KissTabView(parent) {
+ImportStudyTabView::ImportStudyTabView(QWidget * parent)
+  : KissTabView(parent)
+{
 }
 
 //----------------------------------------------------------------
-void ImportStudyTabView::RemoveSelectedRows() {
-    QAbstractItemModel *model = this->model();
+void ImportStudyTabView::RemoveSelectedRows()
+{
+    QAbstractItemModel * model = this->model();
     if (model) {
         QList<int> rows;
         QModelIndexList indexList = selection_.indexes();
@@ -24,8 +26,9 @@ void ImportStudyTabView::RemoveSelectedRows() {
 }
 
 //----------------------------------------------------------------
-void ImportStudyTabView::RemoveAllRows() {
-    QAbstractItemModel *model = this->model();
+void ImportStudyTabView::RemoveAllRows()
+{
+    QAbstractItemModel * model = this->model();
     if (model) {
         model->removeRows(0, model->rowCount());
     }
@@ -33,7 +36,8 @@ void ImportStudyTabView::RemoveAllRows() {
 
 //----------------------------------------------------------------
 void ImportStudyTabView::selectionChanged(
-    const QItemSelection &selected, const QItemSelection &deselected) {
+  const QItemSelection & selected, const QItemSelection & deselected)
+{
     selection_.merge(selected, QItemSelectionModel::Select);
     selection_.merge(deselected, QItemSelectionModel::Deselect);
     QTableView::selectionChanged(selected, deselected);

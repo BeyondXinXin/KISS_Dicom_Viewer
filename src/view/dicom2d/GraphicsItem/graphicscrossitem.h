@@ -3,14 +3,15 @@
 
 #include <QGraphicsPathItem>
 
-class GraphicsCrossItem : public QGraphicsPathItem {
-  public:
-    explicit GraphicsCrossItem(QGraphicsItem *parent = nullptr,
+class GraphicsCrossItem : public QGraphicsPathItem
+{
+public:
+    explicit GraphicsCrossItem(QGraphicsItem * parent = nullptr,
                                double crossSize = 10);
     void setHighlight(bool yes);
     QSizeF crossSize();
 
-  private:
+private:
     double size;
 };
 

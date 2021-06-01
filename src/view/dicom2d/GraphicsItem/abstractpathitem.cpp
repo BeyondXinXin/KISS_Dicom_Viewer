@@ -10,8 +10,9 @@
 #define SELECTED_COLOR Qt::red
 
 //----------------------------------------------------------------
-AbstractPathItem::AbstractPathItem(QGraphicsItem *parent) :
-    QGraphicsPathItem(parent) {
+AbstractPathItem::AbstractPathItem(QGraphicsItem * parent)
+  : QGraphicsPathItem(parent)
+{
     xSpacing = -1.0;
     ySpacing = -1.0;
     zoomFactor = 1.0;
@@ -20,25 +21,27 @@ AbstractPathItem::AbstractPathItem(QGraphicsItem *parent) :
 }
 
 //----------------------------------------------------------------
-void AbstractPathItem::init() {
+void AbstractPathItem::init()
+{
     stockPen.setColor(NORMAL_COLOR);
     stockPen.setWidthF(zoomFactor);
     setPen(stockPen);
     textItem = new GraphicsSimpleTextItem(this);
-    setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsMovable |
-             QGraphicsItem::ItemClipsToShape);
+    setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemClipsToShape);
     setAcceptHoverEvents(true);
     currentStage = First;
 }
 
 //----------------------------------------------------------------
-void AbstractPathItem::setFont(const QFont &font) {
+void AbstractPathItem::setFont(const QFont & font)
+{
     textItem->setFont(font);
 }
 
 //----------------------------------------------------------------
 void AbstractPathItem::paint(
-    QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+  QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
+{
     if (isSelected()) {
         stockPen.setColor(SELECTED_COLOR);
         setPen(stockPen);
@@ -61,25 +64,29 @@ void AbstractPathItem::paint(
 }
 
 //----------------------------------------------------------------
-void AbstractPathItem::setZoomFactor(const double &factor) {
+void AbstractPathItem::setZoomFactor(const double & factor)
+{
     zoomFactor = 1 / factor;
     stockPen.setWidthF(zoomFactor);
 }
 
 //----------------------------------------------------------------
-void AbstractPathItem::setPixelSpacing(const double &x, const double &y) {
+void AbstractPathItem::setPixelSpacing(const double & x, const double & y)
+{
     xSpacing = x;
     ySpacing = y;
 }
 
 //----------------------------------------------------------------
-void AbstractPathItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
+void AbstractPathItem::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
+{
     hoverEnter = true;
     QGraphicsPathItem::hoverEnterEvent(event);
 }
 
 //----------------------------------------------------------------
-void AbstractPathItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
+void AbstractPathItem::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
+{
     hoverEnter = false;
     QGraphicsPathItem::hoverLeaveEvent(event);
 }

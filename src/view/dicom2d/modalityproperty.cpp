@@ -1,11 +1,12 @@
 ﻿#include "modalityproperty.h"
 
-#include <global/KissGlobal>
 #include <engine/KissEngine>
+#include <global/KissGlobal>
 
 //-------------------------------------------------------
-ModalityProperty *ModalityProperty::instance = nullptr;
-ModalityProperty *ModalityProperty::Instance() {
+ModalityProperty * ModalityProperty::instance = nullptr;
+ModalityProperty * ModalityProperty::Instance()
+{
     if (!instance) {
         static QMutex mutex;
         QMutexLocker locker(&mutex);
@@ -17,18 +18,21 @@ ModalityProperty *ModalityProperty::Instance() {
 }
 
 //-------------------------------------------------------
-ModalityProperty::ModalityProperty() {
+ModalityProperty::ModalityProperty()
+{
     ReadProperty();
 }
 
 //-------------------------------------------------------
-ModalityProperty::~ModalityProperty() {
+ModalityProperty::~ModalityProperty()
+{
     qDeleteAll(m_props_);
 }
 
 //-------------------------------------------------------
-const ModalityProp *ModalityProperty::getModalityProp(const QString &modality) const {
-    foreach (const ModalityProp *p, m_props_) {
+const ModalityProp * ModalityProperty::getModalityProp(const QString & modality) const
+{
+    foreach (const ModalityProp * p, m_props_) {
         if (p->name == modality) {
             return p;
         }
@@ -37,20 +41,23 @@ const ModalityProp *ModalityProperty::getModalityProp(const QString &modality) c
 }
 
 //-------------------------------------------------------
-bool ModalityProperty::IsNormal() const {
+bool ModalityProperty::IsNormal() const
+{
     return m_xml_.error() == QXmlStreamReader::NoError;
 }
 
 //-------------------------------------------------------
-QString ModalityProperty::ErrorStr() const {
+QString ModalityProperty::ErrorStr() const
+{
     return QObject::tr("%1\nLine %2, column %3")
-           .arg(m_xml_.errorString())
-           .arg(m_xml_.lineNumber())
-           .arg(m_xml_.columnNumber());
+      .arg(m_xml_.errorString())
+      .arg(m_xml_.lineNumber())
+      .arg(m_xml_.columnNumber());
 }
 
 //-------------------------------------------------------
-void ModalityProperty::ReadProperty() {
+void ModalityProperty::ReadProperty()
+{
     QFile f("./etc/modalityprop.xml");
     f.open(QIODevice::ReadOnly);
     m_xml_.setDevice(&f);
@@ -60,7 +67,7 @@ void ModalityProperty::ReadProperty() {
                 if (m_xml_.name() == "modalities") {
                     while (m_xml_.readNextStartElement()) {
                         if (m_xml_.name() == "modality") {
-                            ModalityProp *m = new ModalityProp;
+                            ModalityProp * m = new ModalityProp;
                             ReadModality(*m);
                             if (m->name.isEmpty()) {
                                 delete m;
@@ -82,7 +89,8 @@ void ModalityProperty::ReadProperty() {
 }
 
 //-------------------------------------------------------
-void ModalityProperty::ReadModality(ModalityProp &m) {
+void ModalityProperty::ReadModality(ModalityProp & m)
+{
     Q_ASSERT(m_xml_.isStartElement() && m_xml_.name() == "modality");
     while (m_xml_.readNextStartElement()) {
         if (m_xml_.name() == "name") {
@@ -90,7 +98,7 @@ void ModalityProperty::ReadModality(ModalityProp &m) {
         } else if (m_xml_.name() == "annotation") {
             while (m_xml_.readNextStartElement()) {
                 if (m_xml_.name() == "group") {
-                    AnnoItemGroup *g = new AnnoItemGroup;
+                    AnnoItemGroup * g = new AnnoItemGroup;
                     ReadAnnoGroup(*g);
                     if (g->pos.isEmpty()) {
                         delete g;
@@ -110,7 +118,8 @@ void ModalityProperty::ReadModality(ModalityProp &m) {
 }
 
 //-------------------------------------------------------
-void ModalityProperty::ReadPref(ModalityPref &p) {
+void ModalityProperty::ReadPref(ModalityPref & p)
+{
     Q_ASSERT(m_xml_.isStartElement() && m_xml_.name() == "preference");
     double f;
     while (m_xml_.readNextStartElement()) {
@@ -167,13 +176,14 @@ void ModalityProperty::ReadPref(ModalityPref &p) {
 }
 
 //-------------------------------------------------------
-void ModalityProperty::ReadAnnoGroup(AnnoItemGroup &g) {
+void ModalityProperty::ReadAnnoGroup(AnnoItemGroup & g)
+{
     Q_ASSERT(m_xml_.isStartElement() && m_xml_.name() == "group");
     while (m_xml_.readNextStartElement()) {
         if (m_xml_.name() == "position") {
             g.pos = m_xml_.readElementText();
         } else if (m_xml_.name() == "item") {
-            AnnoItem *i = new AnnoItem;
+            AnnoItem * i = new AnnoItem;
             while (m_xml_.readNextStartElement()) {
                 if (m_xml_.name() == "text") {
                     i->text = m_xml_.readElementText();
@@ -211,5 +221,3 @@ void ModalityProperty::ReadAnnoGroup(AnnoItemGroup &g) {
         }
     }
 }
-
-

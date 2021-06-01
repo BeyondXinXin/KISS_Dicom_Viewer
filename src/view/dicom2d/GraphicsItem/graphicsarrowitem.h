@@ -7,17 +7,19 @@
  * @brief The GraphicsArrowItem class
  * 箭头
  */
-class GraphicsArrowItem : public AbstractPathItem {
-  public:
-    explicit GraphicsArrowItem(QGraphicsItem *parent = nullptr);
-    void setActivePoint(const QPointF &point);
-    void nextStage() {
+class GraphicsArrowItem : public AbstractPathItem
+{
+public:
+    explicit GraphicsArrowItem(QGraphicsItem * parent = nullptr);
+    void setActivePoint(const QPointF & point);
+    void nextStage()
+    {
         if (start != end) {
             currentStage = Final;
         }
     }
 
-  private:
+private:
     QPainterPath itemPath();
     bool isModified();
 

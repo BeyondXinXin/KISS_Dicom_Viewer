@@ -8,11 +8,11 @@
 
 #include <quazip/quazip.h>
 #include <quazip/quazipfile.h>
-#include <quazip/quazipnewinfo.h>
 #include <quazip/quazipfileinfo.h>
+#include <quazip/quazipnewinfo.h>
 
-TestQuaZipNewInfo::TestQuaZipNewInfo(QObject *parent) :
-    QObject(parent)
+TestQuaZipNewInfo::TestQuaZipNewInfo(QObject * parent)
+  : QObject(parent)
 {
 }
 
@@ -41,17 +41,17 @@ void TestQuaZipNewInfo::setFileNTFSTimes()
         QDateTime lr = fileInfo.lastRead().toUTC();
         QDateTime cr = fileInfo.created().toUTC();
         mTicks = (static_cast<qint64>(base.date().daysTo(lm.date()))
-                * Q_UINT64_C(86400000)
-                + static_cast<qint64>(base.time().msecsTo(lm.time())))
-            * Q_UINT64_C(10000);
+                    * Q_UINT64_C(86400000)
+                  + static_cast<qint64>(base.time().msecsTo(lm.time())))
+          * Q_UINT64_C(10000);
         aTicks = (static_cast<qint64>(base.date().daysTo(lr.date()))
-                * Q_UINT64_C(86400000)
-                + static_cast<qint64>(base.time().msecsTo(lr.time())))
-            * Q_UINT64_C(10000);
+                    * Q_UINT64_C(86400000)
+                  + static_cast<qint64>(base.time().msecsTo(lr.time())))
+          * Q_UINT64_C(10000);
         cTicks = (static_cast<qint64>(base.date().daysTo(cr.date()))
-                * Q_UINT64_C(86400000)
-                + static_cast<qint64>(base.time().msecsTo(cr.time())))
-            * Q_UINT64_C(10000);
+                    * Q_UINT64_C(86400000)
+                  + static_cast<qint64>(base.time().msecsTo(cr.time())))
+          * Q_UINT64_C(10000);
         QuaZipNewInfo newInfo("test.txt", "tmp/test.txt");
         newInfo.setFileNTFSTimes("tmp/test.txt");
         QVERIFY(zipFile.open(QIODevice::WriteOnly, newInfo));
@@ -66,35 +66,37 @@ void TestQuaZipNewInfo::setFileNTFSTimes()
         QuaZipFileInfo64 fileInfo;
         QVERIFY(zip.getCurrentFileInfo(&fileInfo));
         zip.close();
-        QByteArray &extra = fileInfo.extra;
+        QByteArray & extra = fileInfo.extra;
         bool ntfsFound = false;
         int timesFound = 0;
-        for (int i = 0; i <= extra.size() - 4; ) {
+        for (int i = 0; i <= extra.size() - 4;) {
             unsigned type = static_cast<unsigned>(static_cast<unsigned char>(
-                                                      extra.at(i)))
-                    | (static_cast<unsigned>(static_cast<unsigned char>(
-                                                 extra.at(i + 1))) << 8);
+                              extra.at(i)))
+              | (static_cast<unsigned>(static_cast<unsigned char>(
+                   extra.at(i + 1)))
+                 << 8);
             i += 2;
             unsigned length = static_cast<unsigned>(static_cast<unsigned char>(
-                                                        extra.at(i)))
-                    | (static_cast<unsigned>(static_cast<unsigned char>(
-                                                 extra.at(i + 1))) << 8);
+                                extra.at(i)))
+              | (static_cast<unsigned>(static_cast<unsigned char>(
+                   extra.at(i + 1)))
+                 << 8);
             i += 2;
             if (type == 0x000Au && length >= 32) {
                 ntfsFound = true;
                 i += 4; // reserved
                 while (i <= extra.size() - 4) {
                     unsigned tag = static_cast<unsigned>(
-                                static_cast<unsigned char>(extra.at(i)))
-                            | (static_cast<unsigned>(
-                                   static_cast<unsigned char>(extra.at(i + 1)))
-                               << 8);
+                                     static_cast<unsigned char>(extra.at(i)))
+                      | (static_cast<unsigned>(
+                           static_cast<unsigned char>(extra.at(i + 1)))
+                         << 8);
                     i += 2;
                     unsigned tagsize = static_cast<unsigned>(
-                                static_cast<unsigned char>(extra.at(i)))
-                            | (static_cast<unsigned>(
-                                   static_cast<unsigned char>(extra.at(i + 1)))
-                               << 8);
+                                         static_cast<unsigned char>(extra.at(i)))
+                      | (static_cast<unsigned>(
+                           static_cast<unsigned char>(extra.at(i + 1)))
+                         << 8);
                     i += 2;
                     QCOMPARE(tagsize, static_cast<unsigned>(24));
                     if (tag == 0x0001u && tagsize >= 24) {
@@ -102,21 +104,28 @@ void TestQuaZipNewInfo::setFileNTFSTimes()
                              i < timesPos + 24;
                              i += 8, tagsize -= 8) {
                             quint64 time = static_cast<quint64>(
-                                static_cast<unsigned char>(extra.at(i)))
-                            | (static_cast<quint64>(static_cast<unsigned char>(
-                                                       extra.at(i + 1))) << 8)
-                            | (static_cast<quint64>(static_cast<unsigned char>(
-                                                       extra.at(i + 2))) << 16)
-                            | (static_cast<quint64>(static_cast<unsigned char>(
-                                                       extra.at(i + 3))) << 24)
-                            | (static_cast<quint64>(static_cast<unsigned char>(
-                                                       extra.at(i + 4))) << 32)
-                            | (static_cast<quint64>(static_cast<unsigned char>(
-                                                       extra.at(i + 5))) << 40)
-                            | (static_cast<quint64>(static_cast<unsigned char>(
-                                                       extra.at(i + 6))) << 48)
-                            | (static_cast<quint64>(static_cast<unsigned char>(
-                                                       extra.at(i + 7))) << 56);
+                                             static_cast<unsigned char>(extra.at(i)))
+                              | (static_cast<quint64>(static_cast<unsigned char>(
+                                   extra.at(i + 1)))
+                                 << 8)
+                              | (static_cast<quint64>(static_cast<unsigned char>(
+                                   extra.at(i + 2)))
+                                 << 16)
+                              | (static_cast<quint64>(static_cast<unsigned char>(
+                                   extra.at(i + 3)))
+                                 << 24)
+                              | (static_cast<quint64>(static_cast<unsigned char>(
+                                   extra.at(i + 4)))
+                                 << 32)
+                              | (static_cast<quint64>(static_cast<unsigned char>(
+                                   extra.at(i + 5)))
+                                 << 40)
+                              | (static_cast<quint64>(static_cast<unsigned char>(
+                                   extra.at(i + 6)))
+                                 << 48)
+                              | (static_cast<quint64>(static_cast<unsigned char>(
+                                   extra.at(i + 7)))
+                                 << 56);
                             ++timesFound;
                             if (i - timesPos == 0) {
                                 QCOMPARE(time, mTicks);
@@ -132,7 +141,6 @@ void TestQuaZipNewInfo::setFileNTFSTimes()
                     } else {
                         i += tagsize;
                     }
-
                 }
             } else {
                 i += length;

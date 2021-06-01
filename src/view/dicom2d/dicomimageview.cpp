@@ -1,29 +1,28 @@
 ﻿#include "dicomimageview.h"
 
-#include <global/KissGlobal>
 #include <engine/KissEngine>
+#include <global/KissGlobal>
 
-#include "ImageData/seriesinstance.h"
-#include "ImageData/imageinstance.h"
 #include "GraphicsItem/abstractpathitem.h"
-#include "GraphicsItem/graphicscrossitem.h"
 #include "GraphicsItem/graphicsangleitem.h"
 #include "GraphicsItem/graphicsarrowitem.h"
+#include "GraphicsItem/graphicscliprectitem.h"
 #include "GraphicsItem/graphicscobbangleitem.h"
+#include "GraphicsItem/graphicscrossitem.h"
 #include "GraphicsItem/graphicsellipseitem.h"
 #include "GraphicsItem/graphicslineitem.h"
 #include "GraphicsItem/graphicsrectitem.h"
-#include "GraphicsItem/graphicscliprectitem.h"
 #include "GraphicsItem/graphicstextmarkdialog.h"
 #include "GraphicsItem/graphicstextmarkitem.h"
 #include "GraphicsItem/graphicstumoritem.h"
+#include "ImageData/imageinstance.h"
+#include "ImageData/seriesinstance.h"
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmdata/dcmetinf.h"
 #include "dcmtk/dcmimgle/dcmimage.h"
-
 
 const static qint32 wid_minx_show_measurements_ = 400;
 const static qint32 wid_miny_show_measurements_ = 150;
@@ -33,26 +32,27 @@ const static qint32 wid_miny_show_annotations_ = 150;
 
 //-------------------------------------------------------
 DicomImageView::DicomImageView(
-    ViewType type, SeriesInstance *series, QWidget *parent) :
-    QGraphicsView(parent),
-    m_scene_(new QGraphicsScene(this)),
-    m_series_(nullptr),
-    pixmap_item_(new QGraphicsPixmapItem),
-    x_scalor_item_(new QGraphicsPathItem),
-    y_scalor_item_(new QGraphicsPathItem),
-    video_controlview_(new VideoControlView(this)),
-    current_path_item_(nullptr),
-    factor_(1.0),
-    fix_factor_(1.0),
-    mag_factor_(2),
-    show_measurements_(true),
-    show_annotations_(true),
-    manual_zoom_(false),
-    manual_pan_(false),
-    hflip_(false),
-    vflip_(false),
-    rotate_angle_(false),
-    m_vtype_(type) {
+  ViewType type, SeriesInstance * series, QWidget * parent)
+  : QGraphicsView(parent)
+  , m_scene_(new QGraphicsScene(this))
+  , m_series_(nullptr)
+  , pixmap_item_(new QGraphicsPixmapItem)
+  , x_scalor_item_(new QGraphicsPathItem)
+  , y_scalor_item_(new QGraphicsPathItem)
+  , video_controlview_(new VideoControlView(this))
+  , current_path_item_(nullptr)
+  , factor_(1.0)
+  , fix_factor_(1.0)
+  , mag_factor_(2)
+  , show_measurements_(true)
+  , show_annotations_(true)
+  , manual_zoom_(false)
+  , manual_pan_(false)
+  , hflip_(false)
+  , vflip_(false)
+  , rotate_angle_(false)
+  , m_vtype_(type)
+{
     m_fun_ = [&](const QPixmap & pix, QWidget *) {
         return pix;
     };
@@ -100,34 +100,37 @@ DicomImageView::DicomImageView(
     mouse_right_state_.state = Zoom;
     // 播放
     connect(this->video_controlview_, &VideoControlView::SignalValueChangeOut,
-    this, [&](const int &i) {
-        this->GotoFrame(i);
-    });
+            this, [&](const int & i) {
+                this->GotoFrame(i);
+            });
 }
 
 //-------------------------------------------------------
-DicomImageView::~DicomImageView() {
+DicomImageView::~DicomImageView()
+{
     // 停止视频播放
     QSettings().setValue(MAGNIFIER_FACTOR, mag_factor_);
     Slot_SeriesDelate();
 }
 
 //-------------------------------------------------------
-void DicomImageView::SetAnnoTextFont(const QFont &font) {
+void DicomImageView::SetAnnoTextFont(const QFont & font)
+{
     anno_font_ = font;
-    foreach (GraphicsAnnoGroup *g, anno_grps_) {
-        foreach (QGraphicsSimpleTextItem *t, g->items) {
+    foreach (GraphicsAnnoGroup * g, anno_grps_) {
+        foreach (QGraphicsSimpleTextItem * t, g->items) {
             t->setFont(font);
         }
     }
-    foreach (AbstractPathItem *item, item_list_) {
+    foreach (AbstractPathItem * item, item_list_) {
         item->setFont(font);
     }
     RepositionAuxItems();
 }
 
 //-------------------------------------------------------
-void DicomImageView::SetSeriesInstance(SeriesInstance *series) {
+void DicomImageView::SetSeriesInstance(SeriesInstance * series)
+{
     this->video_controlview_->SlotTimeChangeIn(0, 0);
     if (this->m_series_ && this->m_series_ != series) {
         disconnect(this->m_series_, &SeriesInstance::Signal_AboutToDelete,
@@ -150,24 +153,27 @@ void DicomImageView::SetSeriesInstance(SeriesInstance *series) {
     m_scene_->update(m_scene_->sceneRect());
 }
 
-void DicomImageView::UpdataSeriesInstance(const bool end) {
+void DicomImageView::UpdataSeriesInstance(const bool end)
+{
     // 多序列dcm 更新文字描述
     this->UpdateAnnotations();
-    if(end) {
+    if (end) {
         // 多序列dcm 主线程读取玩重新加载 影像数量
         video_controlview_->SlotTimeChangeIn(0, this->GetImageNum());
     }
 }
 
 //-------------------------------------------------------
-SeriesInstance *DicomImageView::GetSeriesInstance() const {
+SeriesInstance * DicomImageView::GetSeriesInstance() const
+{
     return m_series_;
 }
 
 //-------------------------------------------------------
-DicomImage *DicomImageView::getHardCopyGrayScaledImage() {
+DicomImage * DicomImageView::getHardCopyGrayScaledImage()
+{
     if (m_series_ && m_series_->GetCurrImageInstance(m_vtype_)) {
-        ImageInstance *image = m_series_->GetCurrImageInstance(m_vtype_);
+        ImageInstance * image = m_series_->GetCurrImageInstance(m_vtype_);
         QPointF tl = pixmap_item_->mapFromScene(mapToScene(this->rect().topLeft()));
         QPointF br = pixmap_item_->mapFromScene(mapToScene(this->rect().bottomRight()));
         if (tl.x() > br.x()) {
@@ -188,7 +194,8 @@ DicomImage *DicomImageView::getHardCopyGrayScaledImage() {
 }
 
 //-------------------------------------------------------
-QImage DicomImageView::getTextLayerImage(const QSize &size) {
+QImage DicomImageView::getTextLayerImage(const QSize & size)
+{
     QImage textlayer(size, QImage::Format_RGB32);
     if (m_series_ && m_series_->GetCurrImageInstance(m_vtype_) && (!textlayer.isNull())) {
         textlayer.fill(Qt::black);
@@ -203,9 +210,10 @@ QImage DicomImageView::getTextLayerImage(const QSize &size) {
 }
 
 //-------------------------------------------------------
-QPixmap DicomImageView::getHardCopyPixmap() {
+QPixmap DicomImageView::getHardCopyPixmap()
+{
     QPixmap pixmap;
-    DicomImage *hgImage = getHardCopyGrayScaledImage();
+    DicomImage * hgImage = getHardCopyGrayScaledImage();
     if (hgImage && ImageInstance::Dcm2BmpHelper(*hgImage, pixmap)) {
         delete hgImage;
         QImage imageLayer = pixmap.toImage();
@@ -214,7 +222,7 @@ QPixmap DicomImageView::getHardCopyPixmap() {
         QImage textLayer = getTextLayerImage(QSize(width, height));
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
-                if (textLayer.valid(x, y) && (textLayer.pixel(x, y) != 0xff000000) ) {
+                if (textLayer.valid(x, y) && (textLayer.pixel(x, y) != 0xff000000)) {
                     imageLayer.setPixel(x, y, 0xffffffff);
                 }
             }
@@ -225,7 +233,8 @@ QPixmap DicomImageView::getHardCopyPixmap() {
 }
 
 //-------------------------------------------------------
-QImage DicomImageView::getRenderedImage() {
+QImage DicomImageView::getRenderedImage()
+{
     QImage image(this->rect().size(), QImage::Format_ARGB32);
     QPainter painter(&image);
     render(&painter);
@@ -239,8 +248,9 @@ QImage DicomImageView::getRenderedImage() {
  * 获取当前dicom路径
  * @return
  */
-QString DicomImageView::GetImageFile() {
-    if(HasSeries()) {
+QString DicomImageView::GetImageFile()
+{
+    if (HasSeries()) {
         return this->m_series_->GetImageFile();
     } else {
         return "";
@@ -253,8 +263,9 @@ QString DicomImageView::GetImageFile() {
  * 获取图片数量
  * @return
  */
-qint32 DicomImageView::GetImageNum() {
-    if(HasSeries()) {
+qint32 DicomImageView::GetImageNum()
+{
+    if (HasSeries()) {
         return this->m_series_->GetFrameCount();
     } else {
         return 0;
@@ -267,7 +278,8 @@ qint32 DicomImageView::GetImageNum() {
  * 设置View边框是否高亮
  * @param yes
  */
-void DicomImageView::SetBorderHighlight(bool yes) {
+void DicomImageView::SetBorderHighlight(bool yes)
+{
     QPalette p = palette();
     if (yes) {
         p.setColor(QPalette::Text, Qt::lightGray);
@@ -282,7 +294,8 @@ void DicomImageView::SetBorderHighlight(bool yes) {
  * @brief DicomImageView::HasSeries
  * @return
  */
-bool DicomImageView::HasSeries() {
+bool DicomImageView::HasSeries()
+{
     return m_series_ != nullptr;
 }
 
@@ -291,7 +304,8 @@ bool DicomImageView::HasSeries() {
  * @brief DicomImageView::SetMagnifierPixmap
  * @param itemPos
  */
-void DicomImageView::SetMagnifierPixmap(const QPointF &itemPos) {
+void DicomImageView::SetMagnifierPixmap(const QPointF & itemPos)
+{
     if (mag_factor_ > m_pref_.magnifier_max) {
         mag_factor_ = m_pref_.magnifier_max;
     }
@@ -300,22 +314,21 @@ void DicomImageView::SetMagnifierPixmap(const QPointF &itemPos) {
     }
     double srcWidth = (MAGNIFIER_SIZE) / (mag_factor_ * factor_);
     QRectF source(
-        itemPos.x() - srcWidth / 2,
-        itemPos.y() - srcWidth / 2,
-        srcWidth,
-        srcWidth);
-    QPixmap subImage( source.size().toSize());
+      itemPos.x() - srcWidth / 2,
+      itemPos.y() - srcWidth / 2,
+      srcWidth,
+      srcWidth);
+    QPixmap subImage(source.size().toSize());
     QPainter painter(&subImage);
     painter.drawPixmap(QPoint(0, 0), pixmap_item_->pixmap(), source);
     painter.end();
     sub_pixmapItem_->setPos(
-        itemPos.x() - MAGNIFIER_SIZE / (2 * factor_), itemPos.y() - MAGNIFIER_SIZE / (2 * factor_));
+      itemPos.x() - MAGNIFIER_SIZE / (2 * factor_), itemPos.y() - MAGNIFIER_SIZE / (2 * factor_));
     sub_pixmapItem_->setPixmap(subImage.scaledToWidth(MAGNIFIER_SIZE, Qt::SmoothTransformation));
     sub_pixmapItem_->setScale(1 / factor_);
     sub_pixmapItem_->setVisible(true);
     mag_factor_item_->setText(QString("%1X").arg(mag_factor_));
-    mag_factor_item_->setPos(sub_pixmapItem_->boundingRect().width() -
-                             mag_factor_item_->boundingRect().width(), 0);
+    mag_factor_item_->setPos(sub_pixmapItem_->boundingRect().width() - mag_factor_item_->boundingRect().width(), 0);
 }
 
 //-------------------------------------------------------
@@ -323,7 +336,8 @@ void DicomImageView::SetMagnifierPixmap(const QPointF &itemPos) {
  * @brief DicomImageView::UpdateScalors
  * 更新比例尺
  */
-void DicomImageView::UpdateScalors() {
+void DicomImageView::UpdateScalors()
+{
     double x_xpacing, y_spacing;
     QPainterPath scalorX, scalorY;
     if (m_series_ && m_series_->GetPixSpacing(x_xpacing, y_spacing, m_vtype_)) {
@@ -365,23 +379,24 @@ void DicomImageView::UpdateScalors() {
  * @brief DicomImageView::AllocAnnoGroups
  * 分配描述 和 参数
  */
-void DicomImageView::AllocAnnoGroups() {
+void DicomImageView::AllocAnnoGroups()
+{
     if (!m_series_) {
         return;
     }
-    const ModalityProp *p = ModalityProperty::Instance()->getModalityProp(
-                                m_series_->GetTagKeyValue(DCM_Modality));
+    const ModalityProp * p = ModalityProperty::Instance()->getModalityProp(
+      m_series_->GetTagKeyValue(DCM_Modality));
     if (!p) {
         return;
     }
     m_pref_ = p->pref;
-    foreach (const AnnoItemGroup *aig, p->groups) {
-        GraphicsAnnoGroup *gag = new GraphicsAnnoGroup;
+    foreach (const AnnoItemGroup * aig, p->groups) {
+        GraphicsAnnoGroup * gag = new GraphicsAnnoGroup;
         anno_grps_ << gag;
         gag->pos = aig->pos;
-        foreach (const AnnoItem *ai, aig->items) {
+        foreach (const AnnoItem * ai, aig->items) {
             Q_UNUSED(ai);
-            QGraphicsSimpleTextItem *i = new QGraphicsSimpleTextItem;
+            QGraphicsSimpleTextItem * i = new QGraphicsSimpleTextItem;
             m_scene_->addItem(i);
             gag->items << i;
         }
@@ -393,32 +408,33 @@ void DicomImageView::AllocAnnoGroups() {
  * @brief DicomImageView::UpdateAnnotations
  * 更新 描述文字
  */
-void DicomImageView::UpdateAnnotations() {
+void DicomImageView::UpdateAnnotations()
+{
     if (!(m_series_)) {
         FreeAnnoGroups();
         return;
     }
-    const ModalityProp *p = ModalityProperty::Instance()->getModalityProp(
-                                m_series_->GetTagKeyValue(DCM_Modality));
+    const ModalityProp * p = ModalityProperty::Instance()->getModalityProp(
+      m_series_->GetTagKeyValue(DCM_Modality));
     if (!p) {
         return;
     }
-    foreach (const GraphicsAnnoGroup *gag, anno_grps_) {
-        foreach (const AnnoItemGroup *aig, p->groups) {
+    foreach (const GraphicsAnnoGroup * gag, anno_grps_) {
+        foreach (const AnnoItemGroup * aig, p->groups) {
             if (gag->pos == aig->pos && gag->items.size() == aig->items.size()) {
                 for (int i = 0; i < aig->items.size(); ++i) {
-                    const AnnoItem *ai = aig->items.at(i);
-                    QGraphicsSimpleTextItem *gi = gag->items.at(i);
+                    const AnnoItem * ai = aig->items.at(i);
+                    QGraphicsSimpleTextItem * gi = gag->items.at(i);
                     gi->setBrush(QColor(184, 200, 212));
                     gi->setFont(anno_font_);
                     QString t = ai->text;
                     bool reserved = false;
-                    foreach (const DcmTagKey &k, ai->keys) {
+                    foreach (const DcmTagKey & k, ai->keys) {
                         if (k.getGroup() != Dcm_AF_Group) {
-#if HideNmae==1
-                            if( k.getBaseTag() == DcmTagKey(0x0010, 0x0010)) {
+#if HideNmae == 1
+                            if (k.getBaseTag() == DcmTagKey(0x0010, 0x0010)) {
                                 t = t.arg("hide name");
-                            } else if(k.getBaseTag() == DcmTagKey(0x0008, 0x0080)) {
+                            } else if (k.getBaseTag() == DcmTagKey(0x0008, 0x0080)) {
                                 t = t.arg("hide institution");
                             } else {
                                 t = t.arg(m_series_->GetTagKeyValue(k, m_vtype));
@@ -426,9 +442,7 @@ void DicomImageView::UpdateAnnotations() {
 #else
                             t = t.arg(m_series_->GetTagKeyValue(k, m_vtype_));
 #endif
-                        } else if (k == DCM_AF_CursorX ||
-                                   k == DCM_AF_CursorY ||
-                                   k == DCM_AF_PixelValue) {
+                        } else if (k == DCM_AF_CursorX || k == DCM_AF_CursorY || k == DCM_AF_PixelValue) {
                             pos_value_item_ = gi;
                             pos_value_item_->setBrush(Qt::darkYellow);
                             pos_text_pattern_ = t;
@@ -463,7 +477,8 @@ void DicomImageView::UpdateAnnotations() {
  * @brief DicomImageView::FreeAnnoGroups
  * 清空描述
  */
-void DicomImageView::FreeAnnoGroups() {
+void DicomImageView::FreeAnnoGroups()
+{
     qDeleteAll(anno_grps_);
     anno_grps_.clear();
     m_pref_ = ModalityPref();
@@ -480,67 +495,68 @@ void DicomImageView::FreeAnnoGroups() {
  * @param type
  */
 void DicomImageView::MousePressHandle(
-    QMouseEvent *event,
-    const CurrentState &state,
-    const DicomImageView::DrawingType &type) {
+  QMouseEvent * event,
+  const CurrentState & state,
+  const DicomImageView::DrawingType & type)
+{
     QPointF sp = mapToScene(event->pos());
     QPointF ip = pixmap_item_->mapFromScene(sp);
     setDragMode(QGraphicsView::NoDrag);
     switch (state) {
-        case None:
-            break;
-        case ROIWindow:
-            setDragMode(QGraphicsView::RubberBandDrag);
-            break;
-        case Drawing:
-            if (current_path_item_ == nullptr) {
-                switch (type) {
-                    case DrawLine:
-                        current_path_item_ = new GraphicsLineItem(pixmap_item_);
-                        break;
-                    case DrawAngle:
-                        current_path_item_ = new GraphicsAngleItem(pixmap_item_);
-                        break;
-                    case DrawCobbAngle:
-                        current_path_item_ = new GraphicsCobbAngleItem(pixmap_item_);
-                        break;
-                    case DrawRect:
-                        current_path_item_ = new GraphicsRectItem(pixmap_item_);
-                        break;
-                    case DrawEllipse:
-                        current_path_item_ = new GraphicsEllipseItem(pixmap_item_);
-                        break;
-                    case DrawTextMark:
-                        break;
-                    case DrawArrow:
-                        current_path_item_ = new GraphicsArrowItem(pixmap_item_);
-                        break;
-                    default:
-                        break;
-                }
-                if (current_path_item_ != nullptr) {
-                    current_path_item_->setPos(ip);
-                    current_path_item_->setZoomFactor(factor_);
-                    current_path_item_->setFont(anno_font_);
-                    current_path_item_->grabMouse();
-                    double xSpacing, ySpacing;
-                    m_series_->GetPixSpacing(xSpacing, ySpacing, m_vtype_);
-                    current_path_item_->setPixelSpacing(xSpacing, ySpacing);
-                    current_path_item_->setFlag(QGraphicsItem::ItemIgnoresParentOpacity);
-                }
+    case None:
+        break;
+    case ROIWindow:
+        setDragMode(QGraphicsView::RubberBandDrag);
+        break;
+    case Drawing:
+        if (current_path_item_ == nullptr) {
+            switch (type) {
+            case DrawLine:
+                current_path_item_ = new GraphicsLineItem(pixmap_item_);
+                break;
+            case DrawAngle:
+                current_path_item_ = new GraphicsAngleItem(pixmap_item_);
+                break;
+            case DrawCobbAngle:
+                current_path_item_ = new GraphicsCobbAngleItem(pixmap_item_);
+                break;
+            case DrawRect:
+                current_path_item_ = new GraphicsRectItem(pixmap_item_);
+                break;
+            case DrawEllipse:
+                current_path_item_ = new GraphicsEllipseItem(pixmap_item_);
+                break;
+            case DrawTextMark:
+                break;
+            case DrawArrow:
+                current_path_item_ = new GraphicsArrowItem(pixmap_item_);
+                break;
+            default:
+                break;
             }
-            break;
-        case Zoom:
-            manual_zoom_ = true;
-            break;
-        case Pan:
-            manual_pan_ = true;
-            break;
-        case Magnifier:
-            SetMagnifierPixmap(ip);
-            break;
-        default:
-            break;
+            if (current_path_item_ != nullptr) {
+                current_path_item_->setPos(ip);
+                current_path_item_->setZoomFactor(factor_);
+                current_path_item_->setFont(anno_font_);
+                current_path_item_->grabMouse();
+                double xSpacing, ySpacing;
+                m_series_->GetPixSpacing(xSpacing, ySpacing, m_vtype_);
+                current_path_item_->setPixelSpacing(xSpacing, ySpacing);
+                current_path_item_->setFlag(QGraphicsItem::ItemIgnoresParentOpacity);
+            }
+        }
+        break;
+    case Zoom:
+        manual_zoom_ = true;
+        break;
+    case Pan:
+        manual_pan_ = true;
+        break;
+    case Magnifier:
+        SetMagnifierPixmap(ip);
+        break;
+    default:
+        break;
     }
 }
 
@@ -551,9 +567,10 @@ void DicomImageView::MousePressHandle(
  * @param state
  */
 void DicomImageView::MouseMoveHandle(
-    QMouseEvent *event, const CurrentState &state) {
+  QMouseEvent * event, const CurrentState & state)
+{
     //
-    if (event->modifiers()&Qt::ControlModifier) { // Ctrl
+    if (event->modifiers() & Qt::ControlModifier) { // Ctrl
         setDragMode(QGraphicsView::NoDrag);
         if ((event->buttons() & Qt::LeftButton)) {
             manual_pan_ = true;
@@ -568,82 +585,82 @@ void DicomImageView::MouseMoveHandle(
         return;
     }
     //
-    QPointF sp = mapToScene(event->pos());// 鼠标坐标(映射到场景)
-    QPointF ip = pixmap_item_->mapFromScene(sp);// 图片坐标
+    QPointF sp = mapToScene(event->pos()); // 鼠标坐标(映射到场景)
+    QPointF ip = pixmap_item_->mapFromScene(sp); // 图片坐标
     switch (state) {
-        case None: {
-                break;
-            }
-        case AdjustWL: {
-                setDragMode(QGraphicsView::NoDrag);
-                QPoint delta = event->pos() - prev_mouse_pos_;
-                m_series_->SetWindowDelta(-delta.y()*m_pref_.adjust_factor,
-                                          delta.x()*m_pref_.adjust_factor);
-                RefreshPixmap();
-                break;
-            }
-        case Zoom: {
-                setDragMode(QGraphicsView::NoDrag);
-                m_scene_->clearSelection();
-                if (m_scene_->mouseGrabberItem()) {
-                    m_scene_->mouseGrabberItem()->ungrabMouse();
-                }
-                int delta = prev_mouse_pos_.y() - event->pos().y();
-                if (delta > 0) {
-                    factor_ *= (1 + delta * m_pref_.zoom_factor);
-                } else {
-                    factor_ /= (1 - delta * m_pref_.zoom_factor);
-                }
-                ResizePixmapItem();
-                RepositionAuxItems();
-                break;
-            }
-        case Pan: {
-                setDragMode(QGraphicsView::NoDrag);
-                m_scene_->clearSelection();
-                if (m_scene_->mouseGrabberItem()) {
-                    m_scene_->mouseGrabberItem()->ungrabMouse();
-                }
-                QPoint deltaPos = event->pos() - prev_mouse_pos_;
-                pixmap_item_->setPos(pixmap_item_->pos() + deltaPos);
-                break;
-            }
-        case Slicing: {
-                setDragMode(QGraphicsView::NoDrag);
-                int frames = event->pos().y() - prev_mouse_pos_.y();
-                if (frames > 0) {
-                    m_series_->NextFrame(m_vtype_);
-                } else {
-                    m_series_->PrevFrame(m_vtype_);
-                }
-                RefreshPixmap();
-                UpdateAnnotations();
-                break;
-            }
-        case Magnifier: {
-                setDragMode(QGraphicsView::NoDrag);
-                m_scene_->clearSelection();
-                if (m_scene_->mouseGrabberItem()) {
-                    m_scene_->mouseGrabberItem()->ungrabMouse();
-                }
-                SetMagnifierPixmap(ip);
-                break;
-            }
-        case ROIWindow: {
-                QGraphicsView::mouseMoveEvent(event);
-                break;
-            }
-        case Drawing: {
-                setDragMode(QGraphicsView::NoDrag);
-                if (mouse_left_state_.type == DrawTextMark) {
-                    current_path_item_->setPos(ip);
-                } else {
-                    current_path_item_->setActivePoint(
-                        current_path_item_->mapFromParent(ip));
-                    m_scene_->update();
-                }
-                break;
-            }
+    case None: {
+        break;
+    }
+    case AdjustWL: {
+        setDragMode(QGraphicsView::NoDrag);
+        QPoint delta = event->pos() - prev_mouse_pos_;
+        m_series_->SetWindowDelta(-delta.y() * m_pref_.adjust_factor,
+                                  delta.x() * m_pref_.adjust_factor);
+        RefreshPixmap();
+        break;
+    }
+    case Zoom: {
+        setDragMode(QGraphicsView::NoDrag);
+        m_scene_->clearSelection();
+        if (m_scene_->mouseGrabberItem()) {
+            m_scene_->mouseGrabberItem()->ungrabMouse();
+        }
+        int delta = prev_mouse_pos_.y() - event->pos().y();
+        if (delta > 0) {
+            factor_ *= (1 + delta * m_pref_.zoom_factor);
+        } else {
+            factor_ /= (1 - delta * m_pref_.zoom_factor);
+        }
+        ResizePixmapItem();
+        RepositionAuxItems();
+        break;
+    }
+    case Pan: {
+        setDragMode(QGraphicsView::NoDrag);
+        m_scene_->clearSelection();
+        if (m_scene_->mouseGrabberItem()) {
+            m_scene_->mouseGrabberItem()->ungrabMouse();
+        }
+        QPoint deltaPos = event->pos() - prev_mouse_pos_;
+        pixmap_item_->setPos(pixmap_item_->pos() + deltaPos);
+        break;
+    }
+    case Slicing: {
+        setDragMode(QGraphicsView::NoDrag);
+        int frames = event->pos().y() - prev_mouse_pos_.y();
+        if (frames > 0) {
+            m_series_->NextFrame(m_vtype_);
+        } else {
+            m_series_->PrevFrame(m_vtype_);
+        }
+        RefreshPixmap();
+        UpdateAnnotations();
+        break;
+    }
+    case Magnifier: {
+        setDragMode(QGraphicsView::NoDrag);
+        m_scene_->clearSelection();
+        if (m_scene_->mouseGrabberItem()) {
+            m_scene_->mouseGrabberItem()->ungrabMouse();
+        }
+        SetMagnifierPixmap(ip);
+        break;
+    }
+    case ROIWindow: {
+        QGraphicsView::mouseMoveEvent(event);
+        break;
+    }
+    case Drawing: {
+        setDragMode(QGraphicsView::NoDrag);
+        if (mouse_left_state_.type == DrawTextMark) {
+            current_path_item_->setPos(ip);
+        } else {
+            current_path_item_->setActivePoint(
+              current_path_item_->mapFromParent(ip));
+            m_scene_->update();
+        }
+        break;
+    }
     }
 }
 
@@ -652,67 +669,68 @@ void DicomImageView::MouseMoveHandle(
  * @brief DicomImageView::MouseReleaseHandle
  * @param state
  */
-void DicomImageView::MouseReleaseHandle(QMouseEvent *, const CurrentState &state) {
+void DicomImageView::MouseReleaseHandle(QMouseEvent *, const CurrentState & state)
+{
     switch (state) {
-        case None: {
-                break;
+    case None: {
+        break;
+    }
+    case AdjustWL: {
+        break;
+    }
+    case Zoom: {
+        break;
+    }
+    case Pan: {
+        break;
+    }
+    case Slicing: {
+        break;
+    }
+    case Magnifier: {
+        sub_pixmapItem_->setVisible(false);
+        break;
+    }
+    case ROIWindow: {
+        if (m_scene_->selectedItems().size() == 0) {
+            if (rubberBandRect().isValid()) {
+                m_series_->SetRoiWindow(
+                  pixmap_item_->mapFromScene(
+                                mapToScene(rubberBandRect()))
+                    .boundingRect());
+                RefreshPixmap();
             }
-        case AdjustWL: {
-                break;
-            }
-        case Zoom: {
-                break;
-            }
-        case Pan: {
-                break;
-            }
-        case Slicing: {
-                break;
-            }
-        case Magnifier: {
-                sub_pixmapItem_->setVisible(false);
-                break;
-            }
-        case ROIWindow: {
-                if (m_scene_->selectedItems().size() == 0) {
-                    if (rubberBandRect().isValid()) {
-                        m_series_->SetRoiWindow(
-                            pixmap_item_->mapFromScene(
-                                mapToScene(rubberBandRect())).boundingRect());
-                        RefreshPixmap();
-                    }
-                    foreach (AbstractPathItem *it, item_list_) {
-                        if (!it->pixInfoUpdated()) {
-                            it->recalPixInfo(
-                                m_series_->GetCurrImageInstance(m_vtype_)->GetDcmImage());
-                            m_scene_->update();
-                        }
-                    }
+            foreach (AbstractPathItem * it, item_list_) {
+                if (!it->pixInfoUpdated()) {
+                    it->recalPixInfo(
+                      m_series_->GetCurrImageInstance(m_vtype_)->GetDcmImage());
+                    m_scene_->update();
                 }
-                break;
             }
-        case Drawing: {
-                if (current_path_item_ != nullptr) {
-                    if (mouse_left_state_.type == DrawTextMark) {
-                        //current_path_item_->setPos(ip);
-                        current_path_item_->ungrabMouse();
-                        item_list_.append(current_path_item_);
-                        current_path_item_ = nullptr;
-                        mouse_left_state_.state = None;
-                    } else {
-                        current_path_item_->nextStage();
-                        if (current_path_item_->getCurrentStage() ==
-                                AbstractPathItem::Final) {
-                            current_path_item_->ungrabMouse();
-                            item_list_.append(current_path_item_);
-                            current_path_item_->recalPixInfo(
-                                m_series_->GetCurrImageInstance(m_vtype_)->GetDcmImage());
-                            current_path_item_ = nullptr;
-                        }
-                    }
+        }
+        break;
+    }
+    case Drawing: {
+        if (current_path_item_ != nullptr) {
+            if (mouse_left_state_.type == DrawTextMark) {
+                //current_path_item_->setPos(ip);
+                current_path_item_->ungrabMouse();
+                item_list_.append(current_path_item_);
+                current_path_item_ = nullptr;
+                mouse_left_state_.state = None;
+            } else {
+                current_path_item_->nextStage();
+                if (current_path_item_->getCurrentStage() == AbstractPathItem::Final) {
+                    current_path_item_->ungrabMouse();
+                    item_list_.append(current_path_item_);
+                    current_path_item_->recalPixInfo(
+                      m_series_->GetCurrImageInstance(m_vtype_)->GetDcmImage());
+                    current_path_item_ = nullptr;
                 }
-                break;
             }
+        }
+        break;
+    }
     }
 }
 
@@ -721,20 +739,19 @@ void DicomImageView::MouseReleaseHandle(QMouseEvent *, const CurrentState &state
  * @brief DicomImageView::UpdataShowAnnotations
  * @param yes
  */
-void DicomImageView::UpdataShowAnnotations() {
-    bool show = this->width() < wid_minx_show_annotations_ ||
-                this->height() < wid_miny_show_annotations_;
-    foreach (GraphicsAnnoGroup *g, anno_grps_) {
-        foreach (QGraphicsSimpleTextItem *t, g->items) {
+void DicomImageView::UpdataShowAnnotations()
+{
+    bool show = this->width() < wid_minx_show_annotations_ || this->height() < wid_miny_show_annotations_;
+    foreach (GraphicsAnnoGroup * g, anno_grps_) {
+        foreach (QGraphicsSimpleTextItem * t, g->items) {
             t->setVisible(this->show_annotations_ || show);
         }
     }
     x_scalor_item_->setVisible(this->show_annotations_ || show);
     y_scalor_item_->setVisible(this->show_annotations_ || show);
-    if(this->width() < wid_minx_show_annotations_ ||
-            this->height() < wid_miny_show_annotations_) {
-        foreach (GraphicsAnnoGroup *g, anno_grps_) {
-            foreach (QGraphicsSimpleTextItem *t, g->items) {
+    if (this->width() < wid_minx_show_annotations_ || this->height() < wid_miny_show_annotations_) {
+        foreach (GraphicsAnnoGroup * g, anno_grps_) {
+            foreach (QGraphicsSimpleTextItem * t, g->items) {
                 t->setVisible(false);
             }
         }
@@ -748,13 +765,13 @@ void DicomImageView::UpdataShowAnnotations() {
  * @brief DicomImageView::UpdataShowMeasurements
  * @param yes
  */
-void DicomImageView::UpdataShowMeasurements() {
-    foreach (AbstractPathItem *i, item_list_) {
+void DicomImageView::UpdataShowMeasurements()
+{
+    foreach (AbstractPathItem * i, item_list_) {
         i->setVisible(this->show_measurements_);
     }
-    if(this->width() < wid_minx_show_measurements_ ||
-            this->height() < wid_miny_show_measurements_) {
-        foreach (AbstractPathItem *i, item_list_) {
+    if (this->width() < wid_minx_show_measurements_ || this->height() < wid_miny_show_measurements_) {
+        foreach (AbstractPathItem * i, item_list_) {
             i->setVisible(false);
         }
     }
@@ -766,22 +783,23 @@ void DicomImageView::UpdataShowMeasurements() {
  * 鼠标位置显示
  * @param event
  */
-void DicomImageView::PosValueShow(QMouseEvent *event) {
-    QPointF sp = mapToScene(event->pos());// 鼠标坐标(映射到场景)
-    QPointF ip = pixmap_item_->mapFromScene(sp);// 图片坐标
+void DicomImageView::PosValueShow(QMouseEvent * event)
+{
+    QPointF sp = mapToScene(event->pos()); // 鼠标坐标(映射到场景)
+    QPointF ip = pixmap_item_->mapFromScene(sp); // 图片坐标
     if (pixmap_item_->contains(ip)) {
         QPoint pos = ip.toPoint();
         double v = m_series_->GetPixelValue(pos.x(), pos.y(), m_vtype_);
-        if(v < 10000.0 && v > -3000.0) {
+        if (v < 10000.0 && v > -3000.0) {
             pos_value_item_->setText(pos_text_pattern_
-                                     .arg(pos.x())
-                                     .arg(pos.y())
-                                     .arg(QString::number(v, 'f', 2)));
+                                       .arg(pos.x())
+                                       .arg(pos.y())
+                                       .arg(QString::number(v, 'f', 2)));
         } else {
             pos_value_item_->setText(pos_text_pattern_
-                                     .arg(pos.x())
-                                     .arg(pos.y())
-                                     .arg("-"));
+                                       .arg(pos.x())
+                                       .arg(pos.y())
+                                       .arg("-"));
         }
     } else {
         pos_value_item_->setText("");
@@ -793,13 +811,14 @@ void DicomImageView::PosValueShow(QMouseEvent *event) {
  * @brief DicomImageView::RepositionAuxItems
  * 描述定位
  */
-void DicomImageView::RepositionAuxItems() {
+void DicomImageView::RepositionAuxItems()
+{
     QPointF sceneTL = mapToScene(rect().topLeft());
     QPointF sceneBR = mapToScene(rect().bottomRight());
-    foreach (const GraphicsAnnoGroup *g, anno_grps_) {
+    foreach (const GraphicsAnnoGroup * g, anno_grps_) {
         int h = 0;
         if (g->pos == "topleft") {
-            foreach (QGraphicsSimpleTextItem *t, g->items) {
+            foreach (QGraphicsSimpleTextItem * t, g->items) {
                 if (t->text().isEmpty() && t != pos_value_item_) {
                     continue;
                 }
@@ -807,33 +826,31 @@ void DicomImageView::RepositionAuxItems() {
                 h += QFontMetrics(t->font()).lineSpacing();
             }
         } else if (g->pos == "topright") {
-            foreach (QGraphicsSimpleTextItem *t, g->items) {
+            foreach (QGraphicsSimpleTextItem * t, g->items) {
                 if (t->text().isEmpty() && t != pos_value_item_) {
                     continue;
                 }
-                t->setPos(sceneBR.x() -
-                          QFontMetrics(t->font()).boundingRect(t->text()).width()
-                          - 2, sceneTL.y() + h);
+                t->setPos(sceneBR.x() - QFontMetrics(t->font()).boundingRect(t->text()).width()
+                            - 2,
+                          sceneTL.y() + h);
                 h += QFontMetrics(t->font()).lineSpacing();
             }
         } else if (g->pos == "bottomleft") {
             for (int i = g->items.size(); i > 0; --i) {
-                QGraphicsSimpleTextItem *t = g->items.at(i - 1);
+                QGraphicsSimpleTextItem * t = g->items.at(i - 1);
                 //if (t->text().isEmpty() && t != posValue) continue;
-                t->setPos(sceneTL.x(), sceneBR.y()
-                          - QFontMetrics(t->font()).lineSpacing() - h);
+                t->setPos(sceneTL.x(), sceneBR.y() - QFontMetrics(t->font()).lineSpacing() - h);
                 h += QFontMetrics(t->font()).lineSpacing();
             }
         } else if (g->pos == "bottomright") {
             for (int i = g->items.size(); i > 0; --i) {
-                QGraphicsSimpleTextItem *t = g->items.at(i - 1);
+                QGraphicsSimpleTextItem * t = g->items.at(i - 1);
                 if (t->text().isEmpty() && t != pos_value_item_) {
                     continue;
                 }
-                t->setPos(sceneBR.x() -
-                          QFontMetrics(t->font()).boundingRect(t->text()).width() - 2,
+                t->setPos(sceneBR.x() - QFontMetrics(t->font()).boundingRect(t->text()).width() - 2,
                           sceneBR.y()
-                          - QFontMetrics(t->font()).lineSpacing() - h);
+                            - QFontMetrics(t->font()).lineSpacing() - h);
                 h += QFontMetrics(t->font()).lineSpacing();
             }
         }
@@ -859,13 +876,13 @@ void DicomImageView::RepositionAuxItems() {
  * @brief DicomImageView::ResizePixmapItem
  * 图片缩放
  */
-void DicomImageView::ResizePixmapItem() {
+void DicomImageView::ResizePixmapItem()
+{
     if (!manual_zoom_) {
         QRectF pixmapRect = pixmap_item_->boundingRect();
         QRectF viewRect = this->rect();
         if (pixmapRect.width() > 0 && pixmapRect.height() > 0) {
-            if (pixmapRect.width()*viewRect.height() <
-                    pixmapRect.height()*fix_factor_ * viewRect.width()) {
+            if (pixmapRect.width() * viewRect.height() < pixmapRect.height() * fix_factor_ * viewRect.width()) {
                 factor_ = viewRect.height() / (pixmapRect.height() * fix_factor_);
             } else {
                 factor_ = viewRect.width() / pixmapRect.width();
@@ -892,7 +909,7 @@ void DicomImageView::ResizePixmapItem() {
         pen.setWidthF(1 / factor_);
         x_scalor_item_->setPen(pen);
         y_scalor_item_->setPen(pen);
-        foreach (QGraphicsItem *item, item_list_) {
+        foreach (QGraphicsItem * item, item_list_) {
             static_cast<AbstractPathItem *>(item)->setZoomFactor(factor_);
         }
     } else {
@@ -908,7 +925,8 @@ void DicomImageView::ResizePixmapItem() {
  * 双击
  * @param event
  */
-void DicomImageView::mouseDoubleClickEvent(QMouseEvent *event) {
+void DicomImageView::mouseDoubleClickEvent(QMouseEvent * event)
+{
     emit Singal_viewDoubleclicked(this);
     QGraphicsView::mouseDoubleClickEvent(event);
 }
@@ -919,7 +937,8 @@ void DicomImageView::mouseDoubleClickEvent(QMouseEvent *event) {
  * 单机
  * @param event
  */
-void DicomImageView::mousePressEvent(QMouseEvent *event) {
+void DicomImageView::mousePressEvent(QMouseEvent * event)
+{
     emit Signal_ViewClicked(this);
     if (!m_series_) { // 没有 Series Instance
         QGraphicsView::mousePressEvent(event);
@@ -943,7 +962,8 @@ void DicomImageView::mousePressEvent(QMouseEvent *event) {
  * 移动
  * @param event
  */
-void DicomImageView::mouseMoveEvent(QMouseEvent *event) {
+void DicomImageView::mouseMoveEvent(QMouseEvent * event)
+{
     if (!m_series_) { // 没有 Series Instance
         QGraphicsView::mouseMoveEvent(event);
         return;
@@ -971,7 +991,8 @@ void DicomImageView::mouseMoveEvent(QMouseEvent *event) {
  * 松开
  * @param event
  */
-void DicomImageView::mouseReleaseEvent(QMouseEvent *event) {
+void DicomImageView::mouseReleaseEvent(QMouseEvent * event)
+{
     if (!m_series_) { // 没有 Series Instance
         QGraphicsView::mouseReleaseEvent(event);
         return;
@@ -993,7 +1014,8 @@ void DicomImageView::mouseReleaseEvent(QMouseEvent *event) {
  * 滚轮
  * @param e
  */
-void DicomImageView::wheelEvent(QWheelEvent *e) {
+void DicomImageView::wheelEvent(QWheelEvent * e)
+{
     QPoint delta = e->angleDelta();
     if (m_series_ == nullptr) {
         return;
@@ -1024,13 +1046,13 @@ void DicomImageView::wheelEvent(QWheelEvent *e) {
     }
 }
 
-
 //-------------------------------------------------------
 /**
  * @brief DicomImageView::ChangeFrame
  * @param i
  */
-void DicomImageView::GotoFrame(const qint32 &i) {
+void DicomImageView::GotoFrame(const qint32 & i)
+{
     m_series_->GotoFrame(i, m_vtype_);
     RefreshPixmap();
     UpdateAnnotations();
@@ -1040,7 +1062,8 @@ void DicomImageView::GotoFrame(const qint32 &i) {
 /**
  * @brief DicomImageView::NextFrame
  */
-void DicomImageView::NextFrame() {
+void DicomImageView::NextFrame()
+{
     m_series_->NextFrame(m_vtype_);
     RefreshPixmap();
     UpdateAnnotations();
@@ -1050,7 +1073,8 @@ void DicomImageView::NextFrame() {
 /**
  * @brief DicomImageView::PrevFrame
  */
-void DicomImageView::PrevFrame() {
+void DicomImageView::PrevFrame()
+{
     m_series_->PrevFrame(m_vtype_);
     RefreshPixmap();
     UpdateAnnotations();
@@ -1062,7 +1086,8 @@ void DicomImageView::PrevFrame() {
  * 鼠标移除
  * @param event
  */
-void DicomImageView::leaveEvent(QEvent *event) {
+void DicomImageView::leaveEvent(QEvent * event)
+{
     if (pos_value_item_) {
         pos_value_item_->setText("");
     }
@@ -1075,29 +1100,30 @@ void DicomImageView::leaveEvent(QEvent *event) {
  * 键盘事件
  * @param event
  */
-void DicomImageView::keyPressEvent(QKeyEvent *e) {
+void DicomImageView::keyPressEvent(QKeyEvent * e)
+{
     switch (e->key()) {
-        case Qt::Key_Delete:
-            RemoveCurrentDrawingItem();
-            break;
-        case Qt::Key_Up:
-            PrevFrame();
-            break;
-        case Qt::Key_Down:
-            NextFrame();
-            break;
-        case Qt::Key_Escape:
-            SetOperation(None);
-            break;
-        case Qt::Key_Control:
-            if (mouse_left_state_.state == None) {
-            }
-            break;
-        case Qt::Key_Right:
-        case Qt::Key_Left:
-            break;
-        default:
-            QGraphicsView::keyPressEvent(e);
+    case Qt::Key_Delete:
+        RemoveCurrentDrawingItem();
+        break;
+    case Qt::Key_Up:
+        PrevFrame();
+        break;
+    case Qt::Key_Down:
+        NextFrame();
+        break;
+    case Qt::Key_Escape:
+        SetOperation(None);
+        break;
+    case Qt::Key_Control:
+        if (mouse_left_state_.state == None) {
+        }
+        break;
+    case Qt::Key_Right:
+    case Qt::Key_Left:
+        break;
+    default:
+        QGraphicsView::keyPressEvent(e);
     }
 }
 
@@ -1107,9 +1133,9 @@ void DicomImageView::keyPressEvent(QKeyEvent *e) {
  * 键盘松开
  * @param event
  */
-void DicomImageView::keyReleaseEvent(QKeyEvent *e) {
-    if (e->key() == Qt::Key_Control &&
-            mouse_left_state_.state == None) {
+void DicomImageView::keyReleaseEvent(QKeyEvent * e)
+{
+    if (e->key() == Qt::Key_Control && mouse_left_state_.state == None) {
     } else {
         QGraphicsView::keyReleaseEvent(e);
     }
@@ -1121,7 +1147,8 @@ void DicomImageView::keyReleaseEvent(QKeyEvent *e) {
  * 界面重新调整大小
  * @param event
  */
-void DicomImageView::resizeEvent(QResizeEvent *event) {
+void DicomImageView::resizeEvent(QResizeEvent * event)
+{
     QGraphicsView::resizeEvent(event);
     if (!manual_zoom_) {
         this->SetOperation(FillViewport);
@@ -1132,7 +1159,7 @@ void DicomImageView::resizeEvent(QResizeEvent *event) {
     UpdataShowMeasurements(); // 标注
     // 视频播放
     QSize size = this->size();
-    if(video_controlview_->width() < size.width()) {
+    if (video_controlview_->width() < size.width()) {
         video_controlview_->move(size.width() / 2 - video_controlview_->width() / 2,
                                  size.height() - video_controlview_->height() - 5);
     } else {
@@ -1147,7 +1174,8 @@ void DicomImageView::resizeEvent(QResizeEvent *event) {
  * 拖拽进入
  * @param e
  */
-void DicomImageView::dragEnterEvent(QDragEnterEvent *e) {
+void DicomImageView::dragEnterEvent(QDragEnterEvent * e)
+{
     if (e->mimeData()->hasFormat("text/plain")) {
         e->acceptProposedAction();
     }
@@ -1159,7 +1187,8 @@ void DicomImageView::dragEnterEvent(QDragEnterEvent *e) {
  * 拖拽移动
  * @param e
  */
-void DicomImageView::dragMoveEvent(QDragMoveEvent *e) {
+void DicomImageView::dragMoveEvent(QDragMoveEvent * e)
+{
     if (e->mimeData()->hasFormat("text/plain")) {
         e->acceptProposedAction();
     }
@@ -1171,11 +1200,12 @@ void DicomImageView::dragMoveEvent(QDragMoveEvent *e) {
  * 拖拽松开
  * @param e
  */
-void DicomImageView::dropEvent(QDropEvent *e) {
+void DicomImageView::dropEvent(QDropEvent * e)
+{
     if (e->mimeData()->hasFormat("text/plain")) {
         e->acceptProposedAction();
-        SeriesInstance *s = qobject_cast<SeriesInstance *>(
-                                (QObject *)(e->mimeData()->text().toULongLong()));
+        SeriesInstance * s = qobject_cast<SeriesInstance *>(
+          (QObject *)(e->mimeData()->text().toULongLong()));
         if (s) {
             SetSeriesInstance(s);
             this->UpdataSeriesInstance();
@@ -1191,7 +1221,8 @@ void DicomImageView::dropEvent(QDropEvent *e) {
  * 离开事件
  * @param e
  */
-void DicomImageView::dragLeaveEvent(QDragLeaveEvent *) {
+void DicomImageView::dragLeaveEvent(QDragLeaveEvent *)
+{
     return;
 }
 
@@ -1200,20 +1231,21 @@ void DicomImageView::dragLeaveEvent(QDragLeaveEvent *) {
  * @brief DicomImageView::RefreshPixmap
  * 刷新图片
  */
-void DicomImageView::RefreshPixmap() {
+void DicomImageView::RefreshPixmap()
+{
     QPixmap pixmap;
     if (m_series_) {
         m_series_->GetPixmap(pixmap, m_vtype_);
         pixmap = m_fun_(pixmap, this);
         pixmap_item_->setPixmap(pixmap);
         pixmap_item_->setTransformOriginPoint(
-            pixmap_item_->boundingRect().center());
+          pixmap_item_->boundingRect().center());
         double center, width;
         m_series_->GetWindow(center, width);
         if (window_item_) {
             window_item_->setText(window_text_pattern_
-                                  .arg(static_cast<qint32>(center))
-                                  .arg(static_cast<qint32>(width)));
+                                    .arg(static_cast<qint32>(center))
+                                    .arg(static_cast<qint32>(width)));
         }
         video_controlview_->SetCurrentTimeIn(m_series_->GetCurIndex(m_vtype_));
     } else {
@@ -1230,38 +1262,39 @@ void DicomImageView::RefreshPixmap() {
 
 //-------------------------------------------------------
 void DicomImageView::SetOperation(
-    const DicomImageView::ZoomOperation &operation) {
+  const DicomImageView::ZoomOperation & operation)
+{
     bool b = manual_zoom_;
     manual_zoom_ = true;
     switch (operation) {
-        case FillViewport: {
-                manual_zoom_ = false;
-                ResizePixmapItem();
-                centerOn(pixmap_item_);
-                RepositionAuxItems();
-                manual_zoom_ = b;
-                return;
-            }
-        case Zoom100: {
-                factor_ = 1;
-                break;
-            }
-        case Zoom200: {
-                factor_ = 2;
-                break;
-            }
-        case Zoom400: {
-                factor_ = 4;
-                break;
-            }
-        case ZoomIn: {
-                factor_ *= 1.2;
-                break;
-            }
-        case Zoomout: {
-                factor_ *= 0.8;
-                break;
-            }
+    case FillViewport: {
+        manual_zoom_ = false;
+        ResizePixmapItem();
+        centerOn(pixmap_item_);
+        RepositionAuxItems();
+        manual_zoom_ = b;
+        return;
+    }
+    case Zoom100: {
+        factor_ = 1;
+        break;
+    }
+    case Zoom200: {
+        factor_ = 2;
+        break;
+    }
+    case Zoom400: {
+        factor_ = 4;
+        break;
+    }
+    case ZoomIn: {
+        factor_ *= 1.2;
+        break;
+    }
+    case Zoomout: {
+        factor_ *= 0.8;
+        break;
+    }
     }
     ResizePixmapItem();
     RepositionAuxItems();
@@ -1270,189 +1303,195 @@ void DicomImageView::SetOperation(
 
 //-------------------------------------------------------
 void DicomImageView::SetOperation(
-    const DicomImageView::RoateFlipOperation &operation) {
+  const DicomImageView::RoateFlipOperation & operation)
+{
     if (!m_series_) {
         return;
     }
     switch (operation) {
-        case HFlip: {
-                QRectF pRect = pixmap_item_->boundingRect();
-                pixmap_item_->setTransform(QTransform(-1, 0, 0, 1, pRect.width(), 0), true);
-                hflip_ = !hflip_;
-                break;
-            }
-        case VFlip: {
-                QRectF pRect = pixmap_item_->boundingRect();
-                pixmap_item_->setTransform(QTransform(1, 0, 0, -1, 0, pRect.height()), true);
-                vflip_ = !vflip_;
-                break;
-            }
-        case ClearFlip: {
-                if (hflip_) {
-                    SetOperation(HFlip);
-                }
-                if (vflip_) {
-                    SetOperation(VFlip);
-                }
-                break;
-            }
-        case RoateCCW: {
-                rotate_angle_ += 270;
-                pixmap_item_->setRotation(rotate_angle_);
-                break;
-            }
-        case RoateCW: {
-                rotate_angle_ += 90;
-                pixmap_item_->setRotation(rotate_angle_);
-                break;
-            }
-        case ClearRoate: {
-                pixmap_item_->setRotation(0);
-                rotate_angle_ = 0;
-                break;
-            }
+    case HFlip: {
+        QRectF pRect = pixmap_item_->boundingRect();
+        pixmap_item_->setTransform(QTransform(-1, 0, 0, 1, pRect.width(), 0), true);
+        hflip_ = !hflip_;
+        break;
+    }
+    case VFlip: {
+        QRectF pRect = pixmap_item_->boundingRect();
+        pixmap_item_->setTransform(QTransform(1, 0, 0, -1, 0, pRect.height()), true);
+        vflip_ = !vflip_;
+        break;
+    }
+    case ClearFlip: {
+        if (hflip_) {
+            SetOperation(HFlip);
+        }
+        if (vflip_) {
+            SetOperation(VFlip);
+        }
+        break;
+    }
+    case RoateCCW: {
+        rotate_angle_ += 270;
+        pixmap_item_->setRotation(rotate_angle_);
+        break;
+    }
+    case RoateCW: {
+        rotate_angle_ += 90;
+        pixmap_item_->setRotation(rotate_angle_);
+        break;
+    }
+    case ClearRoate: {
+        pixmap_item_->setRotation(0);
+        rotate_angle_ = 0;
+        break;
+    }
     }
 }
 
 //-------------------------------------------------------
-void DicomImageView::SetOperation(const DicomImageView::DrawingType &operation) {
+void DicomImageView::SetOperation(const DicomImageView::DrawingType & operation)
+{
     if (!m_series_) {
         return;
     }
     switch (operation) {
-        case DrawLine: {
-                mouse_left_state_.state = Drawing;
-                mouse_left_state_.type = DrawLine;
-                break;
-            }
-        case DrawAngle: {
-                mouse_left_state_.state = Drawing;
-                mouse_left_state_.type = DrawAngle;
-                break;
-            }
-        case DrawCobbAngle: {
-                mouse_left_state_.state = Drawing;
-                mouse_left_state_.type = DrawCobbAngle;
-                break;
-            }
-        case DrawRect: {
-                mouse_left_state_.state = Drawing;
-                mouse_left_state_.type = DrawRect;
-                break;
-            }
-        case DrawEllipse: {
-                mouse_left_state_.state = Drawing;
-                mouse_left_state_.type = DrawEllipse;
-                break;
-            }
-        case DrawPolygon: {
-                break;
-            }
-        case DrawClosedCurve: {
-                break;
-            }
-        case DrawTextMark: {
-                mouse_left_state_.state = Drawing;
-                mouse_left_state_.type = DrawTextMark;
-                GraphicsTextMarkDialog dialog(this);
-                if ((dialog.exec() == QDialog::Accepted) &&
-                        (!dialog.getText().isEmpty())) {
-                    GraphicsTextMarkItem *item = new GraphicsTextMarkItem(pixmap_item_);
-                    item->setFlag(QGraphicsItem::ItemIgnoresParentOpacity);
-                    item->setLabelItemText(dialog.getText());
-                    item->grabMouse();
-                    current_path_item_ = item;
-                }
-                break;
-            }
-        case DrawArrow: {
-                mouse_left_state_.state = Drawing;
-                mouse_left_state_.type = DrawArrow;
-                break;
-            }
-        case DrawCurve: {
-                break;
-            }
-        case RestPan: {
-                pixmap_item_->setPos(0, 0);
-                manual_pan_ = false;
-                centerOn(pixmap_item_);
-                RepositionAuxItems();
-                break;
-            }
-        case RemoveAllDraw: {
-                qDeleteAll(item_list_);
-                item_list_.clear();
-                break;
-            }
+    case DrawLine: {
+        mouse_left_state_.state = Drawing;
+        mouse_left_state_.type = DrawLine;
+        break;
+    }
+    case DrawAngle: {
+        mouse_left_state_.state = Drawing;
+        mouse_left_state_.type = DrawAngle;
+        break;
+    }
+    case DrawCobbAngle: {
+        mouse_left_state_.state = Drawing;
+        mouse_left_state_.type = DrawCobbAngle;
+        break;
+    }
+    case DrawRect: {
+        mouse_left_state_.state = Drawing;
+        mouse_left_state_.type = DrawRect;
+        break;
+    }
+    case DrawEllipse: {
+        mouse_left_state_.state = Drawing;
+        mouse_left_state_.type = DrawEllipse;
+        break;
+    }
+    case DrawPolygon: {
+        break;
+    }
+    case DrawClosedCurve: {
+        break;
+    }
+    case DrawTextMark: {
+        mouse_left_state_.state = Drawing;
+        mouse_left_state_.type = DrawTextMark;
+        GraphicsTextMarkDialog dialog(this);
+        if ((dialog.exec() == QDialog::Accepted) && (!dialog.getText().isEmpty())) {
+            GraphicsTextMarkItem * item = new GraphicsTextMarkItem(pixmap_item_);
+            item->setFlag(QGraphicsItem::ItemIgnoresParentOpacity);
+            item->setLabelItemText(dialog.getText());
+            item->grabMouse();
+            current_path_item_ = item;
+        }
+        break;
+    }
+    case DrawArrow: {
+        mouse_left_state_.state = Drawing;
+        mouse_left_state_.type = DrawArrow;
+        break;
+    }
+    case DrawCurve: {
+        break;
+    }
+    case RestPan: {
+        pixmap_item_->setPos(0, 0);
+        manual_pan_ = false;
+        centerOn(pixmap_item_);
+        RepositionAuxItems();
+        break;
+    }
+    case RemoveAllDraw: {
+        qDeleteAll(item_list_);
+        item_list_.clear();
+        break;
+    }
     }
 }
 
 //-------------------------------------------------------
-void DicomImageView::SetOperation(const CurrentState &operation) {
+void DicomImageView::SetOperation(const CurrentState & operation)
+{
     if (!m_series_) {
         return;
     }
     switch (operation) {
-        case None:
-            mouse_left_state_.state = None;
-            break;
-        case AdjustWL:
-            m_scene_->clearSelection();
-            mouse_left_state_.state = AdjustWL;
-            break;
-        case Zoom:
-            m_scene_->clearSelection();
-            mouse_left_state_.state = Zoom;
-            break;
-        case Pan:
-            m_scene_->clearSelection();
-            mouse_left_state_.state = Pan;
-            manual_pan_ = true;
-            break;
-        case Slicing:
-            m_scene_->clearSelection();
-            mouse_left_state_.state = Slicing;
-            break;
-        case Magnifier:
-            m_scene_->clearSelection();
-            mouse_left_state_.state = Magnifier;
-            break;
-        case ROIWindow:
-            m_scene_->clearSelection();
-            mouse_left_state_.state = ROIWindow;
-            break;
-        case Drawing:
-            break;
+    case None:
+        mouse_left_state_.state = None;
+        break;
+    case AdjustWL:
+        m_scene_->clearSelection();
+        mouse_left_state_.state = AdjustWL;
+        break;
+    case Zoom:
+        m_scene_->clearSelection();
+        mouse_left_state_.state = Zoom;
+        break;
+    case Pan:
+        m_scene_->clearSelection();
+        mouse_left_state_.state = Pan;
+        manual_pan_ = true;
+        break;
+    case Slicing:
+        m_scene_->clearSelection();
+        mouse_left_state_.state = Slicing;
+        break;
+    case Magnifier:
+        m_scene_->clearSelection();
+        mouse_left_state_.state = Magnifier;
+        break;
+    case ROIWindow:
+        m_scene_->clearSelection();
+        mouse_left_state_.state = ROIWindow;
+        break;
+    case Drawing:
+        break;
     }
 }
 
 //-------------------------------------------------------
 void DicomImageView::SetOperation(
-    const DicomImageView::WindowWLWHOperation &operation) {
+  const DicomImageView::WindowWLWHOperation & operation)
+{
     if (!m_series_) {
         return;
     }
     switch (operation) {
-        case DefaultWL: {
-                m_series_->SetDefaultWindow();
-                break;
-            }
-        case FullDynamic: {
-                m_series_->SetFullDynamic();
-                break;
-            }
-        case InverseWl: {
-                m_series_->SetPolarity(
-                    m_series_->GetPolarity()
-                    == EPP_Normal ? EPP_Reverse : EPP_Normal);
-                break;
-            }
+    case DefaultWL: {
+        m_series_->SetDefaultWindow();
+        break;
+    }
+    case FullDynamic: {
+        m_series_->SetFullDynamic();
+        break;
+    }
+    case InverseWl: {
+        m_series_->SetPolarity(
+          m_series_->GetPolarity()
+              == EPP_Normal
+            ? EPP_Reverse
+            : EPP_Normal);
+        break;
+    }
     }
     RefreshPixmap();
 }
 
-void DicomImageView::SetPretreatmen(Pretreatmen fun) {
+void DicomImageView::SetPretreatmen(Pretreatmen fun)
+{
     this->m_fun_ = fun;
     RefreshPixmap();
     UpdateAnnotations();
@@ -1463,14 +1502,15 @@ void DicomImageView::SetPretreatmen(Pretreatmen fun) {
  * @brief DicomImageView::RemoveCurrentDrawingItem
  * 删除当前选择的item
  */
-void DicomImageView::RemoveCurrentDrawingItem() {
+void DicomImageView::RemoveCurrentDrawingItem()
+{
     if (current_path_item_) {
         current_path_item_->ungrabMouse();
         delete current_path_item_;
         current_path_item_ = nullptr;
     }
     QList<QGraphicsItem *> items = m_scene_->selectedItems();
-    foreach (QGraphicsItem *item, items) {
+    foreach (QGraphicsItem * item, items) {
         if (item->parentItem() != pixmap_item_) {
             item = item->parentItem();
         }
@@ -1487,7 +1527,8 @@ void DicomImageView::RemoveCurrentDrawingItem() {
  * @brief DicomImageView::SetShowAnnotations
  * @param yes
  */
-void DicomImageView::SetShowAnnotations(bool yes) {
+void DicomImageView::SetShowAnnotations(bool yes)
+{
     this->show_annotations_ = yes;
     this->UpdataShowAnnotations();
 }
@@ -1497,7 +1538,8 @@ void DicomImageView::SetShowAnnotations(bool yes) {
  * @brief DicomImageView::SetShowMeasurements
  * @param yes
  */
-void DicomImageView::SetShowMeasurements(bool yes) {
+void DicomImageView::SetShowMeasurements(bool yes)
+{
     this->show_measurements_ = yes;
     this->UpdataShowMeasurements();
 }
@@ -1506,7 +1548,8 @@ void DicomImageView::SetShowMeasurements(bool yes) {
 /**
  * @brief DicomImageView::Reset
  */
-void DicomImageView::Reset() {
+void DicomImageView::Reset()
+{
     this->pixmap_item_->setPos(0, 0);
     this->pixmap_item_->setRotation(0);
     this->rotate_angle_ = 0;
@@ -1530,6 +1573,7 @@ void DicomImageView::Reset() {
 /**
  * @brief DicomImageView::Slot_SeriesDelate
  */
-void DicomImageView::Slot_SeriesDelate() {
+void DicomImageView::Slot_SeriesDelate()
+{
     SetSeriesInstance(nullptr);
 }

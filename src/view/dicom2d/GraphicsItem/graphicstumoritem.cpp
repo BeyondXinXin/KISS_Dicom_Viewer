@@ -5,15 +5,17 @@
 #define TEXT_STYLE "Mean=%L1 SD=%L2\nMax=%L3 Min=%L4\nArea=%L5mm^2 (%L6 px)"
 
 //----------------------------------------------------------------
-GraphicsTumorItem::GraphicsTumorItem(QGraphicsItem *parent):
-    modified(false),
-    AbstractPathItem(parent) {
+GraphicsTumorItem::GraphicsTumorItem(QGraphicsItem * parent)
+  : modified(false)
+  , AbstractPathItem(parent)
+{
     setFlag(QGraphicsItem::ItemIsMovable, false);
     setFlag(QGraphicsItem::ItemIsSelectable, false);
 }
 
 //----------------------------------------------------------------
-void GraphicsTumorItem::recalPixInfo(const short **vol, int width, int height, int slice, int index, ViewType type) {
+void GraphicsTumorItem::recalPixInfo(const short ** vol, int width, int height, int slice, int index, ViewType type)
+{
     if (vol && m_starts.size() && m_starts.size() == m_ends.size()) {
         int maxVal = -32768;
         short minVal = 32767;
@@ -26,15 +28,15 @@ void GraphicsTumorItem::recalPixInfo(const short **vol, int width, int height, i
                 int y = m_starts.at(i).y();
                 for (int j = m_starts.at(i).x(); j <= m_ends.at(i).x(); ++j) {
                     switch (type) {
-                        case VT_XYPlane:
-                            val = vol[index][y * width + j];
-                            break;
-                        case VT_XZPlane:
-                            val = vol[y][index * width + j];
-                            break;
-                        case VT_YZPlane:
-                            val = vol[y][j * width + index];
-                            break;
+                    case VT_XYPlane:
+                        val = vol[index][y * width + j];
+                        break;
+                    case VT_XZPlane:
+                        val = vol[y][index * width + j];
+                        break;
+                    case VT_YZPlane:
+                        val = vol[y][j * width + index];
+                        break;
                     }
                     pixCount++;
                     valTotal += val;
@@ -49,31 +51,30 @@ void GraphicsTumorItem::recalPixInfo(const short **vol, int width, int height, i
                 int y = m_starts.at(i).y();
                 for (int j = m_starts.at(i).x(); j <= m_ends.at(i).x(); ++j) {
                     switch (type) {
-                        case VT_XYPlane:
-                            val = vol[index][y * width + j];
-                            break;
-                        case VT_XZPlane:
-                            val = vol[y][index * width + j];
-                            break;
-                        case VT_YZPlane:
-                            val = vol[y][j * width + index];
-                            break;
+                    case VT_XYPlane:
+                        val = vol[index][y * width + j];
+                        break;
+                    case VT_XZPlane:
+                        val = vol[y][index * width + j];
+                        break;
+                    case VT_YZPlane:
+                        val = vol[y][j * width + index];
+                        break;
                     }
                     sd += (val - mean) * (val - mean);
                 }
             }
         }
         sd = sqrt(sd);
-        textItem->setText(QString(TEXT_STYLE).arg(qint32(mean)).arg(sd, 0, 'f', 2)
-                          .arg(maxVal).arg(minVal).arg(pixCount * xSpacing * ySpacing, 0, 'f', 2)
-                          .arg(pixCount));
+        textItem->setText(QString(TEXT_STYLE).arg(qint32(mean)).arg(sd, 0, 'f', 2).arg(maxVal).arg(minVal).arg(pixCount * xSpacing * ySpacing, 0, 'f', 2).arg(pixCount));
     } else {
         textItem->setText("");
     }
 }
 
 //----------------------------------------------------------------
-QPointF GraphicsTumorItem::textItemPos() {
+QPointF GraphicsTumorItem::textItemPos()
+{
     if (m_ends.size()) {
         return QPointF(m_ends.last().x() + 1, m_ends.last().y() + 1);
     }
@@ -81,18 +82,19 @@ QPointF GraphicsTumorItem::textItemPos() {
 }
 
 //----------------------------------------------------------------
-QPainterPath GraphicsTumorItem::itemPath() {
+QPainterPath GraphicsTumorItem::itemPath()
+{
     if (modified && (!m_starts.isEmpty())) {
         QPainterPath path;
         path.moveTo(m_starts.first() + QPoint(-1, -1));
-        foreach (const QPoint &p, m_starts) {
+        foreach (const QPoint & p, m_starts) {
             path.lineTo(p + QPoint(-1, 0));
         }
         path.lineTo(m_starts.last() + QPoint(-1, 1));
         path.lineTo(m_ends.last() + QPoint(1, 1));
         path.moveTo(m_starts.first() + QPoint(-1, -1));
         path.lineTo(m_ends.first() + QPoint(1, -1));
-        foreach (const QPoint &p, m_ends) {
+        foreach (const QPoint & p, m_ends) {
             path.lineTo(p + QPoint(1, 0));
         }
         path.lineTo(m_ends.last() + QPoint(1, 1));

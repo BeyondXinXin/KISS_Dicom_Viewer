@@ -7,24 +7,26 @@
 class GraphicsSimpleTextItem;
 class GraphicsCrossItem;
 
-class GraphicsLineItem : public AbstractPathItem {
-  public:
-    explicit GraphicsLineItem(QGraphicsItem *parent = nullptr);
-    void setActivePoint(const QPointF &point);
-    void nextStage() {
+class GraphicsLineItem : public AbstractPathItem
+{
+public:
+    explicit GraphicsLineItem(QGraphicsItem * parent = nullptr);
+    void setActivePoint(const QPointF & point);
+    void nextStage()
+    {
         currentStage = Final;
     }
 
-  private:
+private:
     void init();
     void updateTextItem();
     QPointF textItemPos();
     bool isModified();
     QPainterPath itemPath();
 
-  private:
-    GraphicsCrossItem *crossItem1;
-    GraphicsCrossItem *crossItem2;
+private:
+    GraphicsCrossItem * crossItem1;
+    GraphicsCrossItem * crossItem2;
 
     QPointF prev1;
     QPointF prev2;

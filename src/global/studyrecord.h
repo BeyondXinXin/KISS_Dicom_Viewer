@@ -1,17 +1,18 @@
 #ifndef STUDYRECORD_H
 #define STUDYRECORD_H
 
+#include <QDateTime>
 #include <QList>
 #include <QString>
-#include <QDateTime>
-
-
 
 class StudyRecord;
-class ImageRecord {
-  public:
-    ImageRecord(const QString &uid = QString()):
-        image_uid_(uid) {}
+class ImageRecord
+{
+public:
+    ImageRecord(const QString & uid = QString())
+      : image_uid_(uid)
+    {
+    }
     QString image_uid_;
     QString sop_class_uid_;
     QString series_uid_;
@@ -23,11 +24,15 @@ class ImageRecord {
     QString image_file_;
 };
 
-class StudyRecord {
-  public:
-    StudyRecord(const QString &uid = QString()) :
-        study_uid_(uid) {}
-    ~StudyRecord() {
+class StudyRecord
+{
+public:
+    StudyRecord(const QString & uid = QString())
+      : study_uid_(uid)
+    {
+    }
+    ~StudyRecord()
+    {
         qDeleteAll(image_list_);
     }
     QString study_uid_;
@@ -46,4 +51,3 @@ class StudyRecord {
 };
 
 #endif // STUDYRECORD_H
-

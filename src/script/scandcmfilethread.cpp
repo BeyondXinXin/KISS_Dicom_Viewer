@@ -4,31 +4,33 @@
 #include <global/KissGlobal>
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
-#include "dcmtk/dcmsr/dsrdoc.h"
-#include "dcmtk/dcmimgle/dcmimage.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmimgle/dcmimage.h"
+#include "dcmtk/dcmsr/dsrdoc.h"
 
 //----------------------------------------------------------------
-ScanDcmFileThread::ScanDcmFileThread(QObject *parent) :
-    QThread(parent) {
+ScanDcmFileThread::ScanDcmFileThread(QObject * parent)
+  : QThread(parent)
+{
     this->abort_ = false;
 }
 
 //----------------------------------------------------------------
-void ScanDcmFileThread::run() {
+void ScanDcmFileThread::run()
+{
     using namespace Kiss;
     foreach (QString file, file_list_) {
         if (abort_) {
             break;
         }
-        StudyRecord *study = nullptr;
+        StudyRecord * study = nullptr;
         DcmFileFormat dcmFile;
         OFCondition cond = dcmFile.loadFile(file.toLocal8Bit().data());
-        DcmDataset *dset = dcmFile.getDataset();
+        DcmDataset * dset = dcmFile.getDataset();
         if (cond.good() && dset) {
-            const char *value = nullptr;
+            const char * value = nullptr;
             QString studyUid, seriesUid, instUid, sopClassUid;
             dset->findAndGetString(DCM_StudyInstanceUID, value);
             studyUid = QString::fromLatin1(value);
@@ -38,8 +40,7 @@ void ScanDcmFileThread::run() {
             instUid = QString::fromLatin1(value);
             dset->findAndGetString(DCM_SOPClassUID, value);
             sopClassUid = QString::fromLatin1(value);
-            if (!(studyUid.isEmpty() || seriesUid.isEmpty() ||
-                    instUid.isEmpty() || sopClassUid.isEmpty())) {
+            if (!(studyUid.isEmpty() || seriesUid.isEmpty() || instUid.isEmpty() || sopClassUid.isEmpty())) {
                 study = new StudyRecord(studyUid);
                 dset->findAndGetString(DCM_AccessionNumber, value);
                 study->acc_number_ = QString::fromLocal8Bit(value).remove(QChar(' '));
@@ -63,9 +64,9 @@ void ScanDcmFileThread::run() {
                 study->institution_ = QString::fromLocal8Bit(value);
                 dset->findAndGetString(DCM_Modality, value);
                 study->modality_ = QString::fromLatin1(value);
-                if (sopClassUid == UID_XRayAngiographicImageStorage ||// 造影血管
-                        true) {
-                    ImageRecord *image = new ImageRecord(instUid);
+                if (sopClassUid == UID_XRayAngiographicImageStorage || // 造影血管
+                    true) {
+                    ImageRecord * image = new ImageRecord(instUid);
                     image->sop_class_uid_ = sopClassUid;
                     image->series_uid_ = seriesUid;
                     image->study_uid_ = studyUid;
@@ -79,7 +80,7 @@ void ScanDcmFileThread::run() {
                     image->image_desc_ = QString::fromLocal8Bit(value);
                     dset->findAndGetString(DCM_ContentDate, value);
                     image->image_yime_.setDate(
-                        QDate::fromString(QString::fromLatin1(value), "yyyyMMdd"));
+                      QDate::fromString(QString::fromLatin1(value), "yyyyMMdd"));
                     dset->findAndGetString(DCM_ContentTime, value);
                     image->image_yime_.setTime(FormatDicomTime(QString::fromLatin1(value)));
                 }
@@ -95,13 +96,13 @@ void ScanDcmFileThread::run() {
 }
 
 //----------------------------------------------------------------
-void ScanDcmFileThread::SetFiles(const QStringList &files) {
+void ScanDcmFileThread::SetFiles(const QStringList & files)
+{
     file_list_ = files;
 }
 
 //----------------------------------------------------------------
-void ScanDcmFileThread::SetAbort(bool yes) {
+void ScanDcmFileThread::SetAbort(bool yes)
+{
     abort_ = yes;
 }
-
-

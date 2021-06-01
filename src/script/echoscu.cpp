@@ -11,15 +11,15 @@
 #define INCLUDE_CSTDARG
 #include "dcmtk/ofstd/ofstdinc.h"
 
+#include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/dcmnet/diutil.h"
-#include "dcmtk/dcmdata/dcfilefo.h"
-#include "dcmtk/dcmdata/dcdict.h"
-#include "dcmtk/dcmdata/dcuid.h"
 
 //----------------------------------------------------------------
 /* DICOM 标准转移语法 */
-static const char *transferSyntaxes[] = {
+static const char * transferSyntaxes[] = {
     UID_LittleEndianImplicitTransferSyntax, /* 默认 */
     UID_LittleEndianExplicitTransferSyntax,
     UID_BigEndianExplicitTransferSyntax,
@@ -54,22 +54,23 @@ static const char *transferSyntaxes[] = {
 };
 
 //----------------------------------------------------------------
-bool EchoSCU(const QString &peer_title,
-             const QString &our_title,
-             const QString &hostname,
+bool EchoSCU(const QString & peer_title,
+             const QString & our_title,
+             const QString & hostname,
              int port,
-             QString &msg) {
+             QString & msg)
+{
     //------------------------------Initialization Work----------------------------//
-    T_ASC_Network *net;
-    T_ASC_Parameters *params;
-    T_ASC_Association *assoc;
+    T_ASC_Network * net;
+    T_ASC_Parameters * params;
+    T_ASC_Association * assoc;
     OFString temp_str;
     bool ret = false;
     DIC_NODENAME local_host;
     DIC_NODENAME peer_host;
     DIC_US msg_id;
     DIC_US status;
-    DcmDataset *status_detail = nullptr;
+    DcmDataset * status_detail = nullptr;
     int presentation_context_id = 1;
     OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 6, &net);
     if (cond.bad()) {
@@ -97,8 +98,8 @@ bool EchoSCU(const QString &peer_title,
     sprintf(peer_host, "%s:%d", hostname.toLocal8Bit().data(), port);
     ASC_setPresentationAddresses(params, local_host, peer_host);
     cond = ASC_addPresentationContext(
-               params, static_cast<unsigned char>(presentation_context_id),
-               UID_VerificationSOPClass, transferSyntaxes, 3);
+      params, static_cast<unsigned char>(presentation_context_id),
+      UID_VerificationSOPClass, transferSyntaxes, 3);
     presentation_context_id += 2;
     if (cond.bad()) {
         DimseCondition::dump(temp_str, cond);
@@ -126,10 +127,10 @@ bool EchoSCU(const QString &peer_title,
     //------------------------------Real Work----------------------------//
     msg_id = assoc->nextMsgID++;
     cond = DIMSE_echoUser(
-               /* in */ assoc, msg_id,
-               /* blocking info for response */ DIMSE_BLOCKING, 0,
-               /* out */ &status,
-               /* Detail */ &status_detail);
+      /* in */ assoc, msg_id,
+      /* blocking info for response */ DIMSE_BLOCKING, 0,
+      /* out */ &status,
+      /* Detail */ &status_detail);
     if (status_detail != nullptr) {
         delete status_detail;
     }

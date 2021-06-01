@@ -2,31 +2,32 @@
 #include "ui_importdcmwidget.h"
 
 #include <dao/KissDb>
-#include <global/KissGlobal>
 #include <engine/KissEngine>
+#include <global/KissGlobal>
 
 #include "script/importdcmfilethread.h"
 #include "script/scandcmfilethread.h"
 
 //-------------------------------------------------------
-ImportDcmWidget::ImportDcmWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::ImportDcmWidget) {
+ImportDcmWidget::ImportDcmWidget(QWidget * parent)
+  : QWidget(parent)
+  , ui(new Ui::ImportDcmWidget)
+{
     ui->setupUi(this);
     this->Initial();
 }
 
 //-------------------------------------------------------
-ImportDcmWidget::~ImportDcmWidget() {
+ImportDcmWidget::~ImportDcmWidget()
+{
     delete ui;
 }
 
 //-------------------------------------------------------
-void ImportDcmWidget::closeEvent(QCloseEvent *e) {
+void ImportDcmWidget::closeEvent(QCloseEvent * e)
+{
     if (scan_dcmfile_thread_->isRunning() || import_dcmfile_thread_->isRunning()) {
-        if (QMessageBox::Ok == QMessageBox::warning(this, tr("Abort Importing"),
-                tr("Are you sure to abort importing?"),
-                QMessageBox::Ok | QMessageBox::Cancel)) {
+        if (QMessageBox::Ok == QMessageBox::warning(this, tr("Abort Importing"), tr("Are you sure to abort importing?"), QMessageBox::Ok | QMessageBox::Cancel)) {
             scan_dcmfile_thread_->SetAbort(true);
             import_dcmfile_thread_->SetAbort(true);
             scan_dcmfile_thread_->wait(500);
@@ -40,7 +41,8 @@ void ImportDcmWidget::closeEvent(QCloseEvent *e) {
 }
 
 //-------------------------------------------------------
-void ImportDcmWidget::Initial() {
+void ImportDcmWidget::Initial()
+{
     import_study_model_ = new ImportStudyModel(this);
     import_study_view_ = new ImportStudyTabView(this);
     import_study_view_->setModel(import_study_model_);
@@ -51,9 +53,10 @@ void ImportDcmWidget::Initial() {
 }
 
 //-------------------------------------------------------
-void ImportDcmWidget::CreateConnections() {
+void ImportDcmWidget::CreateConnections()
+{
     // UI
-    connect(ui->importButton, &QPushButton::clicked, this, [ = ](bool checked) {
+    connect(ui->importButton, &QPushButton::clicked, this, [=](bool checked) {
         if (checked) { // Start import
             ui->progressBar->setValue(0);
             ui->progressBar->setMaximum(import_study_model_->getFileCount());
@@ -63,27 +66,27 @@ void ImportDcmWidget::CreateConnections() {
             ui->importButton->setText(tr("Abort"));
             SetImportButtonsDisabled(true);
         } else {
-            if (scan_dcmfile_thread_->isRunning()) {  // Abort Scanning
+            if (scan_dcmfile_thread_->isRunning()) { // Abort Scanning
                 scan_dcmfile_thread_->SetAbort(true);
-            } else  if (import_dcmfile_thread_->isRunning()) {  // Abort Import
+            } else if (import_dcmfile_thread_->isRunning()) { // Abort Import
                 import_dcmfile_thread_->SetAbort(true);
             }
         }
     });
-    connect(ui->fileButton, &QPushButton::clicked, this, [ = ] {
+    connect(ui->fileButton, &QPushButton::clicked, this, [=] {
         QSettings s;
         QString file = s.value(STUDY_IMPORT_FILE).toString();
         if (file.isEmpty()) {
             file = ".";
         }
         QStringList files = QFileDialog::getOpenFileNames(this, tr("Import Study"),
-                file, tr("DICOM Files(*.dcm);;All Files(*)"));
+                                                          file, tr("DICOM Files(*.dcm);;All Files(*)"));
         if (files.size()) {
             s.setValue(STUDY_IMPORT_FILE, files.first());
             ScanFiles(files);
         }
     });
-    connect(ui->folderButton, &QPushButton::clicked, this, [ = ] {
+    connect(ui->folderButton, &QPushButton::clicked, this, [=] {
         QSettings s;
         QString dir = s.value(STUDY_IMPORT_FOLDER).toString();
         if (dir.isEmpty()) {
@@ -97,21 +100,21 @@ void ImportDcmWidget::CreateConnections() {
             ScanFiles(files);
         }
     });
-    connect(ui->removeButton,  &QPushButton::clicked,
+    connect(ui->removeButton, &QPushButton::clicked,
             import_study_view_, &ImportStudyTabView::RemoveSelectedRows);
-    connect(ui->clearStudyButton,  &QPushButton::clicked,
-            import_study_view_,  &ImportStudyTabView::RemoveAllRows);
+    connect(ui->clearStudyButton, &QPushButton::clicked,
+            import_study_view_, &ImportStudyTabView::RemoveAllRows);
     // 数据库导入
-    connect(import_dcmfile_thread_, &ImportDcmFileThread::finished, this, [ = ] {
+    connect(import_dcmfile_thread_, &ImportDcmFileThread::finished, this, [=] {
         SetImportButtonsDisabled(false);
         ui->importButton->setChecked(false);
         ui->importButton->setText(tr("Import"));
     });
-    connect(import_dcmfile_thread_, &ImportDcmFileThread::Signal_ResultReady, this, [ = ] {
+    connect(import_dcmfile_thread_, &ImportDcmFileThread::Signal_ResultReady, this, [=] {
         ui->progressBar->setValue(ui->progressBar->value() + 1);
     });
     // 文件检索
-    connect(scan_dcmfile_thread_, &ScanDcmFileThread::finished, this, [ = ] {
+    connect(scan_dcmfile_thread_, &ScanDcmFileThread::finished, this, [=] {
         if (ui->importAfterScanCheck->isChecked()) {
             ui->progressBar->setValue(0);
             ui->progressBar->setMaximum(import_study_model_->getFileCount());
@@ -123,7 +126,7 @@ void ImportDcmWidget::CreateConnections() {
             ui->importButton->setText(tr("Import"));
         }
     });
-    connect(scan_dcmfile_thread_, &ScanDcmFileThread::Signal_ResultReady, this, [ = ] {
+    connect(scan_dcmfile_thread_, &ScanDcmFileThread::Signal_ResultReady, this, [=] {
         ui->progressBar->setValue(ui->progressBar->value() + 1);
     });
     connect(scan_dcmfile_thread_, SIGNAL(Signal_ResultRecord(StudyRecord *)),
@@ -131,7 +134,8 @@ void ImportDcmWidget::CreateConnections() {
 }
 
 //-------------------------------------------------------
-void ImportDcmWidget::SetImportButtonsDisabled(bool yes) {
+void ImportDcmWidget::SetImportButtonsDisabled(bool yes)
+{
     ui->fileButton->setDisabled(yes);
     ui->folderButton->setDisabled(yes);
     ui->removeButton->setDisabled(yes);
@@ -139,7 +143,8 @@ void ImportDcmWidget::SetImportButtonsDisabled(bool yes) {
 }
 
 //-------------------------------------------------------
-void ImportDcmWidget::ScanFiles(const QStringList &files) {
+void ImportDcmWidget::ScanFiles(const QStringList & files)
+{
     ui->progressBar->setMaximum(files.size());
     scan_dcmfile_thread_->SetAbort(false);
     scan_dcmfile_thread_->SetFiles(files);
@@ -150,7 +155,8 @@ void ImportDcmWidget::ScanFiles(const QStringList &files) {
 }
 
 //-------------------------------------------------------
-void ImportDcmWidget::ScanDirHelpper(QStringList &files, const QString &dir) {
+void ImportDcmWidget::ScanDirHelpper(QStringList & files, const QString & dir)
+{
     QDir qdir(dir);
     QFileInfoList infoList = qdir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
     foreach (QFileInfo info, infoList) {
@@ -161,4 +167,3 @@ void ImportDcmWidget::ScanDirHelpper(QStringList &files, const QString &dir) {
         }
     }
 }
-

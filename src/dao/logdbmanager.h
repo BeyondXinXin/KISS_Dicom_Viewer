@@ -3,11 +3,12 @@
 
 #include "dao/dbmanager.h"
 
-
-class LogDao : public QObject {
+class LogDao : public QObject
+{
     Q_OBJECT
-  public:
-    enum EventType {
+public:
+    enum EventType
+    {
         ET_AllType,
 
         ET_SysInfo,
@@ -18,19 +19,21 @@ class LogDao : public QObject {
     };
     static const QString kTableName;
     static const QStringList string_tables_;
-  public:
-    explicit LogDao(QObject *parent = nullptr);
+
+public:
+    explicit LogDao(QObject * parent = nullptr);
     virtual ~LogDao() override;
     bool InsertMessageToDao(
-        const QString &name, const EventType &type, const QString &msg);
-  public:
+      const QString & name, const EventType & type, const QString & msg);
+
+public:
     static bool Initial();
-  private:
+
+private:
     static bool CreateTable();
     static bool CheckTable();
-  private:
+
+private:
 };
-
-
 
 #endif // LOGDBMANAGER_H

@@ -23,10 +23,10 @@ see quazip/(un)zip.h files for details. Basically it's the zlib license.
 */
 
 #include "testquagzipfile.h"
-#include <zlib.h>
 #include <QDir>
-#include <quazip/quagzipfile.h>
 #include <QtTest/QtTest>
+#include <quazip/quagzipfile.h>
+#include <zlib.h>
 
 void TestQuaGzipFile::read()
 {
@@ -42,7 +42,7 @@ void TestQuaGzipFile::read()
     QCOMPARE(testFile.read(buf, 5), static_cast<qint64>(4));
     testFile.close();
     QVERIFY(!testFile.isOpen());
-    QCOMPARE(static_cast<const char*>(buf), "test");
+    QCOMPARE(static_cast<const char *>(buf), "test");
     curDir.remove("tmp/test.gz");
     curDir.rmdir("tmp");
 }
@@ -64,14 +64,14 @@ void TestQuaGzipFile::write()
     buf[4] = '\0';
     QCOMPARE(gzread(file, buf, 5), 4);
     gzclose(file);
-    QCOMPARE(static_cast<const char*>(buf), "test");
+    QCOMPARE(static_cast<const char *>(buf), "test");
     curDir.remove("tmp/test.gz");
     curDir.rmdir("tmp");
 }
 
 void TestQuaGzipFile::constructorDestructor()
 {
-    QuaGzipFile *f1 = new QuaGzipFile();
+    QuaGzipFile * f1 = new QuaGzipFile();
     delete f1; // D0 destructor
     QObject parent;
     QuaGzipFile f2(&parent);

@@ -31,7 +31,8 @@ see quazip/(un)zip.h files for details. Basically it's the zlib license.
 #define QUAZIP_TEST_QSAVEFILE
 #endif
 
-class TestQuaZip: public QObject {
+class TestQuaZip : public QObject
+{
     Q_OBJECT
 private slots:
     void getFileList_data();

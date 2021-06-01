@@ -4,8 +4,8 @@
 #include <engine/KissEngine>
 #include <global/KissGlobal>
 
-#include <QDir>
 #include <QDebug>
+#include <QDir>
 
 #include "dcmtk/config/osconfig.h"
 /* make sure OS specific configuration is included first */
@@ -17,59 +17,60 @@
 #define INCLUDE_CSIGNAL
 
 BEGIN_EXTERN_C
-#include <sys/stat.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <sys/stat.h>
 END_EXTERN_C
 
-#include "dcmtk/ofstd/ofstdinc.h"
-#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/dcmdata/dcmetinf.h"
+#include "dcmtk/dcmdata/dcostrmz.h"
+#include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmnet/cond.h"
-#include "dcmtk/ofstd/ofdatime.h"
+#include "dcmtk/dcmnet/dcasccff.h"
+#include "dcmtk/dcmnet/dcasccfg.h"
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/dcmnet/diutil.h"
-#include "dcmtk/dcmnet/dcasccfg.h"
-#include "dcmtk/dcmnet/dcasccff.h"
-#include "dcmtk/dcmdata/dcfilefo.h"
-#include "dcmtk/dcmdata/dcuid.h"
-#include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmsr/dsrdoc.h"
-#include "dcmtk/dcmdata/dcmetinf.h"
-#include "dcmtk/dcmdata/dcuid.h"
-#include "dcmtk/dcmdata/dcdeftag.h"
-#include "dcmtk/dcmdata/dcostrmz.h"
+#include "dcmtk/ofstd/ofdatime.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 //----------------------------------------------------------------
 static void insertImageToDB(
-    DcmFileFormat *ff, StudyRecord *study, QString &patientName);
+  DcmFileFormat * ff, StudyRecord * study, QString & patientName);
 
 //----------------------------------------------------------------
-struct StoreCallbackData {
-    StudyRecord *study;
-    DcmFileFormat *dcmff;
-    T_ASC_Association *assoc;
+struct StoreCallbackData
+{
+    StudyRecord * study;
+    DcmFileFormat * dcmff;
+    T_ASC_Association * assoc;
     QString patientInfo;
 };
 
 //----------------------------------------------------------------
 static void StoreSCPCallback(
-    void *callbackData,
-    T_DIMSE_StoreProgress *progress,
-    T_DIMSE_C_StoreRQ *req,
-    char * /*imageFileName*/, DcmDataset **imageDataSet,
-    T_DIMSE_C_StoreRSP *rsp,
-    DcmDataset **statusDetail) {
+  void * callbackData,
+  T_DIMSE_StoreProgress * progress,
+  T_DIMSE_C_StoreRQ * req,
+  char * /*imageFileName*/, DcmDataset ** imageDataSet,
+  T_DIMSE_C_StoreRSP * rsp,
+  DcmDataset ** statusDetail)
+{
     DIC_UI sopClass;
     DIC_UI sopInstance;
     if (progress->state == DIMSE_StoreEnd) {
         *statusDetail = nullptr;
-        StoreCallbackData *cbdata = OFstatic_cast(StoreCallbackData *, callbackData);
+        StoreCallbackData * cbdata = OFstatic_cast(StoreCallbackData *, callbackData);
         insertImageToDB(cbdata->dcmff, cbdata->study, cbdata->patientInfo);
         if (rsp->DimseStatus == STATUS_Success) {
             if (!DU_findSOPClassAndInstanceInDataSet(*imageDataSet,
-                    sopClass, sizeof(sopClass),
-                    sopInstance, sizeof(sopInstance))) {
+                                                     sopClass, sizeof(sopClass),
+                                                     sopInstance, sizeof(sopInstance))) {
                 rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
             } else if (strcmp(sopClass, req->AffectedSOPClassUID) != 0) {
                 rsp->DimseStatus = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
@@ -81,21 +82,24 @@ static void StoreSCPCallback(
 }
 
 //----------------------------------------------------------------
-StoreScpThread::StoreScpThread(QObject *parent) :
-    QThread(parent),
-    abort_(false) {
+StoreScpThread::StoreScpThread(QObject * parent)
+  : QThread(parent)
+  , abort_(false)
+{
 }
 
 //----------------------------------------------------------------
-void StoreScpThread::setAbort(const bool &yes) {
+void StoreScpThread::setAbort(const bool & yes)
+{
     abort_ = yes;
 }
 
 //----------------------------------------------------------------
-void StoreScpThread::run() {
+void StoreScpThread::run()
+{
     //-----------------------------初始化端口监听----------------------------------------//
     /* 创建T_ASC_Network*的实例。 */
-    T_ASC_Network *net;
+    T_ASC_Network * net;
     DcmAssociationConfiguration asccfg;
     OFString temp_str;
     LocalSettings settings;
@@ -104,7 +108,7 @@ void StoreScpThread::run() {
     if (cond.bad()) {
         DimseCondition::dump(temp_str, cond);
         qDebug() << QString("无法创建网络: %1.")
-                 .arg(temp_str.c_str());
+                      .arg(temp_str.c_str());
     }
     //-------------------------------绑定端口提供scp服务--------------------------------------//
     while (cond.good() && (!abort_)) {
@@ -133,16 +137,17 @@ void StoreScpThread::run() {
  * @return
  */
 OFCondition StoreScpThread::AcceptAssociation(
-    T_ASC_Network *net, DcmAssociationConfiguration &/*asccfg*/) {
+  T_ASC_Network * net, DcmAssociationConfiguration & /*asccfg*/)
+{
     //------------------------------Initialization Work----------------------------//
     char buf[BUFSIZ];
-    T_ASC_Association *assoc;
+    T_ASC_Association * assoc;
     OFCondition cond;
     OFString temp_str;
-    const char *knownAbstractSyntaxes[] = {
+    const char * knownAbstractSyntaxes[] = {
         UID_VerificationSOPClass
     };
-    const char *transferSyntaxes[] = {
+    const char * transferSyntaxes[] = {
         nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
         nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr
     };
@@ -166,8 +171,8 @@ OFCondition StoreScpThread::AcceptAssociation(
     /* 接受验证SOP类（如有） */
     if (cond.good()) {
         cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
-                   assoc->params, knownAbstractSyntaxes,
-                   DIM_OF(knownAbstractSyntaxes), transferSyntaxes, numTransferSyntaxes);
+          assoc->params, knownAbstractSyntaxes,
+          DIM_OF(knownAbstractSyntaxes), transferSyntaxes, numTransferSyntaxes);
         if (cond.bad()) {
             DimseCondition::dump(temp_str, cond);
             qDebug() << QString(temp_str.c_str());
@@ -176,9 +181,9 @@ OFCondition StoreScpThread::AcceptAssociation(
     /* 存储SOP类uid的数组来自dcuid.h */
     if (cond.good()) {
         cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
-                   assoc->params, dcmAllStorageSOPClassUIDs,
-                   numberOfDcmAllStorageSOPClassUIDs,
-                   transferSyntaxes, numTransferSyntaxes);
+          assoc->params, dcmAllStorageSOPClassUIDs,
+          numberOfDcmAllStorageSOPClassUIDs,
+          transferSyntaxes, numTransferSyntaxes);
         if (cond.bad()) {
             DimseCondition::dump(temp_str, cond);
             qDebug() << QString(temp_str.c_str());
@@ -223,7 +228,8 @@ OFCondition StoreScpThread::AcceptAssociation(
         DIC_AE callingTitle;
         DIC_AE calledTitle;
         ASC_getAPTitles(assoc->params, callingTitle, sizeof(callingTitle),
-                        calledTitle,  sizeof(calledTitle), nullptr, 0).good();
+                        calledTitle, sizeof(calledTitle), nullptr, 0)
+          .good();
         // 现在做实际工作，即通过建立的网络连接接收DIMSE命令，并相应地处理这些命令.
         // 对于storscp，只能处理 C-ECHO-RQ 和 C-STORE-RQ 命令.
         cond = ProcessCommands(assoc);
@@ -256,13 +262,14 @@ OFCondition StoreScpThread::AcceptAssociation(
  * @param assoc
  * @return
  */
-OFCondition StoreScpThread::ProcessCommands(T_ASC_Association *assoc) {
+OFCondition StoreScpThread::ProcessCommands(T_ASC_Association * assoc)
+{
     OFCondition cond = EC_Normal;
     T_DIMSE_Message msg;
     T_ASC_PresentationContextID presID = 0;
-    DcmDataset *statusDetail = nullptr;
+    DcmDataset * statusDetail = nullptr;
     // 启动循环以能够接收多个DIMSE命令
-    while( cond == EC_Normal || cond == DIMSE_NODATAAVAILABLE || cond == DIMSE_OUTOFRESOURCES ) {
+    while (cond == EC_Normal || cond == DIMSE_NODATAAVAILABLE || cond == DIMSE_OUTOFRESOURCES) {
         // 通过网络接收DIMSE命令
         cond = DIMSE_receiveCommand(assoc, DIMSE_BLOCKING, 0, &presID, &msg, &statusDetail);
         // 如果收到的命令有额外的状态详细信息，则转储此信息
@@ -272,21 +279,21 @@ OFCondition StoreScpThread::ProcessCommands(T_ASC_Association *assoc) {
         // 检查对等机是否释放或中止，或者我们是否有有效的消息
         if (cond == EC_Normal) { // 收到正常请求
             switch (msg.CommandField) {
-                case DIMSE_C_ECHO_RQ:
-                    // 处理 C-ECHO-Request
-                    qDebug() << QString("收到 C-ECHO-Request 服务请求，开始处理");
-                    cond = EchoSCP(assoc, &msg, presID);
-                    break;
-                case DIMSE_C_STORE_RQ:
-                    // 处理 C-STORE-Request
-                    qDebug() << QString("收到 C-STORE-Request 服务请求，开始处理");
-                    cond = StoreSCP(assoc, &msg, presID);
-                    break;
-                default:
-                    // 其他服务不处理 （查询和下载 还没空开发）
-                    qDebug() << QString("无法处理命令: 0x%1.").arg(static_cast<unsigned>(msg.CommandField));
-                    cond = DIMSE_BADCOMMANDTYPE;
-                    break;
+            case DIMSE_C_ECHO_RQ:
+                // 处理 C-ECHO-Request
+                qDebug() << QString("收到 C-ECHO-Request 服务请求，开始处理");
+                cond = EchoSCP(assoc, &msg, presID);
+                break;
+            case DIMSE_C_STORE_RQ:
+                // 处理 C-STORE-Request
+                qDebug() << QString("收到 C-STORE-Request 服务请求，开始处理");
+                cond = StoreSCP(assoc, &msg, presID);
+                break;
+            default:
+                // 其他服务不处理 （查询和下载 还没空开发）
+                qDebug() << QString("无法处理命令: 0x%1.").arg(static_cast<unsigned>(msg.CommandField));
+                cond = DIMSE_BADCOMMANDTYPE;
+                break;
             }
         }
     }
@@ -303,17 +310,17 @@ OFCondition StoreScpThread::ProcessCommands(T_ASC_Association *assoc) {
  * @return
  */
 OFCondition StoreScpThread::EchoSCP(
-    T_ASC_Association *assoc, T_DIMSE_Message *msg, T_ASC_PresentationContextID presID) {
+  T_ASC_Association * assoc, T_DIMSE_Message * msg, T_ASC_PresentationContextID presID)
+{
     // 初始化一些变量
     OFString temp_str;
     OFCondition cond = DIMSE_sendEchoResponse(assoc, presID,
-                       &msg->msg.CEchoRQ, STATUS_Success, nullptr);
+                                              &msg->msg.CEchoRQ, STATUS_Success, nullptr);
     if (cond.bad()) {
         DimseCondition::dump(temp_str, cond);
         qDebug() << QString("Echo SCP 服务失败: %1.").arg(temp_str.c_str());
     } else {
-        qDebug() << QString("Echo SCP 测试成功: %1").arg(
-                     QTime::currentTime().toString(NORMAL_DATETIME_FORMAT));
+        qDebug() << QString("Echo SCP 测试成功: %1").arg(QTime::currentTime().toString(NORMAL_DATETIME_FORMAT));
     }
     return cond;
 }
@@ -328,11 +335,12 @@ OFCondition StoreScpThread::EchoSCP(
  * @return
  */
 OFCondition StoreScpThread::StoreSCP(
-    T_ASC_Association *assoc,
-    T_DIMSE_Message *msg,
-    T_ASC_PresentationContextID presID) {
+  T_ASC_Association * assoc,
+  T_DIMSE_Message * msg,
+  T_ASC_PresentationContextID presID)
+{
     OFCondition cond = EC_Normal;
-    T_DIMSE_C_StoreRQ *req;
+    T_DIMSE_C_StoreRQ * req;
     // 将C-STORE-RQ命令的实际信息分配给局部变量
     req = &msg->msg.CStoreRQ;
     // 初始化一些变量
@@ -342,8 +350,8 @@ OFCondition StoreScpThread::StoreSCP(
     callbackData.assoc = assoc;
     callbackData.dcmff = &dcmff;
     callbackData.study = &study;
-    const char *aet = nullptr;
-    const char *aec = nullptr;
+    const char * aet = nullptr;
+    const char * aec = nullptr;
     // 将 SourceApplicationEntityTitle 存储在 metaheader 中
     if (assoc && assoc->params) {
         aet = assoc->params->DULparams.callingAPTitle;
@@ -354,11 +362,11 @@ OFCondition StoreScpThread::StoreSCP(
     }
     LocalSettings settings;
     QString aetitle = settings.statInfo.aetitle;
-    if(QString(aec) != aetitle) {
+    if (QString(aec) != aetitle) {
         qDebug() << "名称校验失败" << aet << QString(aec) << aetitle;
     } else {
         // 定义一个地址，用于存储通过网络接收的信息
-        DcmDataset *dset = dcmff.getDataset();
+        DcmDataset * dset = dcmff.getDataset();
         cond = DIMSE_storeProvider(assoc, presID, req, nullptr, OFTrue, &dset,
                                    StoreSCPCallback, &callbackData, DIMSE_BLOCKING, 0);
         // 如果出现错误，请转储相应的信息，必要时删除输出文件
@@ -367,10 +375,7 @@ OFCondition StoreScpThread::StoreSCP(
             DimseCondition::dump(temp_str, cond);
             qDebug() << QString("Store SCP 失败: %1.").arg(temp_str.c_str());
         } else {
-            qDebug() << QString("Store SCP 成功: %1 : %2, %3").arg(
-                         callbackData.patientInfo,
-                         QString::fromLocal8Bit(aet),
-                         QTime::currentTime().toString(NORMAL_DATETIME_FORMAT));
+            qDebug() << QString("Store SCP 成功: %1 : %2, %3").arg(callbackData.patientInfo, QString::fromLocal8Bit(aet), QTime::currentTime().toString(NORMAL_DATETIME_FORMAT));
         }
     }
     // 返回返回值
@@ -379,10 +384,11 @@ OFCondition StoreScpThread::StoreSCP(
 
 //----------------------------------------------------------------
 static void insertImageToDB(
-    DcmFileFormat *ff, StudyRecord *study, QString &) {
-    DcmDataset *dset;
+  DcmFileFormat * ff, StudyRecord * study, QString &)
+{
+    DcmDataset * dset;
     if (ff && (dset = ff->getDataset()) && study) {
-        const char *value = nullptr;
+        const char * value = nullptr;
         QString studyUid, seriesUid, instUid, sopClassUid;
         dset->findAndGetString(DCM_StudyInstanceUID, value);
         studyUid = QString::fromLatin1(value);
@@ -392,8 +398,7 @@ static void insertImageToDB(
         instUid = QString::fromLatin1(value);
         dset->findAndGetString(DCM_SOPClassUID, value);
         sopClassUid = QString::fromLatin1(value);
-        if (!(studyUid.isEmpty() || seriesUid.isEmpty() ||
-                instUid.isEmpty() || sopClassUid.isEmpty())) {
+        if (!(studyUid.isEmpty() || seriesUid.isEmpty() || instUid.isEmpty() || sopClassUid.isEmpty())) {
             if (study->study_uid_ != studyUid) {
                 study->study_uid_ = studyUid;
                 study = new StudyRecord(studyUid);
@@ -419,18 +424,18 @@ static void insertImageToDB(
                 study->institution_ = QString::fromLocal8Bit(value);
                 dset->findAndGetString(DCM_Modality, value);
                 study->modality_ = QString::fromLatin1(value);
-                if (sopClassUid == UID_XRayAngiographicImageStorage ||// 造影血管
-                        true) {
+                if (sopClassUid == UID_XRayAngiographicImageStorage || // 造影血管
+                    true) {
                     OFCondition cond =
-                        ff->saveFile(
-                            QString("./ScpCache/tmp.dcm").toLocal8Bit().data(),
-                            dset->getOriginalXfer(),
-                            EET_ExplicitLength, EGL_recalcGL,
-                            EPD_withoutPadding, 0, 0, EWM_fileformat);
+                      ff->saveFile(
+                        QString("./ScpCache/tmp.dcm").toLocal8Bit().data(),
+                        dset->getOriginalXfer(),
+                        EET_ExplicitLength, EGL_recalcGL,
+                        EPD_withoutPadding, 0, 0, EWM_fileformat);
                     if (cond.bad()) {
                         qDebug() << QString("无法写入DICOM文件: %1.").arg(cond.text());
                     } else {
-                        ImageRecord *image = new ImageRecord(instUid);
+                        ImageRecord * image = new ImageRecord(instUid);
                         image->sop_class_uid_ = sopClassUid;
                         image->series_uid_ = seriesUid;
                         image->study_uid_ = studyUid;
@@ -444,7 +449,7 @@ static void insertImageToDB(
                         image->image_desc_ = QString::fromLocal8Bit(value);
                         dset->findAndGetString(DCM_ContentDate, value);
                         image->image_yime_.setDate(
-                            QDate::fromString(QString::fromLatin1(value), "yyyyMMdd"));
+                          QDate::fromString(QString::fromLatin1(value), "yyyyMMdd"));
                         dset->findAndGetString(DCM_ContentTime, value);
                         image->image_yime_.setTime(FormatDicomTime(QString::fromLatin1(value)));
                     }
@@ -455,22 +460,19 @@ static void insertImageToDB(
         StudyDao dao;
         int images = 0;
         QString study_dir_name =
-            QString("%1/%2_%3").arg(study->study_time_.date().toString("yyyyMM"),
-                                    study->study_time_.toString(DICOM_DATETIME_FORMAT),
-                                    study->acc_number_);
-        if(!dao.VerifyStudyByStuid(study->study_uid_)) {
+          QString("%1/%2_%3").arg(study->study_time_.date().toString("yyyyMM"), study->study_time_.toString(DICOM_DATETIME_FORMAT), study->acc_number_);
+        if (!dao.VerifyStudyByStuid(study->study_uid_)) {
             dao.InsertStudyToDb(*study, true);
         }
         FileUtil::DirMake(QString("%1/%2").arg(DICOM_SAVE_PATH, study_dir_name));
-        foreach (ImageRecord *image, study->image_list_) {
+        foreach (ImageRecord * image, study->image_list_) {
             bool raw = image->sop_class_uid_ == QString(UID_XRayAngiographicImageStorage);
             QString src_file = image->image_file_;
             image->image_file_ =
-                QString("%1/%2%3.dcm")
+              QString("%1/%2%3.dcm")
                 .arg(study_dir_name, raw ? "XA_" : "", Kiss::GetRandString());
             QFileInfo info(QString("%1/%2").arg(DICOM_SAVE_PATH, image->image_file_));
-            if (FileUtil::FileCopy(src_file, QString("%1/%2")
-                                   .arg(DICOM_SAVE_PATH, image->image_file_))) {
+            if (FileUtil::FileCopy(src_file, QString("%1/%2").arg(DICOM_SAVE_PATH, image->image_file_))) {
                 if (!dao.VerifyImageByIMmuid(image->image_uid_)) {
                     if (dao.InsertImageToDb(*image, true)) {
                         images++;
@@ -481,7 +483,7 @@ static void insertImageToDB(
                         images++;
                     } else {
                         FileUtil::DeleteFileOrFolder(
-                            QString("%1/%2").arg(DICOM_SAVE_PATH, image->image_file_));
+                          QString("%1/%2").arg(DICOM_SAVE_PATH, image->image_file_));
                     }
                 }
             }
@@ -489,4 +491,3 @@ static void insertImageToDB(
         }
     }
 }
-

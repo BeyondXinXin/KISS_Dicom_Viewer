@@ -3,25 +3,29 @@
 #include <engine/KissEngine>
 #include <global/KissGlobal>
 
-#define ARROW_SIZE (12.0*zoomFactor)
+#define ARROW_SIZE (12.0 * zoomFactor)
 
 //----------------------------------------------------------------
-GraphicsArrowItem::GraphicsArrowItem(QGraphicsItem *parent):
-    AbstractPathItem(parent) {
+GraphicsArrowItem::GraphicsArrowItem(QGraphicsItem * parent)
+  : AbstractPathItem(parent)
+{
 }
 
 //----------------------------------------------------------------
-void GraphicsArrowItem::setActivePoint(const QPointF &point) {
+void GraphicsArrowItem::setActivePoint(const QPointF & point)
+{
     start = point;
 }
 
 //----------------------------------------------------------------
-bool GraphicsArrowItem::isModified() {
+bool GraphicsArrowItem::isModified()
+{
     return currentStage != Final;
 }
 
 //----------------------------------------------------------------
-QPainterPath GraphicsArrowItem::itemPath() {
+QPainterPath GraphicsArrowItem::itemPath()
+{
     QPainterPath arrow;
     if (start == end) {
         return arrow;
@@ -54,10 +58,8 @@ QPainterPath GraphicsArrowItem::itemPath() {
     }
     auxVer1.setY(v1Y + end.y());
     auxVer2.setY(v2Y + end.y());
-    auxVer1.setX((dotProduct - mainVector.y()*v1Y)*mainVector.x() > 0 ?
-                 (end.x() + v1X) : (end.x() - v1X));
-    auxVer2.setX((dotProduct - mainVector.y()*v2Y)*mainVector.x() > 0 ?
-                 (end.x() + v2X) : (end.x() - v2X));
+    auxVer1.setX((dotProduct - mainVector.y() * v1Y) * mainVector.x() > 0 ? (end.x() + v1X) : (end.x() - v1X));
+    auxVer2.setX((dotProduct - mainVector.y() * v2Y) * mainVector.x() > 0 ? (end.x() + v2X) : (end.x() - v2X));
     arrow.moveTo(start);
     arrow.lineTo(end);
     arrow.moveTo(auxVer1);
