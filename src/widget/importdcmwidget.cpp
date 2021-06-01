@@ -110,7 +110,7 @@ void ImportDcmWidget::CreateConnections()
         ui->importButton->setChecked(false);
         ui->importButton->setText(tr("Import"));
     });
-    connect(import_dcmfile_thread_, &ImportDcmFileThread::Signal_ResultReady, this, [=] {
+    connect(import_dcmfile_thread_, &ImportDcmFileThread::SgnResultReady, this, [=] {
         ui->progressBar->setValue(ui->progressBar->value() + 1);
     });
     // 文件检索
@@ -126,10 +126,10 @@ void ImportDcmWidget::CreateConnections()
             ui->importButton->setText(tr("Import"));
         }
     });
-    connect(scan_dcmfile_thread_, &ScanDcmFileThread::Signal_ResultReady, this, [=] {
+    connect(scan_dcmfile_thread_, &ScanDcmFileThread::SgnResultReady, this, [=] {
         ui->progressBar->setValue(ui->progressBar->value() + 1);
     });
-    connect(scan_dcmfile_thread_, SIGNAL(Signal_ResultRecord(StudyRecord *)),
+    connect(scan_dcmfile_thread_, SIGNAL(SgnResultRecord(StudyRecord *)),
             import_study_model_, SLOT(AppendStudy(StudyRecord *)));
 }
 

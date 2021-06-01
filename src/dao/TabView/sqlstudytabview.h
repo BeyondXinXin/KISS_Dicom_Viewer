@@ -1,4 +1,4 @@
-#ifndef SQLSTUDYTABVIEW_H
+﻿#ifndef SQLSTUDYTABVIEW_H
 #define SQLSTUDYTABVIEW_H
 
 #include "kisstabview.h"
@@ -12,9 +12,9 @@ public:
     {
     }
 Q_SIGNALS:
-    void Signal_ViewImages();
-    void Signal_RemoveStudies();
-    void Singal_StudySelectionChanged(const QModelIndexList & indexes);
+    void SgnViewImages();
+    void SgnRemoveStudies();
+    void SgnStudySelectionChanged(const QModelIndexList & indexes);
 protected slots:
     void selectionChanged(const QItemSelection & selected,
                           const QItemSelection & deselected);

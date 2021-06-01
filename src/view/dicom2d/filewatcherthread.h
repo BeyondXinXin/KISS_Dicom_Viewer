@@ -1,4 +1,4 @@
-#ifndef FILEWATCHERTHREAD_H
+﻿#ifndef FILEWATCHERTHREAD_H
 #define FILEWATCHERTHREAD_H
 
 #include <QThread>
@@ -10,7 +10,7 @@ public:
     FileWatcherThread(const QString & dir, QObject * parent = nullptr);
     void run() Q_DECL_OVERRIDE;
 Q_SIGNALS:
-    void Signal_FilesChanged(const QStringList & removed, const QStringList & added);
+    void SgnFilesChanged(const QStringList & removed, const QStringList & added);
 
 private:
     void ScanDir();

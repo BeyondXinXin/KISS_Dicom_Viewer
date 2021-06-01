@@ -90,8 +90,8 @@ void ScanDcmFileThread::run()
             delete study;
             study = nullptr;
         }
-        emit Signal_ResultRecord(study);
-        emit Signal_ResultReady();
+        emit SgnResultRecord(study);
+        emit SgnResultReady();
     }
 }
 

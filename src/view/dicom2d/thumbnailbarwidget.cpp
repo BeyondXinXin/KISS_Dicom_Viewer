@@ -28,7 +28,7 @@ ThumbnailBarWidget::ThumbnailBarWidget(QWidget * parent)
 ThumbnailBarWidget::~ThumbnailBarWidget()
 {
     clear();
-    emit Signal_QuitFileWatcher();
+    emit SgnQuitFileWatcher();
 }
 
 //-------------------------------------------------------
@@ -100,7 +100,7 @@ void ThumbnailBarWidget::nextSeries()
 void ThumbnailBarWidget::currSeries()
 {
     if (currentImageLabel) {
-        emit Signal_ImageDoubleClicked(currentImageLabel->getSeriesInstance());
+        emit SgnImageDoubleClicked(currentImageLabel->getSeriesInstance());
     }
 }
 
@@ -114,13 +114,13 @@ void ThumbnailBarWidget::UpdataLabeSize()
 //-------------------------------------------------------
 void ThumbnailBarWidget::setFileWatcher(const QString & dir)
 {
-    emit Signal_QuitFileWatcher();
+    emit SgnQuitFileWatcher();
     FileWatcherThread * t = new FileWatcherThread(dir);
-    connect(this, &ThumbnailBarWidget::Signal_QuitFileWatcher,
+    connect(this, &ThumbnailBarWidget::SgnQuitFileWatcher,
             t, &FileWatcherThread::quit);
     connect(t, &FileWatcherThread::finished,
             t, &FileWatcherThread::deleteLater);
-    connect(t, &FileWatcherThread::Signal_FilesChanged,
+    connect(t, &FileWatcherThread::SgnFilesChanged,
             this, &ThumbnailBarWidget::Slot_FilesChanged);
     t->start();
 }
@@ -150,7 +150,7 @@ void ThumbnailBarWidget::setImagePaths(const QStringList & paths)
 void ThumbnailBarWidget::appendImagePaths(
   const QStringList & paths, bool clear_old)
 {
-    emit Signal_ImageLoadBegin();
+    emit SgnImageLoadBegin();
     if (1 == paths.size() && paths.first().right(4) == ".zip") {
         QPointer<UnzipDicomFile> script_recoery_;
         script_recoery_ = new UnzipDicomFile();
@@ -203,7 +203,7 @@ void ThumbnailBarWidget::appendImagePaths(
     if (unloaded_files.size() > 3000) {
         qDebug() << unloaded_files.size()
                  << "files. That's too much";
-        emit Signal_ImageLoadFinished();
+        emit SgnImageLoadFinished();
         return;
     }
     OFLog::configure(OFLogger::WARN_LOG_LEVEL);
@@ -213,7 +213,7 @@ void ThumbnailBarWidget::appendImagePaths(
     }
     OFLog::configure(OFLogger::INFO_LOG_LEVEL);
     Kiss::FileUtil::DirRemove("./ZipCache");
-    emit Signal_ImageLoadFinished();
+    emit SgnImageLoadFinished();
 }
 
 //-------------------------------------------------------
@@ -223,7 +223,7 @@ void ThumbnailBarWidget::Slot_ImageReady(ImageInstance * image)
     foreach (DicomImageLabel * label, imageLabelList) {
         if (label->insertImage(image)) {
             inserted = true;
-            emit Signal_SeriesAppend();
+            emit SgnSeriesAppend();
             break;
         }
     }
@@ -231,16 +231,16 @@ void ThumbnailBarWidget::Slot_ImageReady(ImageInstance * image)
         DicomImageLabel * imageLabel =
           new DicomImageLabel(new SeriesInstance(image->GetSeriesUid()));
         if (imageLabel->insertImage(image)) {
-            connect(imageLabel, &DicomImageLabel::Signal_ImageClicked,
+            connect(imageLabel, &DicomImageLabel::SgnImageClicked,
                     this, &ThumbnailBarWidget::SLot_ImageClicked);
-            connect(imageLabel, &DicomImageLabel::Signal_ImageDoubleClicked,
+            connect(imageLabel, &DicomImageLabel::SgnImageDoubleClicked,
                     this, &ThumbnailBarWidget::Slot_ImageDoubleClicked);
             layout->insertWidget(imageLabelList.size(), imageLabel);
             imageLabelList.append(imageLabel);
             if (!currentImageLabel) {
                 currentImageLabel = imageLabel;
             }
-            emit Signal_SeriesInserted(imageLabel->getSeriesInstance());
+            emit SgnSeriesInserted(imageLabel->getSeriesInstance());
         } else {
             delete imageLabel;
         }
@@ -254,7 +254,7 @@ void ThumbnailBarWidget::Slot_ImagePathReady(const QString path)
     foreach (DicomImageLabel * label, imageLabelList) {
         if (label->insertImage(image)) {
             inserted = true;
-            emit Signal_SeriesAppend();
+            emit SgnSeriesAppend();
             break;
         }
     }
@@ -263,16 +263,16 @@ void ThumbnailBarWidget::Slot_ImagePathReady(const QString path)
           new DicomImageLabel(
             new SeriesInstance(image->GetSeriesUid()));
         if (imageLabel->insertImage(image)) {
-            connect(imageLabel, &DicomImageLabel::Signal_ImageClicked,
+            connect(imageLabel, &DicomImageLabel::SgnImageClicked,
                     this, &ThumbnailBarWidget::SLot_ImageClicked);
-            connect(imageLabel, &DicomImageLabel::Signal_ImageDoubleClicked,
+            connect(imageLabel, &DicomImageLabel::SgnImageDoubleClicked,
                     this, &ThumbnailBarWidget::Slot_ImageDoubleClicked);
             layout->insertWidget(imageLabelList.size(), imageLabel);
             imageLabelList.append(imageLabel);
             if (!currentImageLabel) {
                 currentImageLabel = imageLabel;
             }
-            emit Signal_SeriesInserted(imageLabel->getSeriesInstance());
+            emit SgnSeriesInserted(imageLabel->getSeriesInstance());
         } else {
             delete imageLabel;
         }
@@ -333,7 +333,7 @@ void ThumbnailBarWidget::Slot_ImageDoubleClicked(
     if (currentImageLabel) {
         currentImageLabel->select_ = true;
         currentImageLabel->setHighlight(true);
-        emit Signal_ImageDoubleClicked(
+        emit SgnImageDoubleClicked(
           currentImageLabel->getSeriesInstance());
     }
 }

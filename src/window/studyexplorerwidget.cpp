@@ -189,11 +189,11 @@ void StudyExplorerWidget::CreateConnections()
     connect(ui->searchButton, &QPushButton::clicked,
             this, &StudyExplorerWidget::Slot_StudySearch);
     // view Images
-    connect(study_view_, &SqlStudyTabView::Signal_ViewImages,
+    connect(study_view_, &SqlStudyTabView::SgnViewImages,
             image_model_, &SqlImageModel::SLot_ViewAllImages);
-    connect(image_view_, &SqlImageTabView::Signal_ViewImages,
+    connect(image_view_, &SqlImageTabView::SgnViewImages,
             image_model_, &SqlImageModel::SLot_ViewImages);
-    connect(image_view_, &SqlImageTabView::Signal_ShowDirectories,
+    connect(image_view_, &SqlImageTabView::SgnShowDirectories,
             image_model_, &SqlImageModel::SLot_ShowDirectories);
     connect(image_model_, &SqlImageModel::viewImages,
             this, [](QStringList file) {
@@ -207,19 +207,19 @@ void StudyExplorerWidget::CreateConnections()
                 w->show();
             });
     // remove Studies
-    connect(study_view_, &SqlStudyTabView::Signal_RemoveStudies,
+    connect(study_view_, &SqlStudyTabView::SgnRemoveStudies,
             study_model_, &SqlStudyModel::Slot_RemoveStudies);
-    connect(study_model_, &SqlStudyModel::Signal_RemoveFinished,
+    connect(study_model_, &SqlStudyModel::SgnRemoveFinished,
             this, &StudyExplorerWidget::Slot_StudySearch);
     // remove Images
-    connect(image_view_, &SqlImageTabView::Signal_RemoveImages,
+    connect(image_view_, &SqlImageTabView::SgnRemoveImages,
             image_model_, &SqlImageModel::Slot_RemoveImages);
-    connect(image_model_, &SqlImageModel::Signal_RemoveFinished,
+    connect(image_model_, &SqlImageModel::SgnRemoveFinished,
             this, &StudyExplorerWidget::Slot_StudySearch);
     // Selection Changed
-    connect(study_view_, &SqlStudyTabView::Singal_StudySelectionChanged,
+    connect(study_view_, &SqlStudyTabView::SgnStudySelectionChanged,
             study_model_, &SqlStudyModel::Slot_SelectionChanged);
-    connect(study_model_, &SqlStudyModel::Signal_studySelectionChanged,
+    connect(study_model_, &SqlStudyModel::SgnStudySelectionChanged,
             image_model_, &SqlImageModel::Slot_StudySelected);
     // PACS
     connect(store_scp_, &StoreScpThread::finished, this, [=] {

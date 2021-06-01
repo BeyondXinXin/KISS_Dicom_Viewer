@@ -131,9 +131,9 @@ public:
 public Q_SLOTS:
     void Slot_SeriesDelate();
 Q_SIGNALS:
-    void Signal_StatusChanged(bool hasImage);
-    void Signal_ViewClicked(DicomImageView * view);
-    void Singal_viewDoubleclicked(DicomImageView * view);
+    void SgnStatusChanged(bool hasImage);
+    void SgnViewClicked(DicomImageView * view);
+    void SgnViewDoubleclicked(DicomImageView * view);
 
 protected:
     void mousePressEvent(QMouseEvent * event);

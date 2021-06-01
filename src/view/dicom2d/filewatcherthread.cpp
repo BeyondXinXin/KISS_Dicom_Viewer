@@ -32,6 +32,6 @@ void FileWatcherThread::ScanDir()
         added += file;
     }
     m_files_ = added;
-    emit Signal_FilesChanged(removed, added);
+    emit SgnFilesChanged(removed, added);
     QTimer::singleShot(500, this, &FileWatcherThread::ScanDir);
 }

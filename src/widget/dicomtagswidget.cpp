@@ -28,7 +28,7 @@ void KissQTreeWidget::Initial()
     // 右键菜单
     this->context_menu_ = new QMenu(this);
     context_menu_->addAction(tr("Open the folder where DCM is located"),
-                             this, &KissQTreeWidget::Signal_OpenFolder);
+                             this, &KissQTreeWidget::SgnOpenFolder);
     context_menu_->addSeparator();
     context_menu_->addAction(tr("Copy current selection"), this, [=]() {
         QTreeWidgetItem * item = this->selectedItems().first();
@@ -81,7 +81,7 @@ DicomTagsWidget::DicomTagsWidget(const QString & str, QWidget * parent)
     this->setWindowTitle(str);
     connect(ui.filter, &QLineEdit::textChanged,
             this, &DicomTagsWidget::SlotFilterChanged);
-    connect(this->tree_wid_, &KissQTreeWidget::Signal_OpenFolder,
+    connect(this->tree_wid_, &KissQTreeWidget::SgnOpenFolder,
             this, &DicomTagsWidget::SLot_OpenFolder);
     // 读取文件
     DcmFileFormat dfile;

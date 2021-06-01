@@ -1,4 +1,4 @@
-#ifndef SQLIMAGETABVIEW_H
+﻿#ifndef SQLIMAGETABVIEW_H
 #define SQLIMAGETABVIEW_H
 
 #include "kisstabview.h"
@@ -12,9 +12,9 @@ public:
     {
     }
 Q_SIGNALS:
-    void Signal_ShowDirectories(const QModelIndexList & indexes);
-    void Signal_ViewImages(const QModelIndexList & indexes);
-    void Signal_RemoveImages(const QModelIndexList & indexes);
+    void SgnShowDirectories(const QModelIndexList & indexes);
+    void SgnViewImages(const QModelIndexList & indexes);
+    void SgnRemoveImages(const QModelIndexList & indexes);
 
 private:
     void SetupContextMenu();

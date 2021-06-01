@@ -30,7 +30,7 @@ SeriesInstance::SeriesInstance(
 //----------------------------------------------------------------
 SeriesInstance::~SeriesInstance()
 {
-    emit Signal_AboutToDelete();
+    emit SgnAboutToDelete();
     DelVolBuffer();
     qDeleteAll(image_map_.values());
     image_map_.clear();

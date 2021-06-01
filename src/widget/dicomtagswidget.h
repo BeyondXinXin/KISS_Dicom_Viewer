@@ -80,7 +80,7 @@ public:
     explicit KissQTreeWidget(QWidget * parent = nullptr);
     virtual ~KissQTreeWidget();
 Q_SIGNALS:
-    void Signal_OpenFolder();
+    void SgnOpenFolder();
 
 protected:
     void Initial();

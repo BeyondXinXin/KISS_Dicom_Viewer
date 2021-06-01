@@ -1,4 +1,4 @@
-#ifndef SQLIMAGEMODEL_H
+﻿#ifndef SQLIMAGEMODEL_H
 #define SQLIMAGEMODEL_H
 
 #include <QSqlTableModel>
@@ -33,7 +33,7 @@ public:
 
 Q_SIGNALS:
     void viewImages(const QStringList & imageFiles);
-    void Signal_RemoveFinished();
+    void SgnRemoveFinished();
 public Q_SLOTS:
     bool select();
 public Q_SLOTS:

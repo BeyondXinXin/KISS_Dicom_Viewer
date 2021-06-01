@@ -1,4 +1,4 @@
-#ifndef SCANDCMFILETHREAD_H
+﻿#ifndef SCANDCMFILETHREAD_H
 #define SCANDCMFILETHREAD_H
 
 #include "dcmtk/dcmdata/dcdatset.h"
@@ -16,8 +16,8 @@ public:
     void SetFiles(const QStringList & files);
     void SetAbort(bool yes);
 Q_SIGNALS:
-    void Signal_ResultReady();
-    void Signal_ResultRecord(StudyRecord * study);
+    void SgnResultReady();
+    void SgnResultRecord(StudyRecord * study);
 
 private:
     QStringList file_list_;

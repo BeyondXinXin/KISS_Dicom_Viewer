@@ -133,7 +133,7 @@ void DicomImageView::SetSeriesInstance(SeriesInstance * series)
 {
     this->video_controlview_->SlotTimeChangeIn(0, 0);
     if (this->m_series_ && this->m_series_ != series) {
-        disconnect(this->m_series_, &SeriesInstance::Signal_AboutToDelete,
+        disconnect(this->m_series_, &SeriesInstance::SgnAboutToDelete,
                    this, &DicomImageView::Slot_SeriesDelate);
         this->m_series_->DelVolBuffer();
         qDeleteAll(item_list_);
@@ -141,12 +141,12 @@ void DicomImageView::SetSeriesInstance(SeriesInstance * series)
     }
     FreeAnnoGroups();
     if (series) {
-        connect(series, &SeriesInstance::Signal_AboutToDelete,
+        connect(series, &SeriesInstance::SgnAboutToDelete,
                 this, &DicomImageView::Slot_SeriesDelate, Qt::UniqueConnection);
     }
     this->m_series_ = series;
     AllocAnnoGroups();
-    emit Signal_StatusChanged(series != nullptr);
+    emit SgnStatusChanged(series != nullptr);
     UpdateScalors();
     UpdateAnnotations();
     Reset();
@@ -927,7 +927,7 @@ void DicomImageView::ResizePixmapItem()
  */
 void DicomImageView::mouseDoubleClickEvent(QMouseEvent * event)
 {
-    emit Singal_viewDoubleclicked(this);
+    emit SgnViewDoubleclicked(this);
     QGraphicsView::mouseDoubleClickEvent(event);
 }
 
@@ -939,7 +939,7 @@ void DicomImageView::mouseDoubleClickEvent(QMouseEvent * event)
  */
 void DicomImageView::mousePressEvent(QMouseEvent * event)
 {
-    emit Signal_ViewClicked(this);
+    emit SgnViewClicked(this);
     if (!m_series_) { // 没有 Series Instance
         QGraphicsView::mousePressEvent(event);
         return;
@@ -1209,7 +1209,7 @@ void DicomImageView::dropEvent(QDropEvent * e)
         if (s) {
             SetSeriesInstance(s);
             this->UpdataSeriesInstance();
-            emit Signal_ViewClicked(this);
+            emit SgnViewClicked(this);
         }
         QGraphicsView::dropEvent(e);
     }

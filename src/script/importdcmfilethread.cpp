@@ -52,7 +52,7 @@ void ImportDcmFileThread::run()
                 }
             }
             image->image_file_ = src_file;
-            emit Signal_ResultReady();
+            emit SgnResultReady();
         }
         study->status_ = tr("Imported: Images %1.").arg(images);
         import_model_->resetStudyStatus(study);

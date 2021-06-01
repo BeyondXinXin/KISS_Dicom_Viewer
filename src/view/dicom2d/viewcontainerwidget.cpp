@@ -181,7 +181,7 @@ void ViewContainerWidget::Slot_ImageChanged(SeriesInstance * series)
 void ViewContainerWidget::Slot_ViewImageChanged()
 {
     if (current_view_) {
-        emit Signal_CurViewChanged(current_view_->GetSeriesInstance());
+        emit SgnCurViewChanged(current_view_->GetSeriesInstance());
     }
 }
 
@@ -200,7 +200,7 @@ void ViewContainerWidget::SLot_ViewClicked(DicomImageView * view)
         current_view_ = view;
         if (current_view_) {
             current_view_->SetBorderHighlight(true);
-            emit Signal_CurViewChanged(current_view_->GetSeriesInstance());
+            emit SgnCurViewChanged(current_view_->GetSeriesInstance());
         }
     }
 }
@@ -273,7 +273,7 @@ void ViewContainerWidget::Slot_SetViewLayout(int col, int row)
         SLot_ViewClicked(view_list_.first());
     }
     if (current_view_) {
-        emit Signal_CurViewChanged(current_view_->GetSeriesInstance());
+        emit SgnCurViewChanged(current_view_->GetSeriesInstance());
     }
 }
 
@@ -283,9 +283,9 @@ DicomImageView * ViewContainerWidget::createImageView()
     DicomImageView * v = new DicomImageView;
     v->SetAnnoTextFont(anno_font_);
     v->installEventFilter(filter_);
-    connect(v, &DicomImageView::Signal_ViewClicked,
+    connect(v, &DicomImageView::SgnViewClicked,
             this, &ViewContainerWidget::SLot_ViewClicked);
-    connect(v, &DicomImageView::Singal_viewDoubleclicked,
+    connect(v, &DicomImageView::SgnViewDoubleclicked,
             this, &ViewContainerWidget::Slot_ViewDoubleClicked);
     return v;
 }

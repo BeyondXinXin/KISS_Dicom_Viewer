@@ -1,4 +1,4 @@
-#ifndef IMPORTDCMFILETHREAD_H
+﻿#ifndef IMPORTDCMFILETHREAD_H
 #define IMPORTDCMFILETHREAD_H
 
 #include <QMap>
@@ -14,7 +14,7 @@ public:
     explicit ImportDcmFileThread(ImportStudyModel * model, QObject * parent = nullptr);
     void run();
 Q_SIGNALS:
-    void Signal_ResultReady();
+    void SgnResultReady();
 
 public Q_SLOTS:
     void SetAbort(bool yes);

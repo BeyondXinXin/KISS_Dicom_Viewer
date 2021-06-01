@@ -118,7 +118,7 @@ void DicomImageLabel::paintEvent(QPaintEvent * e)
 //-------------------------------------------------------
 void DicomImageLabel::mousePressEvent(QMouseEvent * e)
 {
-    emit Signal_ImageClicked(this);
+    emit SgnImageClicked(this);
     drag_org_ = e->pos();
     QLabel::mousePressEvent(e);
 }
@@ -149,6 +149,6 @@ void DicomImageLabel::setImage_label_size(const qint32 & value)
 //-------------------------------------------------------
 void DicomImageLabel::mouseDoubleClickEvent(QMouseEvent * e)
 {
-    emit Signal_ImageDoubleClicked(this);
+    emit SgnImageDoubleClicked(this);
     QLabel::mouseDoubleClickEvent(e);
 }

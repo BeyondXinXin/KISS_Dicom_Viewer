@@ -10,7 +10,7 @@ SqlStudyTabView::SqlStudyTabView(QAbstractTableModel * model, QWidget * parent)
   : KissTabView(model, parent)
 {
     connect(this, &SqlStudyTabView::doubleClicked,
-            this, &SqlStudyTabView::Signal_ViewImages);
+            this, &SqlStudyTabView::SgnViewImages);
     this->SetupContextMenu();
     this->HideColumns();
 }
@@ -22,14 +22,14 @@ void SqlStudyTabView::SetupContextMenu()
     view_image_ = context_menu_->addAction(
       tr("View Image"), this, [=]() {
           if (!selectedIndexes().isEmpty()) {
-              emit Signal_ViewImages();
+              emit SgnViewImages();
           }
       });
     remove_study_ = context_menu_->addAction(
       tr("Remove Study"), this, [=]() {
           if (!selectedIndexes().isEmpty()) {
               if (QMessageBox::Ok == QMessageBox::question(this, tr("Remove Study"), tr("Are you sure to remove these studies?"), QMessageBox::Ok | QMessageBox::Cancel)) {
-                  emit Signal_RemoveStudies();
+                  emit SgnRemoveStudies();
               }
           }
       });
@@ -46,7 +46,7 @@ void SqlStudyTabView::selectionChanged(
   const QItemSelection & selected, const QItemSelection & deselected)
 {
     QTableView::selectionChanged(selected, deselected);
-    emit Singal_StudySelectionChanged(selectedIndexes());
+    emit SgnStudySelectionChanged(selectedIndexes());
 }
 
 //----------------------------------------------------------------

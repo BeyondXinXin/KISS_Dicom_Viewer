@@ -47,7 +47,7 @@ void GridPopWidget::mousePressEvent(QMouseEvent * e)
             row++;
         }
     }
-    emit Signal_ViewLayout(col, row);
+    emit SgnViewLayout(col, row);
     close();
 }
 

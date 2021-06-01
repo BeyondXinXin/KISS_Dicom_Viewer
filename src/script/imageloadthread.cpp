@@ -31,7 +31,7 @@ void ImageLoadThread::run()
     foreach (const QString & p, paths) {
         ImageInstance * image = new ImageInstance(p);
         if (image->IsNormal()) {
-            emit SignalPathReady(p);
+            emit SgnSignalPathReady(p);
         } else {
         }
         delete image;

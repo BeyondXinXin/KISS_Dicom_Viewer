@@ -149,7 +149,7 @@ void DicomViewer::SetupGridTool()
     connect(ui->gridBtn, &QToolButton::clicked, this, [&] {
         // auto delete while hidden
         GridPopWidget * gpw = new GridPopWidget(ui->gridBtn);
-        connect(gpw, &GridPopWidget::Signal_ViewLayout,
+        connect(gpw, &GridPopWidget::SgnViewLayout,
                 ui->viewContainer, &ViewContainerWidget::Slot_SetViewLayout);
         gpw->move(this->geometry().topLeft() + ui->gridBtn->geometry().bottomLeft() + QPoint(25, 25));
         gpw->show();
@@ -374,19 +374,19 @@ void DicomViewer::SetupFullTool()
 void DicomViewer::SetupConnection()
 {
     // thumbnailBar <==> viewContainer
-    connect(ui->thumbnailBar, SIGNAL(Signal_SeriesInserted(SeriesInstance *)),
+    connect(ui->thumbnailBar, SIGNAL(SgnSeriesInserted(SeriesInstance *)),
             ui->viewContainer, SLOT(SLot_SeriesInserted(SeriesInstance *)));
-    connect(ui->thumbnailBar, SIGNAL(Signal_ImageDoubleClicked(SeriesInstance *)),
+    connect(ui->thumbnailBar, SIGNAL(SgnImageDoubleClicked(SeriesInstance *)),
             ui->viewContainer, SLOT(Slot_ImageDClicked(SeriesInstance *)));
-    connect(ui->thumbnailBar, SIGNAL(Signal_SeriesAppend()),
+    connect(ui->thumbnailBar, SIGNAL(SgnSeriesAppend()),
             ui->viewContainer, SLOT(SLot_SeriesAppend()));
     // thumbnailBar <==> DicomViewer
-    connect(ui->thumbnailBar, &ThumbnailBarWidget::Signal_ImageLoadBegin,
+    connect(ui->thumbnailBar, &ThumbnailBarWidget::SgnImageLoadBegin,
             this, [&] {
                 ui->tool_widget->setVisible(0);
                 this->update();
             });
-    connect(ui->thumbnailBar, &ThumbnailBarWidget::Signal_ImageLoadFinished,
+    connect(ui->thumbnailBar, &ThumbnailBarWidget::SgnImageLoadFinished,
             this, [&] {
                 ui->tool_widget->setVisible(1);
                 ui->viewContainer->ImageLoadFinished();

@@ -31,7 +31,7 @@ public:
     void setAnnoFont();
     void ImageLoadFinished();
 signals:
-    void Signal_CurViewChanged(SeriesInstance * image);
+    void SgnCurViewChanged(SeriesInstance * image);
 
 public slots:
     void SLot_SeriesAppend();

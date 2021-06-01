@@ -64,7 +64,7 @@ public:
     void DelVolBuffer();
 
 Q_SIGNALS:
-    void Signal_AboutToDelete();
+    void SgnAboutToDelete();
 
 private:
     SeriesInstance(const SeriesInstance &);

@@ -85,7 +85,7 @@ void SqlImageModel::Slot_RemoveImages(const QModelIndexList & indexes)
               data(index(idx.row(), ImageUid)).toString());
         }
     }
-    emit Signal_RemoveFinished();
+    emit SgnRemoveFinished();
 }
 
 //----------------------------------------------------------------
@@ -102,7 +102,7 @@ void SqlImageModel::Slot_RemoveAllImages()
         StudyDao dao;
         dao.RemoveAllImagesOfStudyFromDb(studyUid);
     }
-    emit Signal_RemoveFinished();
+    emit SgnRemoveFinished();
 }
 
 //----------------------------------------------------------------

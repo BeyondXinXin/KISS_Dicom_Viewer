@@ -1,4 +1,4 @@
-#ifndef GRIDPOPWIDGET_H
+﻿#ifndef GRIDPOPWIDGET_H
 #define GRIDPOPWIDGET_H
 
 #include <QWidget>
@@ -16,7 +16,7 @@ public:
     ~GridPopWidget();
 
 signals:
-    void Signal_ViewLayout(int col, int row);
+    void SgnViewLayout(int col, int row);
 
 protected:
     void mousePressEvent(QMouseEvent * e);

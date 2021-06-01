@@ -33,8 +33,8 @@ public:
     static void setImage_label_size(const qint32 & value);
     bool select_ = false;
 Q_SIGNALS:
-    void Signal_ImageClicked(DicomImageLabel * label);
-    void Signal_ImageDoubleClicked(DicomImageLabel * label);
+    void SgnImageClicked(DicomImageLabel * label);
+    void SgnImageDoubleClicked(DicomImageLabel * label);
 
 public:
 public Q_SLOTS:

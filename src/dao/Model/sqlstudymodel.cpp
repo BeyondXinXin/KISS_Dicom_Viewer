@@ -97,7 +97,7 @@ void SqlStudyModel::Slot_SelectionChanged(const QModelIndexList & indexes)
             selected_study_uids_ << data(index(idx.row(), StudyUid)).toString();
         }
     }
-    emit Signal_studySelectionChanged(selected_study_uids_);
+    emit SgnStudySelectionChanged(selected_study_uids_);
 }
 
 //----------------------------------------------------------------
@@ -107,14 +107,14 @@ void SqlStudyModel::Slot_RemoveStudies()
         StudyDao dao;
         dao.RemoveStudyFromDb(uid);
     }
-    emit Signal_RemoveFinished();
+    emit SgnRemoveFinished();
 }
 
 //----------------------------------------------------------------
 bool SqlStudyModel::select()
 {
     selected_study_uids_.clear();
-    emit Signal_studySelectionChanged(selected_study_uids_);
+    emit SgnStudySelectionChanged(selected_study_uids_);
     bool ret = false;
     ret = QSqlTableModel::select();
     return ret;
@@ -123,11 +123,11 @@ bool SqlStudyModel::select()
 //----------------------------------------------------------------
 void SqlStudyModel::Slot_NewStudy(const QModelIndex & index)
 {
-    emit Signal_NewStudy(record(index.row()));
+    emit SgnNewStudy(record(index.row()));
 }
 
 //----------------------------------------------------------------
 void SqlStudyModel::Slot_NewImage(const QModelIndex & index)
 {
-    emit Signal_NewImage(record(index.row()));
+    emit SgnNewImage(record(index.row()));
 }

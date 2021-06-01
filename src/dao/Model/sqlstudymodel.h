@@ -1,4 +1,4 @@
-#ifndef SQLSTUDYMODEL_H
+﻿#ifndef SQLSTUDYMODEL_H
 #define SQLSTUDYMODEL_H
 
 #include <QSqlRecord>
@@ -38,10 +38,10 @@ public Q_SLOTS:
     bool select();
 
 Q_SIGNALS:
-    void Signal_studySelectionChanged(const QStringList & studyUids);
-    void Signal_NewStudy(const QSqlRecord & studyRec);
-    void Signal_NewImage(const QSqlRecord & studyRec);
-    void Signal_RemoveFinished();
+    void SgnStudySelectionChanged(const QStringList & studyUids);
+    void SgnNewStudy(const QSqlRecord & studyRec);
+    void SgnNewImage(const QSqlRecord & studyRec);
+    void SgnRemoveFinished();
 
 public Q_SLOTS:
     void Slot_SelectionChanged(const QModelIndexList & indexes);

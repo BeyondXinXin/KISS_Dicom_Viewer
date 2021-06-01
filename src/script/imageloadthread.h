@@ -18,9 +18,9 @@ public:
     void run();
 
 signals:
-    void ResultReady(ImageInstance * image);
-    void SignalPathReady(const QString path);
-    void Signal_ImageLoadFinished();
+    void SgnResultReady(ImageInstance * image);
+    void SgnSignalPathReady(const QString path);
+    void SgnImageLoadFinished();
 
 public:
 private:

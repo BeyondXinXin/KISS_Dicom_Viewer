@@ -54,13 +54,13 @@ public:
     QSize sizeHint() const;
 
 Q_SIGNALS:
-    void Signal_CurrentChanged(SeriesInstance * series);
-    void Signal_ImageDoubleClicked(SeriesInstance * series);
-    void Signal_SeriesInserted(SeriesInstance * series);
-    void Signal_SeriesAppend();
-    void Signal_QuitFileWatcher();
-    void Signal_ImageLoadFinished();
-    void Signal_ImageLoadBegin();
+    void SgnCurrentChanged(SeriesInstance * series);
+    void SgnImageDoubleClicked(SeriesInstance * series);
+    void SgnSeriesInserted(SeriesInstance * series);
+    void SgnSeriesAppend();
+    void SgnQuitFileWatcher();
+    void SgnImageLoadFinished();
+    void SgnImageLoadBegin();
 
 public Q_SLOTS:
     void setCurrentImageLabel(const SeriesInstance * series);

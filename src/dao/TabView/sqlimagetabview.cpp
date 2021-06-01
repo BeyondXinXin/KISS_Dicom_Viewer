@@ -11,7 +11,7 @@ SqlImageTabView::SqlImageTabView(QAbstractTableModel * model, QWidget * parent)
 {
     connect(this, &SqlImageTabView::doubleClicked,
             this, [=] {
-                emit Signal_ViewImages(selectedIndexes());
+                emit SgnViewImages(selectedIndexes());
             });
     this->SetupContextMenu();
     this->HideColumns();
@@ -22,18 +22,18 @@ void SqlImageTabView::SetupContextMenu()
 {
     view_image_action_ = context_menu_->addAction(
       tr("View Image"), this, [=]() {
-          emit Signal_ViewImages(selectedIndexes());
+          emit SgnViewImages(selectedIndexes());
       });
     remove_image_action_ = context_menu_->addAction(
       tr("Remove Image"), this, [=]() {
           if (QMessageBox::Ok == QMessageBox::question(this, tr("Remove Image"), tr("Are you sure to remove these images?"), QMessageBox::Ok | QMessageBox::Cancel)) {
-              emit Signal_RemoveImages(selectedIndexes());
+              emit SgnRemoveImages(selectedIndexes());
           }
       });
     directories_ = context_menu_->addAction(
       tr("Show included directories"), this, [=]() {
           if (!selectedIndexes().isEmpty()) {
-              emit Signal_ShowDirectories(selectedIndexes());
+              emit SgnShowDirectories(selectedIndexes());
           }
       });
 }
