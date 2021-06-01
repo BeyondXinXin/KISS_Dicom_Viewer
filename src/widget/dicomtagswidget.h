@@ -2,6 +2,7 @@
 #define DICOMTAGSWIDGET_H
 
 #include "dcmtk/dcmdata/dctk.h"
+#include "global/global.h"
 #include "ui_dicomtagswidget.h"
 #include <QTreeWidget>
 #include <engine/KissEngine>
@@ -28,9 +29,11 @@ using MyDcmDataset = NewDcmItem<DcmDataset>;
 using MyDcmMetaInfo = NewDcmItem<DcmMetaInfo>;
 using MywDcmItem = NewDcmItem<DcmItem>;
 //
+
 template<typename T>
-void GenerateItems(QList<QTreeWidgetItem *> & items, T & t)
+void GenerateItems(QList<QTreeWidgetItem *> & items, T & t, const QString & t_strCharacterSet = "")
 {
+    //
     DcmList * elementList = t.GetDcmList();
     if (!elementList->empty()) {
         DcmObject * dO;
@@ -49,13 +52,19 @@ void GenerateItems(QList<QTreeWidgetItem *> & items, T & t)
             tmp_item->setText(2, QString::number(dO->getLength()));
             tmp_item->setText(3, QString::number(dO->getVM()));
             tmp_item->setText(4, tag.getTagName());
-            tmp_item->setText(5, QString::fromLocal8Bit(value.c_str()));
+            if (t_strCharacterSet.isEmpty() || t_strCharacterSet.contains("GB")) {
+                tmp_item->setText(
+                  5, QString::fromLocal8Bit(Kiss::QUIHelper::String2UTF8(value).c_str()));
+            } else {
+                tmp_item->setText(
+                  5, QString::fromLocal8Bit(value.c_str()));
+            }
             if (EVR_SQ == dO->getVR()) {
                 QList<QTreeWidgetItem *> tmp_items;
                 DcmItem * sq;
                 t.findAndGetSequenceItem(dO->getTag(), sq);
                 MywDcmItem * dcmitem_info = new MywDcmItem(*sq);
-                GenerateItems(tmp_items, *dcmitem_info);
+                GenerateItems(tmp_items, *dcmitem_info, t_strCharacterSet);
                 tmp_item->addChildren(tmp_items);
             }
             items << tmp_item;

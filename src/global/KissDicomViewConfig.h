@@ -36,12 +36,12 @@
 #define DB_NAME "KISS_DB.sqlite"
 
 // 自定义标签
-#define Dcm_AF_Group 0x0021
-#define DCM_AF_CursorX DcmTagKey(Dcm_AF_Group, 0x0001)
-#define DCM_AF_CursorY DcmTagKey(Dcm_AF_Group, 0x0002)
-#define DCM_AF_PixelValue DcmTagKey(Dcm_AF_Group, 0x0003)
-#define DCM_AF_ZoomFactor DcmTagKey(Dcm_AF_Group, 0x0010)
+#define Dcm_AF_Group        0x0021
+#define DCM_AF_CursorX      DcmTagKey(Dcm_AF_Group, 0x0001)
+#define DCM_AF_CursorY      DcmTagKey(Dcm_AF_Group, 0x0002)
+#define DCM_AF_PixelValue   DcmTagKey(Dcm_AF_Group, 0x0003)
+#define DCM_AF_ZoomFactor   DcmTagKey(Dcm_AF_Group, 0x0010)
 #define DCM_AF_WindowCenter DcmTagKey(Dcm_AF_Group, 0x0020)
-#define DCM_AF_WindowWidth DcmTagKey(Dcm_AF_Group, 0x0021)
+#define DCM_AF_WindowWidth  DcmTagKey(Dcm_AF_Group, 0x0021)
 
 #endif // INCLUDE_GUARD

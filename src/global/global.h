@@ -42,10 +42,9 @@ class QUIHelper : public QObject
 {
     Q_OBJECT
 public:
-    // 设置全局样式
-    static void SetStyle(const QString & qssFile = ":/Style/style.qss");
-    // 设置编码
-    static void SetCode();
+    static void SetStyle(const QString & qssFile = ":/Style/style.qss"); // 设置全局样式
+    static void SetCode(); // 设置编码
+    static std::string String2UTF8(const std::string & t_str);
 };
 } // namespace Kiss
 
