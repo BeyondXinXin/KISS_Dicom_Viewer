@@ -203,6 +203,7 @@ void ThumbnailBarWidget::appendImagePaths(
     if (unloaded_files.size() > 3000) {
         qDebug() << unloaded_files.size()
                  << "files. That's too much";
+        emit Signal_ImageLoadFinished();
         return;
     }
     OFLog::configure(OFLogger::WARN_LOG_LEVEL);
