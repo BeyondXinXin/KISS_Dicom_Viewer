@@ -1,7 +1,6 @@
 ﻿#include "videocontrolview.h"
+#include "global/stable.h"
 #include "ui_videocontrolview.h"
-
-
 
 VideoControlView::VideoControlView(QWidget * parent)
   : QWidget(parent)

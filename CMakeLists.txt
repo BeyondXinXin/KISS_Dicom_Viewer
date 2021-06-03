@@ -1,14 +1,10 @@
-﻿cmake_minimum_required(VERSION 3.1.0)
-include (ExternalProject)
+﻿cmake_minimum_required(VERSION 3.14.0)
+#include (ExternalProject)
 project(KissDicomViewer)
 
 # Set self path
 if(WIN32)
-    list(APPEND CMAKE_PREFIX_PATH "D:/lib/eigen-3.3.9/bulid")
-    list(APPEND CMAKE_PREFIX_PATH "D:/lib/VTK-8.2.0/bulid")
-    list(APPEND CMAKE_PREFIX_PATH "D:/lib/ITK-4.13.3/bulid")
     list(APPEND CMAKE_PREFIX_PATH "D:/lib/DCMTK3.6.5/bulid")
-    list(APPEND CMAKE_PREFIX_PATH "D:/lib/opencv/bulid")
 endif()
 
 
