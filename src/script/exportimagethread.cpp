@@ -130,7 +130,7 @@ void ExportImageThread::run()
                     tiffPlugin.setCompressionType(E_tiffPackBitsCompression);
                     tiffPlugin.setLZWPredictor(E_tiffLZWPredictorDefault);
                     tiffPlugin.setRowsPerStrip(OFstatic_cast(unsigned long, 0));
-                    result = di->writePluginFormat(&tiffPlugin, ofile, static_cast<quint32>(frame));
+                    result = di->writePluginFormat(&tiffPlugin, ofile, static_cast<quint32>(frame_));
                 }
 #endif
                 default:
