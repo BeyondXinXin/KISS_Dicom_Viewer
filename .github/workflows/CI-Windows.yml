@@ -1,0 +1,124 @@
+name: CI-Windows
+on:
+  push:
+    branches:
+      - master
+
+env:
+  cache_repo: https://github.com/BeyondXinXin/GitHubActionsCache/releases/download/
+
+  
+jobs:
+  ci:
+    if: github.event.pull_request.draft == false
+
+    strategy:
+      matrix:
+        os: [windows-latest]
+        vs_ver: [msvc2019 , msvc2015]
+        
+    runs-on: ${{matrix.os}}
+
+    steps:
+    - name: Dependencies Dir
+      working-directory: ${{github.workspace}}
+      run: |
+        mkdir dependencies
+        mkdir dependencies/dcmtk_install
+
+    - name: Fetch Dcmtk msvc2015
+      if: matrix.vs_ver == 'msvc2015'
+      working-directory: ${{github.workspace}}
+      run: |
+        Invoke-WebRequest `
+        -OutFile dcmtk_install.zip `
+        -Uri ${{ env.cache_repo }}dcmtk_cache/dcmtk-3.6.5-win-vs2015.zip  
+        C:\Windows\System32\tar.exe -z -xf ./dcmtk_install.zip -P -C ./dependencies/dcmtk_install
+    
+    - name: Fetch Dcmtk msvc2019
+      if: matrix.vs_ver == 'msvc2019'
+      working-directory: ${{github.workspace}}
+      run: |
+        Invoke-WebRequest `
+        -OutFile dcmtk_install.zip `
+        -Uri ${{ env.cache_repo }}dcmtk_cache/dcmtk-3.6.5-win-vs2019.zip  
+        C:\Windows\System32\tar.exe -z -xf ./dcmtk_install.zip -P -C ./dependencies/dcmtk_install
+   
+    - name: Cache Qt
+      id: cache-qt
+      uses: actions/cache@v1  # not v2!
+      with:
+        path: ../Qt
+        key: ${{ runner.os }}-${{  matrix.vs_ver }}-QtCache
+
+    - name: Install Qt msvc2019
+      if: matrix.vs_ver == 'msvc2019'
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: 5.15.2
+        target: desktop
+        arch: win64_msvc2019_64
+        cached: ${{ steps.cache-qt.outputs.cache-hit }}
+
+    - name: Install Qt msvc2015
+      if: matrix.vs_ver == 'msvc2015'
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: 5.9.7
+        target: desktop
+        arch: win64_msvc2015_64
+        cached: ${{ steps.cache-qt.outputs.cache-hit }}
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        path: 'source'
+        fetch-depth: 0
+        lfs: 'false'
+        
+    - name: Setup Directories
+      working-directory: ${{github.workspace}}
+      run: |
+         mkdir build
+        
+    - name: Configure
+      working-directory: ${{github.workspace}}/build
+      run: >
+        cmake ../source
+        -DCMAKE_BUILD_TYPE=Release
+        -DDCMTK_DIR:PATH=../dependencies/dcmtk_install/cmake
+        ${{ matrix.os == 'windows-latest' && '-Ax64 -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded' || null }}
+    
+    - name: Build
+      working-directory: ${{github.workspace}}/build
+      run: cmake --build . --parallel 2 --config Release
+
+    - name: Package Project
+      working-directory: ${{github.workspace}}
+      shell: cmd
+      run: |
+        mkdir app
+        windeployqt.exe --dir ./app ./source/bin/Release/dicomviewer.exe --release
+        copy .\source\bin\Release\dicomviewer.exe .\app\dicomviewer.exe
+        copy .\source\bin\Release\logviewer.exe .\app\logviewer.exe
+        copy .\source\bin\Release\studyexplorer.exe .\app/studyexplorer.exe
+        xcopy .\dependencies\dcmtk_install\bin\*.* .\app\ /s/y
+        echo %GITHUB_SHA% > ./app/commit"
+        7z a ./${{runner.os}}-${{matrix.vs_ver}}.zip ./app
+      
+    - name: Update Tag
+      id: update-tag
+      working-directory: ${{github.workspace}}/source
+      shell: bash
+      run: |
+        git tag --force continuous-build ${GITHUB_SHA}
+        git push --force --tags
+       
+    - name: Update Continuous Build Release
+      id: update-continuous-build-release 
+      uses: johnwbyrd/update-release@v1.0.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: ./${{runner.os}}-${{matrix.vs_ver}}.zip
+        release: Continuous Build
+        tag: continuous-build

@@ -4,7 +4,7 @@ project(KissDicomViewer)
 
 # Set self path
 if(WIN32)
-    list(APPEND CMAKE_PREFIX_PATH "D:/lib/DCMTK3.6.5/bulid")
+    list(APPEND CMAKE_PREFIX_PATH "C:/lib/Library/dcmtk/cmake")
 endif()
 
 

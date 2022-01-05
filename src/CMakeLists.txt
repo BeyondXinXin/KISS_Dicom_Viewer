@@ -18,37 +18,20 @@ set(SRCS ${SOURCES} ${HEADERS} ${RESOURCES} ${FORMS})
 set(KissDicomViewer_Resource_DIR ${RESOURCES} CACHE PATH "KissDicomViewer Resource")
 
 
-if(WIN32)
-    add_library(KissDicomViewer_static STATIC ${SRCS})
-    target_link_libraries(
-        KissDicomViewer_static
-        Qt5::Core
-        Qt5::Gui
-        Qt5::Widgets
-        Qt5::Sql
-        Qt5::Xml
-        Qt5::Network
-        Qt5::Concurrent
-        ${DCMTK_LIBRARIES}
-        quazip5
-        ${QUAZIP_LIBRARIES}
-        )
-else()
-    add_library(KissDicomViewer_sharde SHARED ${SRCS})
-    target_link_libraries(
-        KissDicomViewer_sharde
-        Qt5::Core
-        Qt5::Gui
-        Qt5::Widgets
-        Qt5::Sql
-        Qt5::Xml
-        Qt5::Network
-        Qt5::Concurrent
-        ${DCMTK_LIBRARIES}
-        quazip5
-        ${QUAZIP_LIBRARIES}
-        )
-endif()
+add_library(KissDicomViewer STATIC ${SRCS})
+target_link_libraries(
+    KissDicomViewer
+    Qt5::Core
+    Qt5::Gui
+    Qt5::Widgets
+    Qt5::Sql
+    Qt5::Xml
+    Qt5::Network
+    Qt5::Concurrent
+    ${DCMTK_LIBRARIES}
+    quazip5
+    ${QUAZIP_LIBRARIES}
+    )
 
 
 
