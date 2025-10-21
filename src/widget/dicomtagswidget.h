@@ -48,8 +48,8 @@ void GenerateItems(QList<QTreeWidgetItem *> &items, T &t, const QString &t_strCh
             QTreeWidgetItem *tmp_item = new QTreeWidgetItem;
             tmp_item->setText(0, QString::fromLocal8Bit(tag.toString().c_str()));
             tmp_item->setText(1, tag.getVRName());
-            tmp_item->setText(2, QString::number(dO->getLength()));
-            tmp_item->setText(3, QString::number(dO->getVM()));
+            tmp_item->setText(2, QString::number(dO->getVM()));
+            tmp_item->setText(3, QString::number(dO->getLength()));
             tmp_item->setText(4, tag.getTagName());
             if (t_strCharacterSet.isEmpty() || t_strCharacterSet.contains("GB")) {
                 //                tmp_item->setText(
